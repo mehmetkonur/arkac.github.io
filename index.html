@@ -1,0 +1,1723 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arkaç AVM — Etkinlik Merkezi</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#F5F3EE;color:#22272B;font-size:14px}
+a{color:#8A6414;cursor:pointer}
+.app{display:flex;min-height:100vh}
+.side{width:230px;background:#182430;color:#B9C4CD;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0}
+.logo{padding:20px 18px 14px;color:#fff;font-weight:700;font-size:19px;letter-spacing:.04em}
+.logo span{color:#E5A93D}
+.logo small{display:block;font-weight:400;font-size:10.5px;color:#7E8B96;letter-spacing:.14em;text-transform:uppercase;margin-top:3px}
+.side nav{flex:1;padding:8px 10px;overflow-y:auto}
+.side nav a{display:block;padding:9px 12px;border-radius:8px;color:#B9C4CD;text-decoration:none;font-size:14px;margin-bottom:2px}
+.side nav a:hover{background:#223243;color:#fff}
+.side nav a.on{background:#E5A93D;color:#1B2530;font-weight:600}
+.side-foot{padding:12px 14px;border-top:1px solid #233444;font-size:12px}
+.side-foot .mut2{color:#63707C;font-size:10.5px;line-height:1.5;margin-top:8px}
+.sbtn{display:block;width:100%;text-align:center;background:#223243;color:#B9C4CD;border:none;border-radius:7px;padding:7px;font-size:12px;cursor:pointer;margin-bottom:6px;font-family:inherit}
+.sbtn:hover{background:#2B3D4E;color:#fff}
+.langs{display:flex;gap:4px;margin:0 0 8px}
+.langs a{flex:1;text-align:center;font-size:10.5px;letter-spacing:.05em;color:#7E8B96;text-decoration:none;border:1px solid #2B3D4E;border-radius:6px;padding:3px 0}
+.langs a.on{background:#E5A93D;color:#1B2530;border-color:#E5A93D;font-weight:700}
+.main{flex:1;padding:26px 30px;min-width:0}
+h1{font-size:21px;margin:0 0 4px}
+.sub{color:#6B7480;font-size:13px;margin:0 0 20px}
+.card{background:#fff;border:1px solid #E7E2D8;border-radius:12px;padding:18px 20px;margin-bottom:18px}
+.card h2{font-size:14px;margin:0 0 12px;color:#3A414A}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border:1px solid #E7E2D8;border-radius:12px;padding:14px 16px}
+.kpi b{display:block;font-size:24px;margin-top:2px;color:#22272B}
+.kpi span{font-size:11.5px;color:#6B7480;text-transform:uppercase;letter-spacing:.05em}
+.kpi.warn b{color:#C4711A}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
+.tbl th{text-align:left;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#8A8F98;padding:8px 10px;border-bottom:1px solid #E7E2D8;white-space:nowrap}
+.tbl td{padding:9px 10px;border-bottom:1px solid #F0EDE5;vertical-align:top}
+.tbl tr:hover td{background:#FAF8F3}
+.bd{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:600;white-space:nowrap}
+.bd.yesil{background:#E4F2E6;color:#2C7A39}
+.bd.sari{background:#FBF0DB;color:#9A6414}
+.bd.kirmizi{background:#FBE3E1;color:#AE3B32}
+.bd.gri{background:#ECEDEF;color:#565D66}
+.bd.mavi{background:#E2ECF8;color:#2C5FA8}
+.btn{display:inline-block;background:#E5A93D;color:#1B2530;border:none;border-radius:8px;padding:9px 16px;font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;font-family:inherit}
+.btn:hover{background:#D89827}
+.btn-ghost{display:inline-block;background:#fff;border:1px solid #D8D2C4;color:#3A414A;padding:6px 12px;border-radius:8px;font-size:12.5px;text-decoration:none;cursor:pointer;font-family:inherit}
+.btn-danger{background:#fff;border:1px solid #E4B7B2;color:#AE3B32;border-radius:8px;padding:6px 10px;font-size:12.5px;cursor:pointer;font-family:inherit}
+.bar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid #D8D2C4;border-radius:8px;background:#fff;color:#22272B}
+input:focus,select:focus,textarea:focus{outline:2px solid rgba(229,169,61,.4);border-color:#E5A93D}
+.frm{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.frm .full{grid-column:1/-1}
+.frm label{display:block;font-size:12px;color:#6B7480;margin-bottom:5px;font-weight:600}
+.frm input,.frm select,.frm textarea{width:100%}
+.frm-alt{margin-top:18px;display:flex;gap:10px}
+.flash{padding:10px 14px;border-radius:9px;margin-bottom:14px;font-size:13.5px}
+.flash.success{background:#E4F2E6;color:#2C7A39;border:1px solid #BFDFC5}
+.flash.error{background:#FBE3E1;color:#AE3B32;border:1px solid #EFC4BF}
+.mut{color:#8A8F98;font-size:12.5px}
+.gec{color:#B23A32;font-weight:600}
+.uyari{background:#B23A32;color:#fff;text-align:center;padding:8px 12px;font-size:12.5px}
+.egrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:14px}
+.ecard{background:#fff;border:1px solid #E7E2D8;border-radius:12px;overflow:hidden;cursor:pointer;display:flex;flex-direction:column}
+.ecard:hover{border-color:#E5A93D}
+.ekapak{height:130px;background:#EFEBE2;display:flex;align-items:center;justify-content:center;color:#B9B2A2;font-size:34px;font-weight:700;overflow:hidden}
+.ekapak img{width:100%;height:100%;object-fit:cover}
+.egov{padding:11px 13px;flex:1;display:flex;flex-direction:column;gap:4px}
+.ead{font-size:14px;font-weight:600}
+.emeta{font-size:12px;color:#6B7480}
+.eust{display:flex;justify-content:space-between;align-items:center;gap:6px}
+.yild{color:#E5A93D;letter-spacing:1px}
+.yild .bos{color:#D8D2C4}
+.prog{height:7px;background:#ECE8DE;border-radius:99px;overflow:hidden;margin-top:4px}
+.prog i{display:block;height:100%;background:#E5A93D}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.fkut{position:relative;border-radius:9px;overflow:hidden;border:1px solid #E7E2D8;height:110px;cursor:pointer}
+.fkut img{width:100%;height:100%;object-fit:cover;display:block}
+.fsil{position:absolute;top:5px;right:5px;background:rgba(24,36,48,.75);color:#fff;border:none;border-radius:6px;width:24px;height:24px;cursor:pointer;font-size:13px;line-height:1}
+.fbox{position:fixed;inset:0;background:rgba(15,24,32,.92);display:flex;align-items:center;justify-content:center;z-index:50;cursor:zoom-out;padding:20px}
+.fbox img{max-width:96%;max-height:92vh;border-radius:10px}
+.madde{display:flex;align-items:center;gap:9px;padding:7px 4px;border-bottom:1px solid #F0EDE5;font-size:13.5px}
+.madde input[type=checkbox]{width:17px;height:17px;accent-color:#E5A93D}
+.madde .tamamx{text-decoration:line-through;color:#8A8F98}
+.madde .kaldir{margin-left:auto;background:none;border:none;color:#B9B2A2;cursor:pointer;font-size:15px}
+.stars button{background:none;border:none;font-size:26px;cursor:pointer;color:#D8D2C4;padding:0 2px}
+.stars button.dolu{color:#E5A93D}
+.crow{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:13px}
+.crow .cl{width:78px;flex-shrink:0;color:#3A414A;font-weight:600}
+.crow .cb{flex:1;height:16px;background:#ECE8DE;border-radius:5px;overflow:hidden}
+.crow .cb i{display:block;height:100%;background:#E5A93D}
+.crow .cv{width:90px;flex-shrink:0;text-align:right;color:#6B7480;font-size:12.5px}
+.detK{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:6px}
+.detK div{background:#FAF8F3;border-radius:9px;padding:9px 11px}
+.detK span{display:block;font-size:10.5px;color:#8A8F98;text-transform:uppercase;letter-spacing:.05em}
+.detK b{font-size:14px}
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px}
+.ykart{background:#fff;border:1px solid #E7E2D8;border-radius:12px;padding:12px 14px;min-height:118px;display:flex;flex-direction:column}
+.ykart h3{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:#8A8F98;margin:0 0 8px;display:flex;justify-content:space-between;gap:6px}
+.ykart h3 span{font-weight:400;text-transform:none;letter-spacing:0;color:#6B7480}
+.yev{font-size:12.5px;padding:6px 9px;border-radius:7px;background:#FAF8F3;margin-bottom:6px;border-left:3px solid #4C7FC0;cursor:pointer}
+.yev:hover{background:#F3EFE6}
+.yev.tamam{border-left-color:#2C7A39}
+.yev.iptal{border-left-color:#AE3B32;opacity:.55}
+.yev b{display:block}
+.yev span{color:#6B7480;font-size:11px}
+.yekle{margin-top:auto;font-size:12px;color:#8A6414;cursor:pointer;padding-top:4px}
+.auth{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#182430;padding:20px}
+.auth .box{background:#fff;border-radius:14px;padding:28px 30px 26px;width:380px;max-width:94vw}
+.auth h1{font-size:20px;margin:0 0 4px}
+.auth p.d{color:#6B7480;font-size:13px;margin:0 0 8px}
+.auth .alt{margin-top:16px;font-size:13px;color:#6B7480;text-align:center}
+.auth label{display:block;font-size:12px;color:#6B7480;margin:12px 0 5px;font-weight:600}
+.auth input{width:100%}
+.auth .btn{width:100%;margin-top:18px;padding:11px}
+.alogo{color:#fff;text-align:center;margin-bottom:14px;font-weight:700;font-size:22px;letter-spacing:.05em}
+.alogo span{color:#E5A93D}
+.alogo small{display:block;font-weight:400;font-size:11px;color:#7E8B96;letter-spacing:.16em;text-transform:uppercase;margin-top:4px}
+.alangs{display:flex;gap:6px;justify-content:center;margin-bottom:14px}
+.alangs a{font-size:11.5px;letter-spacing:.05em;color:#7E8B96;text-decoration:none;border:1px solid #2B3D4E;border-radius:6px;padding:3px 12px;cursor:pointer}
+.alangs a.on{background:#E5A93D;color:#1B2530;border-color:#E5A93D;font-weight:700}
+.pill{background:#D9534F;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;margin-left:4px;font-style:normal}
+.uname{color:#fff;font-size:13px;font-weight:600}
+.urole{font-size:11px;color:#E5A93D;margin:1px 0 8px}
+.cikis{color:#B9C4CD;font-size:12px;cursor:pointer;text-decoration:underline}
+#acilis{position:fixed;inset:0;background:#182430;z-index:200;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:opacity .5s}
+#acilis.git{opacity:0;pointer-events:none}
+.a-orta{text-align:center;position:relative;z-index:3}
+.a-yildiz{font-size:34px;color:#E5A93D;animation:aYil 1.4s ease-in-out infinite}
+.a-logo{color:#fff;font-weight:700;font-size:30px;letter-spacing:.06em;margin-top:6px;animation:aGel .9s ease both}
+.a-logo span{color:#E5A93D}
+.a-sub{color:#7E8B96;font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;margin-top:8px;animation:aGel .9s .35s ease both}
+.a-bar{width:190px;height:5px;background:#233444;border-radius:99px;margin:22px auto 0;overflow:hidden}
+.a-bar i{display:block;height:100%;width:0;background:#E5A93D;border-radius:99px;animation:aBar 2.5s .2s ease forwards}
+.a-balon{position:absolute;bottom:-90px;width:46px;height:58px;border-radius:50% 50% 48% 48%;opacity:.9;animation:aBal 3.1s ease-in forwards}
+.a-balon:after{content:"";position:absolute;left:50%;bottom:-26px;width:1.5px;height:26px;background:rgba(255,255,255,.45);transform:translateX(-50%)}
+.a-balon.b1{left:16%;background:#E5A93D;animation-delay:.1s}
+.a-balon.b2{left:50%;background:#4C7FC0;width:38px;height:48px;animation-delay:.45s}
+.a-balon.b3{left:79%;background:#C24A40;width:42px;height:53px;animation-delay:.28s}
+.a-k{position:absolute;top:-14px;width:8px;height:13px;border-radius:2px;animation:aKon 2.6s linear infinite}
+.a-k:nth-child(odd){background:#E5A93D}
+.a-k:nth-child(3n){background:#4C7FC0;width:7px;height:7px;border-radius:50%}
+.a-k:nth-child(4n){background:#C24A40}
+.a-k:nth-child(5n){background:#7BB77E}
+.a-k.k1{left:6%;animation-delay:0s}.a-k.k2{left:14%;animation-delay:.7s}
+.a-k.k3{left:23%;animation-delay:.3s}.a-k.k4{left:32%;animation-delay:1.1s}
+.a-k.k5{left:41%;animation-delay:.5s}.a-k.k6{left:50%;animation-delay:1.4s}
+.a-k.k7{left:59%;animation-delay:.2s}.a-k.k8{left:68%;animation-delay:.9s}
+.a-k.k9{left:77%;animation-delay:.6s}.a-k.k10{left:86%;animation-delay:1.2s}
+.a-k.k11{left:93%;animation-delay:.4s}.a-k.k12{left:47%;animation-delay:1.7s}
+@keyframes aBal{0%{transform:translateY(0) rotate(-3deg)}100%{transform:translateY(-118vh) rotate(4deg)}}
+@keyframes aKon{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(112vh) rotate(340deg)}}
+@keyframes aYil{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.25);opacity:1}}
+@keyframes aGel{0%{opacity:0;transform:translateY(14px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes aBar{to{width:100%}}
+@media(max-width:920px){
+ .app{flex-direction:column}
+ .side{width:100%;height:auto;position:static}
+ .grid2{grid-template-columns:1fr}
+ .frm{grid-template-columns:1fr}
+ .main{padding:16px}
+}
+@media print{
+ .side,.btn,.btn-ghost,.btn-danger,.kaldir,.fsil,.uyari,#acilis{display:none!important}
+ .app{display:block}
+ .main{padding:0}
+ body{background:#fff}
+ textarea,input{border:1px solid #bbb}
+}
+</style>
+</head>
+<body>
+<div id="acilis">
+ <i class="a-k k1"></i><i class="a-k k2"></i><i class="a-k k3"></i><i class="a-k k4"></i>
+ <i class="a-k k5"></i><i class="a-k k6"></i><i class="a-k k7"></i><i class="a-k k8"></i>
+ <i class="a-k k9"></i><i class="a-k k10"></i><i class="a-k k11"></i><i class="a-k k12"></i>
+ <div class="a-balon b1"></div><div class="a-balon b2"></div><div class="a-balon b3"></div>
+ <div class="a-orta">
+  <div class="a-yildiz">✦</div>
+  <div class="a-logo">ARKAÇ <span>AVM</span></div>
+  <div class="a-sub">Etkinlik Merkezi</div>
+  <div class="a-bar"><i></i></div>
+ </div>
+</div>
+<div id="app"></div>
+<div id="kutu"></div>
+<script>
+"use strict";
+/* ================ DEPO ================ */
+var idb=null, idbVar=(typeof indexedDB!=="undefined"), RAM={ev:{},foto:{},top:{},kul:{},log:{}};
+var _oturumRam={};
+function dOku(k){try{return localStorage.getItem(k);}catch(e){return _oturumRam[k]||null;}}
+function dYaz(k,v){try{localStorage.setItem(k,v);}catch(e){_oturumRam[k]=v;}}
+function dSil(k){try{localStorage.removeItem(k);}catch(e){delete _oturumRam[k];}}
+function idbBaslat(){return new Promise(function(res){
+ if(!idbVar)return res();
+ var r;try{r=indexedDB.open("arkac_etkinlik",3);}catch(e){idbVar=false;return res();}
+ r.onupgradeneeded=function(e){var d=e.target.result;
+  if(!d.objectStoreNames.contains("ev"))d.createObjectStore("ev",{keyPath:"id"});
+  if(!d.objectStoreNames.contains("foto"))d.createObjectStore("foto",{keyPath:"id"});
+  if(!d.objectStoreNames.contains("top"))d.createObjectStore("top",{keyPath:"id"});
+  if(!d.objectStoreNames.contains("kul"))d.createObjectStore("kul",{keyPath:"id"});
+  if(!d.objectStoreNames.contains("log"))d.createObjectStore("log",{keyPath:"id"});};
+ r.onsuccess=function(e){idb=e.target.result;res();};
+ r.onerror=function(){idbVar=false;res();};});}
+function hepsi(st){return new Promise(function(res){
+ if(!idbVar)return res(Object.keys(RAM[st]).map(function(k){return RAM[st][k];}));
+ var rq=idb.transaction(st).objectStore(st).getAll();
+ rq.onsuccess=function(){res(rq.result||[]);};rq.onerror=function(){res([]);};});}
+function koy(st,v){return new Promise(function(res){
+ if(!idbVar){RAM[st][v.id]=v;return res();}
+ var t2=idb.transaction(st,"readwrite");t2.objectStore(st).put(v);
+ t2.oncomplete=function(){res();};t2.onerror=function(){res();};});}
+function silK(st,id){return new Promise(function(res){
+ if(!idbVar){delete RAM[st][id];return res();}
+ var t2=idb.transaction(st,"readwrite");t2.objectStore(st).delete(id);
+ t2.oncomplete=function(){res();};t2.onerror=function(){res();};});}
+
+/* ================ DİL ================ */
+var DILLER=["tm","tr","ru","en"], DILK="arkac_em_dil";
+var dil=dOku(DILK)||"tr"; if(DILLER.indexOf(dil)<0)dil="tr";
+function d(tr,tm,ru,en){return{tr:tr,tm:tm,ru:ru,en:en};}
+function t(k){var m=T[k],s=(m&&(m[dil]||m.tr))||k;
+ for(var i=1;i<arguments.length;i++){var ix="{"+(i-1)+"}";
+  if(s.indexOf(ix)>=0)s=s.split(ix).join(arguments[i]);
+  else s=s.replace("{}",arguments[i]);}
+ return s;}
+var AY={tr:["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"],
+ tm:["Ýanwar","Fewral","Mart","Aprel","Maý","Iýun","Iýul","Awgust","Sentýabr","Oktýabr","Noýabr","Dekabr"],
+ ru:["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
+ en:["January","February","March","April","May","June","July","August","September","October","November","December"]};
+function ay(i){return (AY[dil]||AY.tr)[i];}
+var T={
+/* genel */
+kaydet:d("Kaydet","Ýatda sakla","Сохранить","Save"),
+vazgec:d("Vazgeç","Ýatyr","Отмена","Cancel"),
+duzenle:d("Düzenle","Üýtget","Изменить","Edit"),
+sil:d("Sil","Poz","Удалить","Delete"),
+filtre:d("Filtrele","Süz","Фильтр","Filter"),
+ac:d("Aç","Aç","Открыть","Open"),
+yazdir:d("Yazdır","Çap et","Печать","Print"),
+gun:d("gün","gün","дн.","days"),
+gunKaldi:d("{} gün kaldı","{} gün galdy","осталось {} дн.","{} days left"),
+tarihGecti:d("tarih geçti","möhleti geçdi","дата прошла","date passed"),
+secilmedi:d("— Seçilmedi —","— Saýlanmady —","— Не выбрано —","— Not selected —"),
+etkinlik:d("Etkinlik","Çäre","Мероприятие","Event"),
+yil:d("Yıl","Ýyl","Год","Year"),
+puan:d("Puan","Bal","Балл","Score"),
+anket:d("QR anket","QR anketa","QR-опрос","QR survey"),
+ziyaretci:d("Ziyaretçi","Myhman","Посетители","Visitors"),
+maliyet:d("Maliyet","Çykdajy","Затраты","Cost"),
+gelir:d("Gelir","Girdeji","Доход","Revenue"),
+netMaliyet:d("Net maliyet","Arassa çykdajy","Чистые затраты","Net cost"),
+karsilamaL:d("Karşılama","Ödew %","Окупаемость","Coverage"),
+sapmaL:d("Bütçe sapması","Býujet gyşarmasy","Отклонение бюджета","Budget variance"),
+trafik:d("Trafik etkisi","Trafige täsiri","Влияние на трафик","Traffic uplift"),
+butce:d("Bütçe","Býujet","Бюджет","Budget"),
+tarihL:d("Tarih","Sene","Дата","Date"),
+yerL:d("Yer","Ýeri","Место","Venue"),
+sorumluL:d("Sorumlu","Jogapkär","Ответственный","Responsible"),
+durumL:d("Durum","Ýagdaý","Статус","Status"),
+turL:d("Tür","Görnüşi","Тип","Type"),
+kisi:d("kişi","adam","чел.","people"),
+puanYok:d("Puanlanmadı","Baha berilmedi","Без оценки","Not rated"),
+kayitYok:d("Kayıt bulunamadı.","Ýazgy tapylmady.","Записи не найдены.","No records found."),
+/* durum/tekrar/tur */
+d_planlandi:d("Planlandı","Meýilleşdirildi","Запланировано","Planned"),
+d_devam:d("Devam Ediyor","Dowam edýär","В процессе","In progress"),
+d_tamamlandi:d("Tamamlandı","Tamamlandy","Завершено","Completed"),
+d_iptal:d("İptal","Ýatyryldy","Отменено","Cancelled"),
+tk_evet:d("Evet, tekrarlanmalı","Hawa, gaýtalansyn","Да, повторить","Yes, repeat"),
+tk_belki:d("Belki / geliştirilmeli","Belki / gowulandyrmaly","Возможно / доработать","Maybe / improve"),
+tk_hayir:d("Hayır","Ýok","Нет","No"),
+tk_k_evet:d("Tekrarla","Gaýtala","Повторить","Repeat"),
+tk_k_belki:d("Belki","Belki","Возможно","Maybe"),
+tk_k_hayir:d("Hayır","Ýok","Нет","No"),
+tur_konser:d("Konser","Konsert","Концерт","Concert"),
+tur_cocuk:d("Çocuk etkinliği","Çagalar çäresi","Детское мероприятие","Kids event"),
+tur_kampanya:d("Kampanya","Aksiýa","Акция","Campaign"),
+tur_festival:d("Festival","Festiwal","Фестиваль","Festival"),
+tur_sergi:d("Sergi","Sergi","Выставка","Exhibition"),
+tur_yarisma:d("Yarışma","Bäsleşik","Конкурс","Contest"),
+tur_tiyatro:d("Tiyatro/Gösteri","Teatr/Görkeziş","Театр/Шоу","Theatre/Show"),
+tur_diger:d("Diğer","Başga","Другое","Other"),
+/* nav + kenar */
+nav_ozet:d("Özet","Gysgaça syn","Сводка","Overview"),
+nav_plan:d("Planlama","Meýilleşdirme","Планирование","Planning"),
+nav_yillik:d("Yıllık Plan","Ýyllyk meýilnama","Годовой план","Annual Plan"),
+nav_arsiv:d("Arşiv","Arhiw","Архив","Archive"),
+nav_analiz:d("Analiz","Seljerme","Анализ","Analysis"),
+nav_top:d("Toplantılar","Ýygnaklar","Совещания","Meetings"),
+nav_kontrol:d("Yönetici Kontrol","Dolandyryjy gözegçiligi","Панель администратора","Admin Control"),
+yeniEtk:d("+ Yeni etkinlik","+ Täze çäre","+ Новое мероприятие","+ New event"),
+cikis:d("Çıkış","Çykyş","Выход","Sign out"),
+rolYon:d("Yönetici","Dolandyryjy","Администратор","Administrator"),
+rolKul:d("Kullanıcı","Ulanyjy","Пользователь","User"),
+yedekIndirB:d("Yedek indir (JSON)","Ätiýaçlyk nusgany al","Скачать копию (JSON)","Download backup (JSON)"),
+yedekYukleB:d("Yedekten geri yükle","Ätiýaçlykdan dikelt","Восстановить из копии","Restore from backup"),
+depoNot:d("Veriler bu bilgisayarın tarayıcısında saklanır. Düzenli yedek alın.","Maglumatlar şu kompýuteriň brauzerinde saklanýar. Yzygiderli ätiýaçlyk alyň.","Данные хранятся в браузере этого компьютера. Регулярно делайте копию.","Data is stored in this computer's browser. Back up regularly."),
+uyariOniz:d("Bu önizlemede kalıcı kayıt kapalı olabilir — dosyayı indirip Chrome/Edge ile açın.","Bu görnüşde ýatda saklamak öçük bolup biler — faýly ýükläp Chrome bilen açyň.","В этом просмотре сохранение может не работать — скачайте файл и откройте в Chrome/Edge.","Saving may be disabled in this preview — download the file and open it in Chrome/Edge."),
+/* auth */
+girisBaslik:d("Giriş yap","Ulgama gir","Вход","Sign in"),
+girisAlt:d("Etkinlik planlama, arşiv ve analiz sistemi","Çäreleri meýilleşdirmek, arhiw we seljerme ulgamy","Планирование мероприятий, архив и анализ","Event planning, archive and analysis"),
+kadiL:d("Kullanıcı adı","Ulanyjy ady","Имя пользователя","Username"),
+sifreL:d("Şifre","Açar söz","Пароль","Password"),
+kayitLink:d("Yeni kullanıcı kaydı","Täze ulanyjy hasaby","Регистрация","New user registration"),
+unutLink:d("Şifremi unuttum","Açar sözi unutdym","Забыли пароль?","Forgot password"),
+kayitBaslik:d("Yeni kullanıcı kaydı","Täze ulanyjy hasaby","Регистрация","New user registration"),
+kayitAlt:d("Hesabınız yönetici onayından sonra açılır.","Hasabyňyz dolandyryjy tassyklandan soň açylar.","Аккаунт откроется после одобрения администратора.","Your account opens after admin approval."),
+adSoyad:d("Ad Soyad","Ady we familiýasy","Имя и фамилия","Full name"),
+sifre4:d("Şifre (en az 4 karakter)","Açar söz (azyndan 4 belgi)","Пароль (мин. 4 символа)","Password (min 4 characters)"),
+kayitBtn:d("Kayıt ol","Hasaba alyn","Зарегистрироваться","Register"),
+girisDon:d("← Giriş ekranına dön","← Giriş ekranyna gaýt","← Вернуться ко входу","← Back to sign in"),
+unutBaslik:d("Şifremi unuttum","Açar sözi unutdym","Забыли пароль","Forgot password"),
+unutAlt:d("Kullanıcı adınızı yazın; talebiniz yöneticiye düşer, yönetici size yeni şifre belirler.","Ulanyjy adyňyzy ýazyň; talap dolandyryja gider, ol size täze açar söz berer.","Введите имя пользователя; заявка уйдёт администратору, он задаст новый пароль.","Enter your username; the admin will receive your request and set a new password."),
+talepBtn:d("Talep gönder","Talap iber","Отправить заявку","Send request"),
+fGirisHata:d("Kullanıcı adı veya şifre hatalı.","Ulanyjy ady ýa açar söz nädogry.","Неверное имя пользователя или пароль.","Wrong username or password."),
+fBekliyor:d("Hesabınız yönetici onayı bekliyor.","Hasabyňyz dolandyryjynyň tassyklamagyna garaşýar.","Аккаунт ожидает одобрения администратора.","Your account awaits admin approval."),
+fPasif:d("Hesabınız pasif. Yöneticiyle görüşün.","Hasabyňyz passiw. Dolandyryja ýüz tutuň.","Аккаунт отключён. Обратитесь к администратору.","Account disabled. Contact the administrator."),
+fKayitEksik:d("Tüm alanları doldurun (şifre en az 4 karakter).","Ähli meýdanlary dolduryň (açar söz azyndan 4 belgi).","Заполните все поля (пароль мин. 4 символа).","Fill all fields (password min 4 chars)."),
+fKadiVar:d("Bu kullanıcı adı zaten alınmış.","Bu ulanyjy ady eýýäm bar.","Это имя пользователя занято.","This username is taken."),
+fKayitOk:d("Kaydınız alındı. Yönetici onayından sonra giriş yapabilirsiniz.","Hasabyňyz döredildi. Tassyklamadan soň girip bilersiňiz.","Заявка принята. Вход после одобрения администратора.","Registered. You can sign in after approval."),
+fTalepYok:d("Bu kullanıcı adıyla kayıt bulunamadı.","Bu ulanyjy ady bilen hasap tapylmady.","Пользователь не найден.","No account with this username."),
+fTalepOk:d("Talebiniz yöneticiye iletildi. Yönetici size yeni şifre verecek.","Talabyňyz dolandyryja iberildi. Ol size täze açar söz berer.","Заявка отправлена администратору. Он задаст новый пароль.","Request sent. The admin will set a new password."),
+/* özet */
+ozetAlt:d("Etkinlik planlama ve arşiv merkezi","Çäreleri meýilleşdirme we arhiw merkezi","Центр планирования и архива мероприятий","Event planning and archive hub"),
+kBuYil:d("Bu yıl etkinlik","Şu ýyl çäre","Мероприятий в этом году","Events this year"),
+kYaklasan:d("Yaklaşan","Ýakynlaşýan","Предстоящие","Upcoming"),
+kZiyBuYil:d("Bu yıl ziyaretçi","Şu ýyl myhman","Посетителей в этом году","Visitors this year"),
+kOrtPuan:d("Bu yıl ort. puan","Şu ýyl ort. bal","Ср. балл за год","Avg score this year"),
+kArsivde:d("Arşivde toplam","Arhiwde jemi","Всего в архиве","Total in archive"),
+cYaklasan:d("Yaklaşan etkinlikler","Ýakynlaşýan çäreler","Ближайшие мероприятия","Upcoming events"),
+cSon:d("Son tamamlanan etkinlikler","Soňky tamamlanan çäreler","Недавно завершённые","Recently completed"),
+thKalan:d("Kalan","Galan","Осталось","Left"),
+thHazirlik:d("Hazırlık","Taýýarlyk","Подготовка","Prep"),
+bosYaklasan:d("Planlanmış etkinlik yok. Sol menüden yeni etkinlik ekleyin.","Meýilleşdirilen çäre ýok. Çep menýudan täze çäre goşuň.","Нет запланированных мероприятий. Добавьте через меню слева.","No planned events. Add one from the left menu."),
+bosArsivOzet:d("Arşivde henüz tamamlanan etkinlik yok.","Arhiwde entek tamamlanan çäre ýok.","В архиве пока нет завершённых мероприятий.","No completed events in the archive yet."),
+/* planlama */
+planAlt:d("{} etkinlik planlanıyor — hazırlık listeleri ve bütçelerle takip edin","{} çäre meýilleşdirilýär — taýýarlyk sanawlary we býujetler bilen","Планируется мероприятий: {} — чек-листы и бюджеты","{} events in planning — track with checklists and budgets"),
+bosPlanKart:d("Planlanan etkinlik yok.","Meýilleşdirilen çäre ýok.","Нет запланированных мероприятий.","No planned events."),
+/* arşiv */
+arsivAlt:d("{} geçmiş etkinlik — fotoğraf ve değerlendirmeleriyle","{} geçen çäre — suratlar we bahalar bilen","Прошедших мероприятий: {} — с фото и оценками","{} past events — with photos and evaluations"),
+araPh:d("Etkinlik ara","Çäre gözle","Поиск мероприятия","Search events"),
+tumYillar:d("Tüm yıllar","Ähli ýyllar","Все годы","All years"),
+tumTurler:d("Tüm türler","Ähli görnüşler","Все типы","All types"),
+/* form */
+duzEtk:d("Etkinliği düzenle","Çäräni üýtget","Изменить мероприятие","Edit event"),
+yeniEtk2:d("Yeni etkinlik","Täze çäre","Новое мероприятие","New event"),
+formAlt:d("Planlama bilgileri — fotoğraf, hazırlık listesi ve değerlendirme etkinlik sayfasında","Meýilnama maglumatlary — surat, taýýarlyk sanawy we baha çäräniň sahypasynda","Данные планирования — фото, чек-лист и оценка на странице мероприятия","Planning info — photos, checklist and evaluation live on the event page"),
+lAd:d("Etkinlik adı *","Çäräniň ady *","Название мероприятия *","Event name *"),
+lSeri:d("Seri adı (yıllık tekrarlar için, örn. Yaz Festivali)","Seriýa ady (ýyllyk gaýtalamalar üçin)","Название серии (для ежегодных повторов)","Series name (for yearly repeats)"),
+lBas:d("Başlangıç tarihi","Başlanýan senesi","Дата начала","Start date"),
+lBit:d("Bitiş tarihi","Tamamlanýan senesi","Дата окончания","End date"),
+lSor:d("Sorumlu kişi / firma","Jogapkär adam / firma","Ответственное лицо / фирма","Responsible person / company"),
+lPButce:d("Planlanan bütçe","Meýilleşdirilen býujet","Плановый бюджет","Planned budget"),
+lPZiy:d("Beklenen ziyaretçi","Garaşylýan myhman","Ожидаемые посетители","Expected visitors"),
+lAmac:d("Amaç / program notları","Maksat / meýilnama bellikleri","Цель / примечания программы","Goal / program notes"),
+fAdZorunlu:d("Etkinlik adı zorunludur.","Çäräniň ady hökmany.","Название обязательно.","Event name is required."),
+fGuncel:d("Güncellendi.","Täzelendi.","Обновлено.","Updated."),
+fKayit:d("Kaydedildi.","Ýatda saklandy.","Сохранено.","Saved."),
+fSilindi:d("Silindi.","Pozuldy.","Удалено.","Deleted."),
+/* detay */
+seriEt:d("Seri","Seriýa","Серия","Series"),
+listeyeDon:d("← Listeye dön","← Sanawa gaýt","← К списку","← Back to list"),
+kopyalaBtn:d("Gelecek yıl için kopyala","Indiki ýyl üçin göçür","Копировать на след. год","Copy for next year"),
+toplantiBtn:d("Değerlendirme toplantısı","Baha ýygnagy","Совещание по оценке","Evaluation meeting"),
+silOnayEtk:d("Bu etkinlik ve fotoğrafları silinsin mi?","Bu çäre we suratlary pozulsynmy?","Удалить мероприятие и его фото?","Delete this event and its photos?"),
+silYetki:d("Silme yetkisi yalnızca yöneticidedir.","Pozmak hukugy diňe dolandyryjyda.","Удаление доступно только администратору.","Only the administrator can delete."),
+detPButce:d("Planlanan bütçe","Meýil. býujet","Плановый бюджет","Planned budget"),
+detPZiy:d("Beklenen ziyaretçi","Garaşylýan myhman","Ожид. посетители","Expected visitors"),
+dersBaslik:d("Geçen yıldan dersler — {} ({})","Geçen ýyldan sapaklar — {} ({})","Уроки прошлого года — {} ({})","Lessons from last year — {} ({})"),
+dersEksiler:d("Eksiler:","Kemçilikler:","Минусы:","Cons:"),
+dersFikirler:d("Fikirler:","Pikirler:","Идеи:","Ideas:"),
+dersBtn:d("Ders ve fikirleri hazırlık listesine görev olarak ekle","Sapaklary we pikirleri taýýarlyk sanawyna goş","Добавить уроки и идеи в чек-лист","Add lessons & ideas to the checklist"),
+fDers:d("{} madde hazırlık listesine görev olarak eklendi.","{} madda taýýarlyk sanawyna goşuldy.","Пунктов добавлено в чек-лист: {}.","{} items added to the checklist."),
+fDersVar:d("Bu dersler zaten listede.","Bu sapaklar eýýäm sanawda.","Эти уроки уже в списке.","These lessons are already listed."),
+hazBaslik:d("Hazırlık listesi","Taýýarlyk sanawy","Чек-лист подготовки","Preparation checklist"),
+maddePh:d("Yeni madde — Enter ile hızlı ekle","Täze madda — Enter bilen goş","Новый пункт — Enter для добавления","New item — press Enter to add"),
+ekleBtn:d("Ekle","Goş","Добавить","Add"),
+sablonBtn:d("+ Hazır şablonu ekle ({})","+ Taýýar şablony goş ({})","+ Добавить шаблон ({})","+ Add ready template ({})"),
+topluOzet:d("Toplu ekle (her satır bir madde)","Köpçülikleýin goş (her setir bir madda)","Массовое добавление (каждая строка — пункт)","Bulk add (one item per line)"),
+topluBtn:d("Satırları ekle","Setirleri goş","Добавить строки","Add lines"),
+fToplu:d("{} madde eklendi.","{} madda goşuldy.","Добавлено пунктов: {}.","{} items added."),
+fSablon:d("{} şablon maddesi eklendi.","{} şablon maddasy goşuldy.","Добавлено из шаблона: {}.","{} template items added."),
+fSablonVar:d("Şablon maddeleri zaten listede.","Şablon maddalary eýýäm sanawda.","Пункты шаблона уже в списке.","Template items already in the list."),
+fotoBaslik:d("Fotoğraf arşivi ({})","Surat arhiwi ({})","Фотоархив ({})","Photo archive ({})"),
+fotoYukleniyor:d("Fotoğraflar yükleniyor...","Suratlar ýüklenýär...","Фото загружаются...","Loading photos..."),
+fotoBos:d("Henüz fotoğraf yok. Afiş, sahne ve etkinlik fotoğraflarını buraya arşivleyin.","Entek surat ýok. Afişa, sahna we çäre suratlaryny şu ýerde arhiwläň.","Пока нет фото. Архивируйте афиши, сцену и фото мероприятия здесь.","No photos yet. Archive posters, stage and event photos here."),
+fotoEkleBtn:d("+ Fotoğraf ekle","+ Surat goş","+ Добавить фото","+ Add photos"),
+fotoNot:d("Fotoğraflar otomatik küçültülüp kaydedilir.","Suratlar awtomatik kiçeldilip saklanýar.","Фото автоматически сжимаются.","Photos are auto-resized."),
+fotoSilOnay:d("Fotoğraf silinsin mi?","Surat pozulsynmy?","Удалить фото?","Delete this photo?"),
+fFoto:d("Fotoğraf(lar) eklendi.","Surat(lar) goşuldy.","Фото добавлены.","Photo(s) added."),
+degerBekleNot:d("Maliyet, ziyaretçi, puan ve QR anket değerlendirmesi etkinlik tamamlandıktan sonra <b>Analiz</b> sayfasından yapılır.","Çykdajy, myhman, bal we QR anketa bahasy çäre tamamlanandan soň <b>Seljerme</b> sahypasynda berilýär.","Оценка (затраты, посетители, балл, QR-опрос) выполняется после завершения на странице <b>Анализ</b>.","Cost, visitors, score and QR survey are evaluated after completion on the <b>Analysis</b> page."),
+tarihGectiUyari:d("Etkinlik tarihi geçti.","Çäräniň senesi geçdi.","Дата мероприятия прошла.","The event date has passed."),
+tamamlaBtn:d("Etkinliği tamamlandı olarak işaretle","Çäräni tamamlanan diýip belle","Отметить как завершённое","Mark event as completed"),
+fTamamla:d("Etkinlik tamamlandı olarak işaretlendi — değerlendirmesini Analiz sayfasından doldurabilirsiniz.","Çäre tamamlanan diýip bellendi — bahasyny Seljerme sahypasynda dolduryp bilersiňiz.","Отмечено как завершённое — заполните оценку на странице Анализ.","Marked as completed — fill in the evaluation on the Analysis page."),
+fKopya:d("Gelecek yıl kopyası oluşturuldu — checklist taşındı, geçen yılın eksileri görev olarak eklendi. Tarihi ve bütçeyi kontrol edin.","Indiki ýyl nusgasy döredildi — sanaw göçürildi, geçen ýylyň kemçilikleri wezipe hökmünde goşuldy. Senäni we býujeti barlaň.","Копия на след. год создана — чек-лист перенесён, минусы прошлого года стали задачами. Проверьте дату и бюджет.","Next-year copy created — checklist carried over, last year's cons added as tasks. Check date and budget."),
+/* değerlendirme */
+degerBaslik:d("Değerlendirme — gelecek yıllarda karşılaştırmak için doldurun","Baha — geljek ýyllarda deňeşdirmek üçin dolduryň","Оценка — заполните для сравнения по годам","Evaluation — fill in to compare across years"),
+lGM:d("Gerçekleşen maliyet","Hakyky çykdajy","Фактические затраты","Actual cost"),
+lGG:d("Etkinlik geliri (sponsorluk, stand kirası...)","Çäräniň girdejisi (hemaýatkärlik, stend kärendesi...)","Доход (спонсорство, аренда стендов...)","Event revenue (sponsorship, stands...)"),
+lGZ:d("Gerçekleşen ziyaretçi","Hakyky myhman sany","Фактические посетители","Actual visitors"),
+lNG:d("Normal gün AVM girişi (ortalama)","Adaty gün SM girişi (ortaça)","Вход в ТЦ в обычный день (среднее)","Mall entries on a normal day (avg)"),
+lEG:d("Etkinlik günü AVM girişi","Çäre güni SM girişi","Вход в ТЦ в день мероприятия","Mall entries on event day"),
+lAnk:d("QR anket ortalaması (1-5)","QR anketa ortaçasy (1-5)","Средний балл QR-опроса (1-5)","QR survey average (1-5)"),
+lAnkS:d("Anket katılımcı sayısı","Anketa gatnaşyjy sany","Число участников опроса","Survey respondents"),
+lPuan:d("Genel puan","Umumy bal","Общий балл","Overall score"),
+lTekrar:d("Tekrarlansın mı?","Gaýtalansynmy?","Повторить?","Repeat it?"),
+lArti:d("Neler iyi gitti (artılar)","Näme gowy geçdi (artykmaçlyklar)","Что прошло хорошо (плюсы)","What went well (pros)"),
+lEksi:d("Neler geliştirilmeli (eksiler)","Näme gowulandyrmaly (kemçilikler)","Что улучшить (минусы)","What to improve (cons)"),
+lOneri:d("Yeni fikirler / öneriler (gelecek yıla taşınır)","Täze pikirler / teklipler (indiki ýyla geçer)","Новые идеи / предложения (перейдут на след. год)","New ideas / suggestions (carried to next year)"),
+degerKaydetBtn:d("Değerlendirmeyi kaydet","Bahany ýatda sakla","Сохранить оценку","Save evaluation"),
+fDeger:d("Değerlendirme kaydedildi.","Baha ýatda saklandy.","Оценка сохранена.","Evaluation saved."),
+mZiyBG:d("Ziyaretçi (beklenen→gerçek)","Myhman (garaşylýan→hakyky)","Посетители (план→факт)","Visitors (expected→actual)"),
+mZiyBasi:d("Ziyaretçi başı net maliyet","Bir myhmana arassa çykdajy","Чистые затраты на посетителя","Net cost per visitor"),
+mKarsUzun:d("Gelirin maliyeti karşılaması","Girdejiniň çykdajyny ödemegi","Покрытие затрат доходом","Revenue coverage of cost"),
+bankBaslik:d("Öneri bankası — zayıf alanlara göre","Teklip banky — gowşak taraplara görä","Банк идей — по слабым местам","Idea bank — based on weak areas"),
+bankNot:d("Bir fikre tıklayın, yukarıdaki fikir kutusuna eklenir; sonra Kaydet deyin.","Pikire basyň, ýokardaky guta goşular; soň Ýatda sakla.","Нажмите на идею — она добавится в поле выше; затем Сохранить.","Click an idea to add it to the box above; then Save."),
+dBaslik:d("Değerlendirme","Baha bermek","Оценка","Evaluation"),
+etkGit:d("Etkinliğe git","Çärä geç","К мероприятию","Go to event"),
+analizDon:d("← Analiz","← Seljerme","← Анализ","← Analysis"),
+yorumBaslik:d("Otomatik yorum — verilerden çıkan sonuçlar","Awtomatik teswir — maglumatlardan netijeler","Автокомментарий — выводы из данных","Auto insights — conclusions from data"),
+/* analiz */
+aAlt:d("Geçmiş etkinliklerin yıllara ve türlere göre değerlendirmesi","Geçen çäreleriň ýyllar we görnüşler boýunça bahasy","Оценка прошедших мероприятий по годам и типам","Past events by year and type"),
+aBosTamam:d("Henüz tamamlanan etkinlik yok. Etkinlik bitince sayfasındaki \"Etkinliği tamamlandı olarak işaretle\" düğmesini kullanın; değerlendirme buradan yapılır.","Entek tamamlanan çäre ýok. Çäre gutaranda sahypasyndaky \"tamamlanan\" düwmesini ulanyň; baha şu ýerden berilýär.","Пока нет завершённых мероприятий. По окончании нажмите «Отметить как завершённое»; оценка выполняется здесь.","No completed events yet. When one ends, mark it completed on its page; evaluation happens here."),
+bekleyenB:d("Değerlendirme bekleyenler ({})","Baha garaşýanlar ({})","Ожидают оценки ({})","Awaiting evaluation ({})"),
+bekleyenB0:d("Değerlendirme","Baha","Оценка","Evaluation"),
+thEksik:d("Eksik alanlar","Ýetmeýän meýdanlar","Не заполнено","Missing fields"),
+degerlendirBtn:d("Değerlendir","Baha ber","Оценить","Evaluate"),
+tamamDegerlendi:d("Tüm tamamlanan etkinlikler değerlendirildi ✓","Ähli tamamlanan çärelere baha berildi ✓","Все завершённые мероприятия оценены ✓","All completed events evaluated ✓"),
+guncelleSec:d("Bir değerlendirmeyi güncelle:","Bahany täzele:","Обновить оценку:","Update an evaluation:"),
+yKarsBaslik:d("Yıllara göre karşılaştırma","Ýyllar boýunça deňeşdirme","Сравнение по годам","Year-over-year comparison"),
+thOrtTrafik:d("Ort. trafik etkisi","Ort. trafik täsiri","Ср. влияние на трафик","Avg traffic uplift"),
+thOrtPuan:d("Ort. puan","Ort. bal","Ср. балл","Avg score"),
+thOrtAnket:d("Ort. QR anket","Ort. QR anketa","Ср. QR-опрос","Avg QR survey"),
+maliBaslik:d("Yıllara göre mali özet","Ýyllar boýunça maliýe jemi","Финансовая сводка по годам","Financial summary by year"),
+thPlanButce:d("Plan bütçe","Meýil. býujet","План. бюджет","Planned budget"),
+thGercekM:d("Gerçek maliyet","Hakyky çykdajy","Факт. затраты","Actual cost"),
+thZiyBasiNet:d("Ziy. başı net","Bir myhmana arassa","Чист. на посет.","Net per visitor"),
+grfZiy:d("Yıllara göre ziyaretçi","Ýyllar boýunça myhman","Посетители по годам","Visitors by year"),
+grfPuan:d("Yıllara göre ortalama puan","Ýyllar boýunça ortaça bal","Средний балл по годам","Average score by year"),
+turBaslik:d("Türlere göre performans","Görnüşler boýunça netijeler","Эффективность по типам","Performance by type"),
+thOrtZiy:d("Ort. ziyaretçi","Ort. myhman","Ср. посетители","Avg visitors"),
+thOrtNet:d("Ort. net maliyet","Ort. arassa çykdajy","Ср. чистые затраты","Avg net cost"),
+tekrarBaslik:d("Tekrarlanmaya değer etkinlikler","Gaýtalamaga mynasyp çäreler","Стоит повторить","Worth repeating"),
+thKarar:d("Karar","Karar","Решение","Decision"),
+tekrarBos:d("Henüz yüksek puanlı veya \"tekrarlanmalı\" işaretli etkinlik yok.","Entek ýokary bally ýa-da \"gaýtalansyn\" bellikli çäre ýok.","Пока нет мероприятий с высоким баллом или пометкой «повторить».","No high-scored or repeat-flagged events yet."),
+seriGelisim:d("Aynı etkinliğin yıllara göre gelişimi","Şol bir çäräniň ýyllar boýunça ösüşi","Динамика одного мероприятия по годам","Same event across years"),
+thEgilim:d("Eğilim","Ugur","Тренд","Trend"),
+artis:d("▲ artış","▲ ösüş","▲ рост","▲ up"),
+dusus:d("▼ düşüş","▼ peselme","▼ спад","▼ down"),
+ayni:d("= aynı","= deň","= без изм.","= same"),
+seriGecmis:d("Bu etkinliğin geçmiş yılları — {}","Bu çäräniň geçen ýyllary — {}","Прошлые годы этого мероприятия — {}","Past years of this event — {}"),
+/* yıllık plan */
+yAlt:d("Geçmiş etkinliklerden seçin, {} yılının aylık planını oluşturun","Geçen çärelerden saýlaň, {} ýylyň aýlyk meýilnamasyny dörediň","Выберите из прошлых мероприятий и постройте помесячный план {} года","Pick past events and build the {} monthly plan"),
+kEtiketEtk:d("{} etkinlik","{} çäre","мероприятий: {}","{} events"),
+kToplamButce:d("Toplam plan bütçe","Jemi meýil. býujet","Итого план. бюджет","Total planned budget"),
+kBosAy:d("Boş ay","Boş aý","Пустых месяцев","Empty months"),
+ekleAy:d("+ Etkinlik ekle","+ Çäre goş","+ Добавить","+ Add event"),
+gecmisSecB:d("Geçmişten seç — {} planına ekle","Geçmişden saýla — {} meýilnamasyna goş","Выбрать из прошлого — добавить в план {}","Pick from the past — add to {} plan"),
+gecmisAltN:d("Her serinin en güncel değerlendirmesi, puan sırasıyla. Eklenen kopyaya hazırlık listesi, dersler ve fikirler otomatik taşınır.","Her seriýanyň iň soňky bahasy, bal tertibinde. Göçürmä sanaw, sapaklar we pikirler awtomatik geçýär.","Последняя оценка каждой серии, по баллам. В копию автоматически переносятся чек-лист, уроки и идеи.","Latest evaluation per series, sorted by score. Checklist, lessons and ideas carry into the copy."),
+arsivBosY:d("Arşivde tamamlanmış etkinlik yok — önce etkinlikleri tamamlayıp değerlendirin.","Arhiwde tamamlanan çäre ýok — ilki çäreleri tamamlaň we baha beriň.","В архиве нет завершённых мероприятий — сначала завершите и оцените их.","No completed events in the archive — complete and evaluate first."),
+onerBtn:d("Önerilenleri işaretle (puan ≥ 4 veya tekrarlanmalı)","Maslahat berilýänleri belle (bal ≥ 4 ýa gaýtalansyn)","Отметить рекомендованные (балл ≥ 4 или «повторить»)","Select recommended (score ≥ 4 or repeat)"),
+thSonYil:d("Son yıl","Soňky ýyl","Посл. год","Last year"),
+thHedefAy:d("Hedef ay","Maksat aý","Целевой месяц","Target month"),
+plandaEt:d("Planda ✓","Meýilnamada ✓","В плане ✓","Planned ✓"),
+secEkleBtn:d("Seçilenleri {} planına ekle","Saýlananlary {} meýilnamasyna goş","Добавить выбранные в план {}","Add selected to {} plan"),
+fPlanEkle:d("{} etkinlik {} planına eklendi — tarih ve bütçeleri kontrol edin.","{} çäre {} meýilnamasyna goşuldy — senäni we býujeti barlaň.","Добавлено мероприятий в план {1}: {0}. Проверьте даты и бюджеты.","{} events added to the {} plan — check dates and budgets."),
+fSecYok:d("Eklenecek etkinlik seçilmedi.","Goşuljak çäre saýlanmady.","Ничего не выбрано.","No events selected."),
+/* toplantılar */
+tAlt:d("Etkinlik değerlendirme toplantıları — yorumlama soruları verilere göre otomatik hazırlanır","Çäre baha ýygnaklary — sowallar maglumatlara görä awtomatik taýýarlanýar","Совещания по оценке — вопросы формируются автоматически по данным","Evaluation meetings — questions are auto-built from the data"),
+yeniTopB:d("+ Yeni toplantı","+ Täze ýygnak","+ Новое совещание","+ New meeting"),
+tBosL:d("Henüz toplantı yok. Tamamlanan bir etkinlik seçip değerlendirme toplantısı başlatın.","Entek ýygnak ýok. Tamamlanan çäräni saýlap ýygnak başlaň.","Совещаний пока нет. Выберите завершённое мероприятие и начните.","No meetings yet. Pick a completed event and start one."),
+thKatilim:d("Katılımcılar","Gatnaşyjylar","Участники","Participants"),
+thCevap:d("Cevap","Jogap","Ответы","Answers"),
+thKararS:d("Karar","Karar","Решения","Decisions"),
+silOnayTop:d("Bu toplantı silinsin mi?","Bu ýygnak pozulsynmy?","Удалить это совещание?","Delete this meeting?"),
+tYeniBaslik:d("Yeni değerlendirme toplantısı","Täze baha ýygnagy","Новое совещание по оценке","New evaluation meeting"),
+tYeniAlt:d("Tamamlanan bir etkinlik seçin; sorular o etkinliğin verilerine göre hazırlanır","Tamamlanan çäräni saýlaň; sowallar şol çäräniň maglumatlaryna görä taýýarlanar","Выберите завершённое мероприятие; вопросы будут по его данным","Pick a completed event; questions are built from its data"),
+tYeniBos:d("Önce bir etkinliği tamamlayıp değerlendirin (Analiz sayfası).","Ilki çäräni tamamlaň we baha beriň (Seljerme).","Сначала завершите и оцените мероприятие (Анализ).","Complete and evaluate an event first (Analysis)."),
+lEtkSec:d("Etkinlik *","Çäre *","Мероприятие *","Event *"),
+lTTarih:d("Toplantı tarihi","Ýygnagyň senesi","Дата совещания","Meeting date"),
+katPh:d("Mehmet, Reklam Müdürü, Pazarlama...","Mehmet, Mahabat müdiri...","Мехмет, отдел рекламы...","Mehmet, Marketing lead..."),
+baslatBtn:d("Toplantıyı başlat","Ýygnagy başlat","Начать совещание","Start meeting"),
+tDetBaslik:d("Değerlendirme toplantısı","Baha ýygnagy","Совещание по оценке","Evaluation meeting"),
+silinmisEtk:d("(etkinlik silinmiş)","(çäre pozulan)","(мероприятие удалено)","(event deleted)"),
+karneBaslik:d("Etkinlik karnesi","Çäräniň netije kartasy","Итоги мероприятия","Event scorecard"),
+artilarE:d("Artılar:","Artykmaçlyklar:","Плюсы:","Pros:"),
+soruBaslikT:d("Yorumlama soruları — etkinliğin verilerine göre hazırlandı","Seljerme sowallary — çäräniň maglumatlaryna görä","Вопросы для обсуждения — по данным мероприятия","Discussion questions — built from the data"),
+tBilgiBaslik:d("Toplantı bilgileri","Ýygnak maglumatlary","Данные совещания","Meeting info"),
+topKaydetBtn:d("Toplantıyı kaydet","Ýygnagy ýatda sakla","Сохранить совещание","Save meeting"),
+fTop:d("Toplantı kaydedildi.","Ýygnak ýatda saklandy.","Совещание сохранено.","Meeting saved."),
+kararBaslik:d("Kararlar ve aksiyonlar","Kararlar we çäreler","Решения и действия","Decisions & actions"),
+kararBos:d("Henüz karar eklenmedi.","Entek karar goşulmady.","Решений пока нет.","No decisions yet."),
+kararPh:d("Karar / aksiyon","Karar / çäre","Решение / действие","Decision / action"),
+sorumluPh:d("Sorumlu","Jogapkär","Ответственный","Owner"),
+kararAktarBtn:d("Kararları gelecek yılın hazırlık listesine aktar","Kararlary indiki ýylyň sanawyna geçir","Перенести решения в чек-лист след. года","Move decisions to next year's checklist"),
+fKararAktar:d("{} karar '{}' hazırlık listesine eklendi.","{} karar '{}' sanawyna goşuldy.","Решений добавлено в чек-лист «{1}»: {0}.","{} decisions added to '{}' checklist."),
+fKararVar:d("Kararlar zaten aktarılmış.","Kararlar eýýäm geçirilen.","Решения уже перенесены.","Decisions already transferred."),
+fHedefYok:d("Aynı serinin planlanan etkinliği bulunamadı — önce etkinlik sayfasında 'Gelecek yıl için kopyala' yapın.","Şol seriýanyň meýilleşdirilen çäresi tapylmady — ilki 'Indiki ýyl üçin göçür' ediň.","Запланированное мероприятие этой серии не найдено — сначала «Копировать на след. год».","No planned event of this series — use 'Copy for next year' first."),
+/* kontrol */
+konAlt:d("Kullanıcı onayları, şifreler ve tüm işlem kaydı","Ulanyjy tassyklamalary, açar sözler we ähli amallar","Одобрение пользователей, пароли и журнал действий","User approvals, passwords and the full activity log"),
+kulBaslik:d("Kullanıcılar","Ulanyjylar","Пользователи","Users"),
+thKadi:d("Kullanıcı adı","Ulanyjy ady","Имя пользователя","Username"),
+thRol:d("Rol","Rol","Роль","Role"),
+stBekliyor:d("Onay bekliyor","Tassyklama garaşýar","Ожидает одобрения","Pending approval"),
+stAktif:d("Aktif","Işjeň","Активен","Active"),
+stPasif:d("Pasif","Passiw","Отключён","Disabled"),
+talepBadge:d("Şifre talebi","Açar söz talaby","Запрос пароля","Password request"),
+onayla:d("Onayla","Tassykla","Одобрить","Approve"),
+pasifYap:d("Pasifleştir","Passiw et","Отключить","Deactivate"),
+aktifYap:d("Aktifleştir","Işjeňleşdir","Активировать","Activate"),
+yonYap:d("Yönetici yap","Dolandyryjy et","Сделать админом","Make admin"),
+kulYap:d("Kullanıcı yap","Ulanyjy et","Сделать пользователем","Make user"),
+yeniSifrePh:d("Yeni şifre","Täze açar söz","Новый пароль","New password"),
+sifreBelirle:d("Şifre belirle","Açar söz belle","Задать пароль","Set password"),
+siz:d("(siz)","(siz)","(вы)","(you)"),
+logBaslik:d("İşlem kaydı — kim, ne zaman, ne yaptı (son 300)","Amallar ýazgysy — kim, haçan, näme etdi (soňky 300)","Журнал — кто, когда, что сделал (последние 300)","Activity log — who did what, when (last 300)"),
+thZaman:d("Zaman","Wagt","Время","Time"),
+thKul:d("Kullanıcı","Ulanyjy","Пользователь","User"),
+thModul:d("Modül","Modul","Модуль","Module"),
+thDetayL:d("Detay","Jikme-jik","Детали","Detail"),
+logBos:d("Henüz kayıt yok.","Entek ýazgy ýok.","Записей пока нет.","No records yet."),
+fOnay:d("{} onaylandı, artık giriş yapabilir.","{} tassyklandy, indi girip biler.","{} одобрен(а), вход разрешён.","{} approved and can now sign in."),
+fPasifOk:d("{} pasifleştirildi.","{} passiw edildi.","{} отключён(а).","{} deactivated."),
+fAktifOk:d("{} aktifleştirildi.","{} işjeňleşdirildi.","{} активирован(а).","{} activated."),
+fRol:d("Rol güncellendi.","Rol täzelendi.","Роль обновлена.","Role updated."),
+fSifreKisa:d("Yeni şifre en az 4 karakter olmalı.","Täze açar söz azyndan 4 belgi bolmaly.","Пароль — минимум 4 символа.","Password must be at least 4 characters."),
+fSifreOk:d("{} için yeni şifre belirlendi.","{} üçin täze açar söz bellendi.","Новый пароль для {} задан.","New password set for {}."),
+fKendi:d("Kendi hesabınızı pasifleştiremezsiniz.","Öz hasabyňyzy passiw edip bilmersiňiz.","Нельзя отключить собственный аккаунт.","You cannot deactivate your own account."),
+fKendiRol:d("Kendi rolünüzü değiştiremezsiniz.","Öz roluňyzy üýtgedip bilmersiňiz.","Нельзя менять собственную роль.","You cannot change your own role."),
+fYedek:d("Yedek geri yüklendi.","Ätiýaçlyk dikeldildi.","Копия восстановлена.","Backup restored."),
+fYedekHata:d("Hatalı yedek dosyası.","Nädogry ätiýaçlyk faýly.","Неверный файл копии.","Invalid backup file."),
+pfxGelistir:d("Geliştir: ","Gowulandyr: ","Улучшить: ","Improve: "),
+pfxFikir:d("Fikir: ","Pikir: ","Идея: ","Idea: "),
+pfxKarar:d("Karar: ","Karar: ","Решение: ","Decision: "),
+/* toplantı soruları */
+s_iyi:d("En iyi işleyen 3 şey neydi? (aynen tekrarlanacaklar)","Iň gowy işlän 3 zat näme? (edil gaýtalanjaklar)","Какие 3 вещи сработали лучше всего? (повторить как есть)","What 3 things worked best? (repeat as-is)"),
+s_degistir:d("Bir daha yapsaydık ilk neyi değiştirirdik?","Ýene etsek, ilki nämäni üýtgederdik?","Что бы мы изменили в первую очередь?","If we did it again, what would we change first?"),
+s_uplift_hi:d("Trafik etkisi +{}% — bu kalabalık mağaza cirolarına yansıdı mı? En çok hangi kiracılar kazandı?","Trafik täsiri +{}% — bu köplük dükan girdejilerine ýansydymy? Iň köp haýsy kärendeçiler utdy?","Трафик +{}% — отразилось ли это на выручке магазинов? Кто из арендаторов выиграл больше всех?","Traffic +{}% — did it show in store sales? Which tenants gained most?"),
+s_uplift_lo:d("Trafik etkisi düşük ({}%) — duyuru kanalları (sosyal medya, afiş, radyo) yeterli miydi? Hangisi eksik kaldı?","Trafik täsiri pes ({}%) — habar kanallar ýeterlikmidi? Haýsysy ýetmedi?","Влияние на трафик низкое ({}%) — хватило ли каналов анонса? Какой канал провалился?","Traffic uplift low ({}%) — were announcement channels enough? Which fell short?"),
+s_gap1:d("Ekip puanı ({}) ziyaretçi anketinden ({}) belirgin yüksek — ziyaretçilerin yaşadığı ama bizim görmediğimiz sorun ne?","Topar baly ({}) myhman anketasyndan ({}) ýokary — biziň görmedik meselämiz näme?","Балл команды ({}) заметно выше опроса ({}) — какую проблему посетителей мы не увидели?","Team score ({}) is well above the survey ({}) — what visitor problem did we miss?"),
+s_gap2:d("Ziyaretçiler bizden daha memnun ({} / {}) — bu başarıyı hangi unsur sağladı, nasıl standart hâle getiririz?","Myhmanlar bizden has razy ({} / {}) — bu üstünligi näme berdi, ony nädip standart ederis?","Посетители довольнее нас ({} / {}) — что дало успех и как это закрепить?","Visitors happier than us ({} / {}) — what drove it, and how do we standardize it?"),
+s_anket_yok:d("Ziyaretçi anketi toplanmadı — gelecek etkinlikte QR anketi kim, nerede, nasıl toplayacak?","Myhman anketasy ýygnalmady — indiki çärede QR anketany kim, nirede, nädip ýygnar?","QR-опрос не собран — кто, где и как соберёт его в следующий раз?","No visitor survey — who, where and how will collect the QR survey next time?"),
+s_butce_asim:d("Bütçe +%{} aşıldı — hangi kalemler şişti, gelecek yıl nasıl önlenir?","Býujet +%{} aşyldy — haýsy çykdajylar ösdi, indiki ýyl nädip öňüni alarys?","Бюджет превышен на {}% — какие статьи раздулись и как это предотвратить?","Budget overran by {}% — which items ballooned, how to prevent it?"),
+s_butce_alt:d("Bütçenin %{} altında kalındı — kısıntılar kaliteyi veya memnuniyeti etkiledi mi?","Býujetden %{} az sarp edildi — tygşytlylyk hile täsir etdimi?","Потрачено на {}% меньше бюджета — не пострадало ли качество?","Spent {}% under budget — did the savings hurt quality or satisfaction?"),
+s_gelir_yok:d("Etkinlikten gelir elde edilmedi — sponsorluk veya stand kirası için hangi firmalarla görüşülebilir?","Çäreden girdeji bolmady — hemaýatkärlik ýa stend üçin haýsy firmalar bilen gürleşip bolar?","Дохода не было — с какими фирмами обсудить спонсорство или аренду стендов?","No revenue — which companies could we approach for sponsorship or stands?"),
+s_gelir_dusuk:d("Gelir maliyetin %{}'ini karşıladı — gelecek yıl karşılama hedefi kaç olmalı, ek gelir nereden gelir?","Girdeji çykdajynyň %{} ödedi — indiki ýyl maksat näçe bolmaly, goşmaça girdeji nireden?","Доход покрыл {}% затрат — какова цель на след. год и откуда доп. доход?","Revenue covered {}% of cost — next year's target, and where does extra revenue come from?"),
+s_kendini:d("Etkinlik kendini finanse etti (%{}) — bu gelir modeli başka hangi etkinliklere taşınabilir?","Çäre özüni ödedi (%{}) — bu girdeji modeli başga haýsy çärelere geçirilip bilner?","Мероприятие окупилось ({}%) — на какие ещё события перенести эту модель?","Self-funded ({}%) — which other events can adopt this revenue model?"),
+s_katilim_az:d("Katılım beklenenin %{} altında — tarih/saat mi, duyuru mu, içerik mi? Kanıtımız ne?","Gatnaşyk garaşylýandan %{} az — sene/sagatmy, habarmy, mazmunmy? Subutnama näme?","Явка на {}% ниже плана — дата/время, анонс или контент? Какие доказательства?","Attendance {}% below plan — date/time, promo or content? What's the evidence?"),
+s_katilim_cok:d("Katılım beklentiyi +%{} aştı — güvenlik ve kapasite zorlandı mı? Gelecek yıl kapasite planı ne?","Gatnaşyk garaşylýandan +%{} köp — howpsuzlyk kynçylyk çekdimi? Indiki ýyl kuwwat meýilnamasy?","Явка выше плана на {}% — справились ли охрана и площадка? План по вместимости?","Attendance beat plan by {}% — did security/capacity strain? Next year's capacity plan?"),
+s_yoy_dus:d("{} yılına göre ziyaretçi %{} azaldı — ne değişti (tarih, içerik, hava, rakip etkinlik)?","{} ýyla görä myhman %{} azaldy — näme üýtgedi (sene, mazmun, howa, bäsdeş)?","Посетителей меньше на {1}% чем в {0} — что изменилось (дата, контент, погода, конкуренты)?","Visitors down {1}% vs {0} — what changed (date, content, weather, rival events)?"),
+s_yoy_art:d("{} yılına göre ziyaretçi +%{} arttı — artışı hangi yenilik sağladı, nasıl korunur?","{} ýyla görä myhman +%{} artdy — ösüşi näme berdi, nädip saklarys?","Посетителей больше на {1}% чем в {0} — что дало рост и как его удержать?","Visitors up {1}% vs {0} — what drove the growth, how do we keep it?"),
+s_kok:d("Eksiler notundaki sorunların kök nedeni ne? (belirtiyi değil sebebi yazın)","Kemçilikleriň düýp sebäbi näme? (alamaty däl, sebäbi ýazyň)","В чём коренная причина минусов? (пишите причину, не симптом)","What's the root cause behind the cons? (cause, not symptom)"),
+s_fikir:d("Not edilen yeni fikirlerden hangileri gelecek yıl uygulanacak? Bütçesi ve sorumlusu kim?","Bellik edilen pikirleriň haýsylary indiki ýyl ediler? Býujeti we jogapkäri kim?","Какие из записанных идей внедрим в след. году? Бюджет и ответственный?","Which noted ideas will we implement next year? Budget and owner?"),
+s_hedef:d("Gelecek yıl için tek cümlelik ölçülebilir hedef? (ör. ziyaretçi +%20, gelir karşılama %60)","Indiki ýyl üçin bir sözlemlik ölçelip bolýan maksat? (mysal: myhman +%20)","Одна измеримая цель на след. год? (напр. посетители +20%)","One measurable goal for next year? (e.g. visitors +20%)"),
+/* otomatik yorum */
+v_guclu:d("Genel görünüm: Güçlü etkinlik","Umumy netije: Güýçli çäre","Общий вывод: сильное мероприятие","Overall: strong event"),
+v_gelistir:d("Genel görünüm: İyileştirme alanları öne çıkıyor","Umumy netije: Gowulandyrmaly taraplar bar","Общий вывод: есть зоны для улучшения","Overall: improvement areas stand out"),
+v_dengeli:d("Genel görünüm: Dengeli — belirli alanlarda fırsat var","Umumy netije: Deňagramly — käbir ugurlarda mümkinçilik bar","Общий вывод: сбалансировано — есть возможности","Overall: balanced — opportunities in places"),
+y_traf_hi:d("AVM trafiğini güçlü şekilde artırdı (+{}%).","SM trafigini güýçli artdyrdy (+{}%).","Сильно поднял(о) трафик ТЦ (+{}%).","Strongly boosted mall traffic (+{}%)."),
+y_traf_orta:d("Trafiğe olumlu katkı sağladı (+{}%).","Trafige oňyn goşant goşdy (+{}%).","Положительно повлиял(о) на трафик (+{}%).","Positive traffic contribution (+{}%)."),
+y_traf_dusuk:d("Trafiğe etkisi sınırlı kaldı ({}%) — duyuru gücü artırılmalı.","Trafige täsiri çäkli boldy ({}%) — habar güýji artdyrylmaly.","Влияние на трафик слабое ({}%) — усилить анонсирование.","Limited traffic impact ({}%) — strengthen promotion."),
+y_anket_hi:d("Ziyaretçi memnuniyeti çok yüksek ({}/5) — format korunmalı.","Myhman razyçylygy örän ýokary ({}/5) — format saklanmaly.","Очень высокая удовлетворённость ({}/5) — сохранить формат.","Visitor satisfaction very high ({}/5) — keep the format."),
+y_anket_lo:d("Ziyaretçi memnuniyeti düşük ({}/5) — içerik ve konfor gözden geçirilmeli.","Myhman razyçylygy pes ({}/5) — mazmun we amatlylyk gözden geçirilmeli.","Низкая удовлетворённость ({}/5) — пересмотреть контент и комфорт.","Low satisfaction ({}/5) — review content and comfort."),
+y_gap1:d("Ekip, ziyaretçiden daha memnun — sahada görünmeyen sorunlar araştırılmalı.","Topar myhmandan has razy — meýdanda görünmeýän meseleler öwrenilmeli.","Команда довольнее гостей — найти невидимые нам проблемы.","Team happier than visitors — investigate unseen issues."),
+y_gap2:d("Ziyaretçi ekipten daha memnun — başarı unsurları belgelenip standartlaştırılmalı.","Myhman topardan has razy — üstünlik faktorlaryny ýazga alyp standartlaşdyrmaly.","Гости довольнее команды — задокументировать и закрепить факторы успеха.","Visitors happier than team — document and standardize the success factors."),
+y_gelir_yok:d("Hiç gelir elde edilmedi — sponsorluk ve stand kirası değerlendirilmeli.","Hiç girdeji bolmady — hemaýatkärlik we stend kärendesi öwrenilmeli.","Дохода не было — рассмотреть спонсорство и аренду стендов.","No revenue at all — consider sponsorship and stand rentals."),
+y_kendini:d("Etkinlik kendini finanse etti (%{} karşılama).","Çäre özüni ödedi (%{} ödew).","Мероприятие окупилось (покрытие {}%).","The event self-funded ({}% coverage)."),
+y_gelir_dusuk:d("Gelir maliyetin yalnızca %{}'ini karşıladı — gelir modeli güçlendirilmeli.","Girdeji çykdajynyň diňe %{} ödedi — girdeji modeli güýçlendirilmeli.","Доход покрыл лишь {}% затрат — усилить модель дохода.","Revenue covered only {}% of cost — strengthen the revenue model."),
+y_karsilama:d("Gelir maliyetin %{}'ini karşıladı.","Girdeji çykdajynyň %{} ödedi.","Доход покрыл {}% затрат.","Revenue covered {}% of the cost."),
+y_kat_hi:d("Katılım beklentiyi %{} aştı.","Gatnaşyk garaşylýandan %{} ýokary boldy.","Явка превысила план на {}%.","Attendance beat the plan by {}%."),
+y_kat_lo:d("Katılım beklenenin %{} altında kaldı.","Gatnaşyk garaşylýandan %{} az boldy.","Явка на {}% ниже плана.","Attendance was {}% below plan."),
+y_butce:d("Bütçe +%{} aşıldı — kalem bazlı takip önerilir.","Býujet +%{} aşyldy — çykdajylary madda boýunça yzarlamaly.","Бюджет превышен на {}% — вести постатейный учёт.","Budget overran by {}% — track line items."),
+y_yoy_art:d("{} yılına göre ziyaretçi +%{} arttı.","{} ýyla görä myhman +%{} artdy.","Рост посетителей к {0}: +{1}%.","Visitors up {1}% vs {0}."),
+y_yoy_dus:d("{} yılına göre ziyaretçi %{} azaldı — nedenleri toplantıda ele alınmalı.","{} ýyla görä myhman %{} azaldy — sebäpleri ýygnakda seredilmeli.","Спад посетителей к {0}: {1}% — разобрать причины на совещании.","Visitors down {1}% vs {0} — discuss causes in the meeting."),
+y_gelenek:d("Gelenekselleştirilmeye aday — yıllık takvime sabitlenmeli.","Ýyllyk däbe öwrülmäge mynasyp — senenama berkidilmeli.","Кандидат в ежегодную традицию — закрепить в календаре.","A tradition candidate — pin it to the annual calendar."),
+/* öneri bankası */
+b_mem:d("Memnuniyeti yükseltmek için","Razyçylygy ýokarlandyrmak üçin","Чтобы повысить удовлетворённость","To raise satisfaction"),
+bMem1:d("Oturma ve gölge/serinleme alanı ekleyin","Oturmak we kölege/salkynlyk zolagyny goşuň","Добавьте зоны отдыха и тени/прохлады","Add seating and shade/cooling areas"),
+bMem2:d("Sıra yönetimi: numaratör veya ek personel","Nobat dolandyryşy: nomerator ýa goşmaça işgär","Управление очередью: номерки или доп. персонал","Queue management: numbers or extra staff"),
+bMem3:d("Bekleyenler için mini aktivite köşesi","Garaşýanlar üçin kiçi aktiwlik burçy","Мини-активности для ожидающих","Mini activity corner for those waiting"),
+bMem4:d("Ses seviyesi ve görüş açısını önceden test edin","Ses derejesini we görnüş burçuny öňünden barlaň","Заранее проверьте звук и обзор сцены","Test sound levels and sightlines in advance"),
+b_gel:d("Gelir ve sponsorluk için","Girdeji we hemaýatkärlik üçin","Для дохода и спонсорства","For revenue & sponsorship"),
+bGel1:d("3 seviyeli sponsor paketi hazırlayın (ana/destek/ürün)","3 derejeli hemaýatkär paketi taýýarlaň","Подготовьте 3 уровня спонсорских пакетов","Prepare a 3-tier sponsor package"),
+bGel2:d("Etkinlik alanında 5-10 kiralık stand planlayın","Çäre meýdanynda 5-10 kärende stend meýilleşdiriň","Запланируйте 5–10 арендных стендов","Plan 5–10 rentable stands in the area"),
+bGel3:d("Yerel markalarla barter: ürün karşılığı görünürlük","Ýerli markalar bilen barter: haryt garşylygyna görnüklilik","Бартер с местными брендами: товар за видимость","Barter with local brands: product for visibility"),
+bGel4:d("Ücretli mini deneyim: atölye, fotoğraf köşesi","Tölegli kiçi tejribe: ussahana, surat burçy","Платный мини-опыт: мастер-класс, фотозона","Paid mini experience: workshop, photo corner"),
+b_traf:d("Trafiği artırmak için","Trafigi artdyrmak üçin","Чтобы увеличить трафик","To increase traffic"),
+bTraf1:d("2 hafta önce sosyal medya geri sayımı başlatın","2 hepde öň sosial mediýada sanawy başladyň","За 2 недели запустите обратный отсчёт в соцсетях","Start a social countdown 2 weeks ahead"),
+bTraf2:d("Okul ve kurumlarla davet işbirliği yapın","Mekdepler we edaralar bilen çakylyk hyzmatdaşlygy","Пригласите школы и организации","Partner with schools and institutions"),
+bTraf3:d("AVM içi anons + asansör ve merdiven afişleri","SM içi anons + lift we basgançak afişalary","Анонсы в ТЦ + афиши у лифтов и лестниц","In-mall announcements + lift/stair posters"),
+bTraf4:d("Kapı önü karşılama: maskot, canlı müzik","Girelgede garşylama: maskot, janly saz","Встреча у входа: маскот, живая музыка","Entrance welcome: mascot, live music"),
+b_kat:d("Katılımı artırmak için","Gatnaşygy artdyrmak üçin","Чтобы повысить явку","To raise attendance"),
+bKat1:d("Tarih/saat çakışmalarını kontrol edin (maç, bayram, sınav)","Sene/sagat çaknyşyklaryny barlaň (oýun, baýram)","Проверьте пересечения дат (матчи, праздники)","Check date/time clashes (matches, holidays)"),
+bKat2:d("Ön kayıt + çekilişle katılım sözü toplayın","Öňünden hasaba alyş + bije bilen söz alyň","Предзапись + розыгрыш за участие","Pre-registration + prize draw commitments"),
+bKat3:d("Kiracı mağazalarda duyuru ve indirim bağlantısı","Kärendeçi dükanlarda bildiriş we arzanladyş baglanyşygy","Анонсы и скидки через магазины-арендаторы","Tenant-store promos linked to the event"),
+b_kap:d("Kapasiteyi büyütmek için","Kuwwaty ulaltmak üçin","Чтобы расширить вместимость","To grow capacity"),
+bKap1:d("Güvenlik ve kalabalık planını büyütün","Howpsuzlyk we köplük meýilnamasyny ulaldyň","Усильте план безопасности и толпы","Scale up the security & crowd plan"),
+bKap2:d("İkinci seans veya ek gün planlayın","Ikinji seans ýa goşmaça gün meýilleşdiriň","Добавьте второй сеанс или день","Plan a second session or day"),
+bKap3:d("Ek otopark ve yönlendirme tabelası","Goşmaça awtoduralga we ugrukdyryjy tablo","Доп. парковка и навигация","Extra parking and signage"),
+b_but:d("Bütçeyi kontrol etmek için","Býujeti gözegçilikde saklamak üçin","Чтобы контролировать бюджет","To control the budget"),
+bBut1:d("Kalem bazlı bütçe tablosu tutun","Madda boýunça býujet tablosyny ýörediň","Ведите постатейную таблицу бюджета","Keep a line-item budget sheet"),
+bBut2:d("Her kalemde en az 3 tedarikçi teklifi alın","Her madda azyndan 3 üpjünçi teklibini alyň","Минимум 3 предложения поставщиков на статью","Get at least 3 supplier quotes per item"),
+bBut3:d("Erken rezervasyonla indirim için takvimi öne çekin","Ir bellemek arzanladyşy üçin senenamany öňe süýşüriň","Сдвиньте график ради скидок за раннее бронирование","Book early for discounts — move the timeline up"),
+b_buy:d("Etkinliği büyütme fikirleri","Çäräni ulaltmak pikirleri","Идеи для роста мероприятия","Ideas to grow the event"),
+bBuy1:d("Yıllık seri yapın, tarihi sabitleyin","Ýyllyk seriýa ediň, senesini berkidiň","Сделайте ежегодной серией с фикс. датой","Make it an annual series, fix the date"),
+bBuy2:d("QR fotoğraf duvarı ile paylaşım artırın","QR surat diwary bilen paýlaşygy artdyryň","QR-фотостена для роста репостов","QR photo wall to boost sharing"),
+bBuy3:d("Kiracı katılımı: mağaza içi mini etkinlikler","Kärendeçi gatnaşygy: dükan içi kiçi çäreler","Вовлекайте арендаторов: мини-события в магазинах","Tenant participation: in-store mini events"),
+bBuy4:d("Basın ve yerel TV daveti","Metbugat we ýerli TW çakylygy","Пригласите прессу и местное ТВ","Invite press and local TV"),
+/* hazırlık şablonları */
+sabO1:d("Yönetim ve bütçe onayı","Ýolbaşçylyk we býujet tassyknamasy","Утверждение руководством и бюджета","Management & budget approval"),
+sabO2:d("Tarih ve yer rezervasyonu","Sene we ýer belligi","Бронирование даты и места","Date & venue reservation"),
+sabO3:d("Gerekli izinler (belediye/itfaiye)","Gerekli rugsatlar (häkimlik/ýangyn)","Разрешения (мэрия/пожарные)","Required permits (municipality/fire)"),
+sabO4:d("Güvenlik ve kalabalık planı","Howpsuzlyk we köplük meýilnamasy","План безопасности и толпы","Security & crowd plan"),
+sabO5:d("Temizlik ekibi bilgilendirme","Arassaçylyk toparyna habar","Информирование клининга","Brief the cleaning team"),
+sabO6:d("Afiş ve AVM içi duyurular","Afişa we SM içi bildirişler","Афиши и анонсы в ТЦ","Posters & in-mall announcements"),
+sabO7:d("Sosyal medya duyuru planı","Sosial mediýa meýilnamasy","План анонсов в соцсетях","Social media plan"),
+sabO8:d("Fotoğraf/video çekim görevlisi","Surat/wideo jogapkäri","Фото/видео-ответственный","Photo/video person"),
+sabO9:d("Elektrik ve teknik altyapı kontrolü","Elektrik we tehniki barlag","Проверка электрики и техники","Power & technical check"),
+sabO10:d("Etkinlik sonrası toplama planı","Çäreden soň ýygnamak meýilnamasy","План уборки после события","Post-event teardown plan"),
+sabK1:d("Sanatçı/grup sözleşmesi","Aýdymçy/topar şertnamasy","Договор с артистом/группой","Artist/band contract"),
+sabK2:d("Sahne, ses ve ışık kiralama","Sahna, ses we yşyk kärendesi","Аренда сцены, звука и света","Stage, sound & light rental"),
+sabK3:d("Ses provası ve desibel kontrolü","Ses synagy we desibel barlagy","Саундчек и контроль децибел","Soundcheck & decibel control"),
+sabK4:d("Backstage/soyunma alanı","Sahna arkasy/eşik çalyşma","Бэкстейдж/гримёрка","Backstage/dressing area"),
+sabK5:d("Bariyer ve sahne önü düzeni","Barýer we sahna öňi tertibi","Барьеры и зона у сцены","Barriers & front-of-stage layout"),
+sabC1:d("Animatör/eğitmen anlaşması","Animator/mugallym şertnamasy","Договор с аниматором/педагогом","Animator/instructor agreement"),
+sabC2:d("Malzeme ve hediyelik listesi","Serişde we sowgat sanawy","Список материалов и подарков","Materials & giveaway list"),
+sabC3:d("Veli bilgilendirme metni","Ene-ata üçin maglumat teksti","Памятка для родителей","Parent info text"),
+sabC4:d("Hijyen ve yaş grubu güvenliği","Arassaçylyk we ýaş topary howpsuzlygy","Гигиена и безопасность по возрасту","Hygiene & age-group safety"),
+sabC5:d("Kayıt masası ve isim etiketleri","Hasaba alyş stoly we at ýazgylary","Стол регистрации и бейджи","Registration desk & name tags"),
+sabP1:d("Kampanya mekaniği ve koşul metni","Aksiýa mehanikasy we şert teksti","Механика акции и условия","Campaign mechanics & terms"),
+sabP2:d("Kiracı katılım listesi","Kärendeçi gatnaşyjy sanawy","Список участвующих арендаторов","Participating tenant list"),
+sabP3:d("Çekiliş izni (gerekliyse)","Bije rugsady (gerek bolsa)","Разрешение на розыгрыш (если нужно)","Raffle permit (if needed)"),
+sabP4:d("Fiş/kasa kontrol süreci","Çek/kassa barlag prosesi","Контроль чеков/касс","Receipt/POS control process"),
+sabP5:d("Ödül temini ve teslim planı","Baýrak üpjünçiligi we gowşuryş","Закупка и выдача призов","Prize sourcing & handover plan"),
+sabF1:d("Stand yerleşim planı","Stend ýerleşiş meýilnamasy","Схема расстановки стендов","Stand layout plan"),
+sabF2:d("Katılımcı firma sözleşmeleri","Gatnaşyjy firma şertnamalary","Договоры с участниками","Participant company contracts"),
+sabF3:d("Sahne programı ve akış saatleri","Sahna programmasy we wagt tertibi","Программа сцены и тайминг","Stage program & run of show"),
+sabF4:d("Yiyecek-içecek izinleri","Iýmit-içgi rugsatlary","Разрешения на еду и напитки","Food & beverage permits"),
+sabF5:d("Jeneratör/ek elektrik ihtiyacı","Generator/goşmaça elektrik","Генератор/доп. электричество","Generator/extra power needs"),
+sabG1:d("Eser/ürün listesi ve sigorta","Eser/haryt sanawy we ätiýaçlandyryş","Список работ и страховка","Artwork/item list & insurance"),
+sabG2:d("Pano, kaide ve aydınlatma","Pano, postament we yşyklandyryş","Стенды, постаменты и свет","Panels, plinths & lighting"),
+sabG3:d("Açılış daveti listesi","Açylyş çakylyk sanawy","Список приглашённых на открытие","Opening invite list"),
+sabG4:d("Eser güvenliği","Eserleriň goragy","Охрана экспонатов","Exhibit security"),
+sabY1:d("Katılım şartnamesi","Gatnaşyk düzgünnamasy","Регламент участия","Participation rules"),
+sabY2:d("Jüri ve değerlendirme kriterleri","Emin agzalary we ölçegler","Жюри и критерии оценки","Jury & judging criteria"),
+sabY3:d("Başvuru formu ve QR","Arza formasy we QR","Форма заявки и QR","Application form & QR"),
+sabY4:d("Ödüller ve kupalar","Baýraklar we kuboklar","Призы и кубки","Prizes & trophies"),
+sabY5:d("Sonuç duyuru planı","Netije yglan meýilnamasy","План объявления итогов","Results announcement plan"),
+sabT1:d("Ekip sözleşmesi ve prova saati","Topar şertnamasy we synag wagty","Договор с труппой и репетиция","Cast contract & rehearsal time"),
+sabT2:d("Sahne ve oturma düzeni","Sahna we oturma tertibi","Сцена и рассадка","Stage & seating layout"),
+sabT3:d("Ses/ışık senaryosu","Ses/yşyk ssenariýasy","Сценарий звука/света","Sound/light cue script"),
+sabT4:d("Kontenjan planı","Orun sany meýilnamasy","План по количеству мест","Capacity plan")
+};
+function dilSec(k){if(DILLER.indexOf(k)<0)return;
+ dil=k;dYaz(DILK,k);
+ if(BEN){BEN.dil=k;koy("kul",BEN);}
+ ciz();}
+function dilBar(cls){var h='<div class="'+cls+'">';
+ DILLER.forEach(function(k){h+='<a class="'+(dil===k?"on":"")+'" onclick="dilSec(\''+k+'\')">'+k.toUpperCase()+'</a>';});
+ return h+'</div>';}
+
+/* ================ SABİTLER ================ */
+var DURUMLAR=["planlandi","devam","tamamlandi","iptal"];
+var DRENK={planlandi:"mavi",devam:"sari",tamamlandi:"yesil",iptal:"kirmizi"};
+function durumAd(k){return t("d_"+k);}
+var TEKRARLAR=["evet","belki","hayir"];
+var TURLER=["konser","cocuk","kampanya","festival","sergi","yarisma","tiyatro","diger"];
+function turAd(k){return T["tur_"+k]?t("tur_"+k):esc(k||"");}
+var ESKI_TUR={"Konser":"konser","Çocuk etkinliği":"cocuk","Kampanya":"kampanya","Festival":"festival","Sergi":"sergi","Yarışma":"yarisma","Tiyatro/Gösteri":"tiyatro","Diğer":"diger"};
+var ORTAK_SAB=["sabO1","sabO2","sabO3","sabO4","sabO5","sabO6","sabO7","sabO8","sabO9","sabO10"];
+var TUR_SAB={konser:["sabK1","sabK2","sabK3","sabK4","sabK5"],
+ cocuk:["sabC1","sabC2","sabC3","sabC4","sabC5"],
+ kampanya:["sabP1","sabP2","sabP3","sabP4","sabP5"],
+ festival:["sabF1","sabF2","sabF3","sabF4","sabF5"],
+ sergi:["sabG1","sabG2","sabG3","sabG4"],
+ yarisma:["sabY1","sabY2","sabY3","sabY4","sabY5"],
+ tiyatro:["sabT1","sabT2","sabT3","sabT4"],diger:[]};
+
+/* ================ YARDIMCI ================ */
+function esc(s){return (s==null?"":String(s)).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function hash(t2){var h1=0xdeadbeef,h2=0x41c6ce57,i,ch;
+ for(i=0;i<t2.length;i++){ch=t2.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}
+ h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);
+ h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+ return (h2>>>0).toString(16)+(h1>>>0).toString(16);}
+function simdi(){var n=new Date();function p(x){return (x<10?"0":"")+x;}
+ return n.getFullYear()+"-"+p(n.getMonth()+1)+"-"+p(n.getDate())+" "+p(n.getHours())+":"+p(n.getMinutes());}
+function bugun(){return simdi().slice(0,10);}
+function tarih(v){if(!v)return "—";var p=v.slice(0,10).split("-");return p.length===3?p[2]+"."+p[1]+"."+p[0]:v;}
+function gunFark(v){if(!v)return null;var p=v.slice(0,10).split("-"),b=bugun().split("-");
+ return Math.round((Date.UTC(+p[0],+p[1]-1,+p[2])-Date.UTC(+b[0],+b[1]-1,+b[2]))/86400000);}
+function para(v){if(v==null||v==="")return "—";var n=Number(v);if(isNaN(n))return esc(v);
+ var s=n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,".").replace(/\.(\d\d)$/,",$1");
+ return s.slice(-3)===",00"?s.slice(0,-3):s;}
+function sayi(v){v=(v==null?"":String(v)).replace(",",".").trim();if(v==="")return null;var n=parseFloat(v);return isNaN(n)?null:n;}
+function fd(ev,n){return (new FormData(ev.target).get(n)||"").toString().trim();}
+function yildiz(p){if(!p)return '<span class="mut">'+t("puanYok")+'</span>';var h='<span class="yild">';
+ for(var i=1;i<=5;i++)h+=i<=p?"★":'<span class="bos">★</span>';return h+"</span>";}
+function yil(v){return v?v.slice(0,4):"";}
+function ort(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:0;}
+function topla(a){return a.reduce(function(x,y){return x+(y||0);},0);}
+function gunSayisi(y,m){return new Date(y,m,0).getDate();}
+function farkGun(a,b){var p=a.split("-"),q=b.split("-");
+ return Math.round((Date.UTC(+q[0],+q[1]-1,+q[2])-Date.UTC(+p[0],+p[1]-1,+p[2]))/86400000);}
+function tarihEkleGun(t2,n){var p=t2.split("-");
+ var d2=new Date(Date.UTC(+p[0],+p[1]-1,+p[2]+n));return d2.toISOString().slice(0,10);}
+function kaydir(t2){if(!t2)return null;return (+t2.slice(0,4)+1)+t2.slice(4);}
+function seriKey(e){return ((e.seri||e.adx)||"").trim();}
+
+/* ================ DURUM ================ */
+var EV=[], FOTO={}, TOP=[], KUL=[], LOG=[], BEN=null, ekran={ad:"ozet"}, mesaj=null, _puan=0;
+var OKE="arkac_em_oturum";
+function fls(m,tur){mesaj={m:m,tur:tur||"success"};}
+function bul(id){for(var i=0;i<EV.length;i++)if(EV[i].id===id)return EV[i];return null;}
+function yeniId(){return Date.now()+"_"+Math.floor(Math.random()*10000);}
+function evKaydet(e){return koy("ev",e);}
+function gecmisMi(e){return e.durum==="tamamlandi"||e.durum==="iptal"||(e.bas&&e.bas<bugun()&&e.durum!=="devam");}
+function yon(){return BEN&&BEN.rol==="yonetici";}
+function kulBul(id){for(var i=0;i<KUL.length;i++)if(KUL[i].id===id)return KUL[i];return null;}
+function kadiBul(kadi){kadi=(kadi||"").toLowerCase();
+ for(var i=0;i<KUL.length;i++)if(KUL[i].kadi===kadi)return KUL[i];return null;}
+function logla(modul,detay,kim){
+ var kayit={id:yeniId(),t:simdi(),u:kim||(BEN?BEN.ad:"-"),m:modul,d:detay};
+ LOG.unshift(kayit);koy("log",kayit);
+ if(LOG.length>500){LOG.splice(500).forEach(function(x){silK("log",x.id);});}}
+
+/* ================ ÇİZİM ================ */
+function git(g){ekran=g;_puan=0;
+ if(g.ad==="detay"&&!FOTO[g.id]){fotoYukle(g.id).then(ciz);}
+ ciz();}
+function flashHtml(){if(!mesaj)return "";var h='<div class="flash '+mesaj.tur+'">'+mesaj.m+'</div>';mesaj=null;return h;}
+function ciz(){
+ var h="";
+ if(!idbVar)h+='<div class="uyari">'+t("uyariOniz")+'</div>';
+ if(!BEN){
+  if(ekran.ad==="kayitE")h+=vKayitE();
+  else if(ekran.ad==="unut")h+=vUnut();
+  else h+=vGirisE();
+  document.getElementById("app").innerHTML=h;return;}
+ h+='<div class="app">'+kenar()+'<main class="main">'+flashHtml()+icerik()+'</main></div>';
+ document.getElementById("app").innerHTML=h;
+}
+function kenar(){
+ function m(id,ad2){return '<a class="'+(ekran.ad===id?"on":"")+'" onclick="git({ad:\''+id+'\'})">'+ad2+'</a>';}
+ var bekleyen=KUL.filter(function(u){return u.durum==="bekliyor";}).length+
+  KUL.filter(function(u){return u.talep&&u.durum!=="bekliyor";}).length;
+ var h='<aside class="side"><div class="logo">ARKAÇ <span>AVM</span><small>Etkinlik Merkezi</small></div><nav>'+
+ m("ozet",t("nav_ozet"))+m("plan",t("nav_plan"))+m("yillik",t("nav_yillik"))+m("arsiv",t("nav_arsiv"))+m("analiz",t("nav_analiz"))+m("top",t("nav_top"));
+ if(yon())h+='<a class="'+(ekran.ad==="kontrol"?"on":"")+'" onclick="git({ad:\'kontrol\'})">'+t("nav_kontrol")+(bekleyen?' <i class="pill">'+bekleyen+'</i>':"")+'</a>';
+ h+='<div style="padding:10px 2px"><a class="btn" style="display:block;text-align:center" onclick="git({ad:\'form\'})">'+t("yeniEtk")+'</a></div>'+
+ '</nav><div class="side-foot">'+
+ '<div class="uname">'+esc(BEN.ad)+'</div>'+
+ '<div class="urole">'+(yon()?t("rolYon"):t("rolKul"))+' · <span class="cikis" onclick="cikisE()">'+t("cikis")+'</span></div>'+
+ dilBar("langs")+
+ '<button class="sbtn" onclick="yedekIndir()">'+t("yedekIndirB")+'</button>'+
+ (yon()?'<label class="sbtn" style="display:block;cursor:pointer">'+t("yedekYukleB")+'<input type="file" accept=".json" style="display:none" onchange="yedekYukle(this)"></label>':"")+
+ '<div class="mut2">'+t("depoNot")+'</div>'+
+ '</div></aside>';
+ return h;
+}
+function icerik(){
+ switch(ekran.ad){
+  case "ozet":return vOzet();
+  case "plan":return vPlan();
+  case "arsiv":return vArsiv();
+  case "analiz":return vAnaliz();
+  case "form":return vForm(ekran.id);
+  case "detay":return vDetay(ekran.id);
+  case "degerlendir":return vDegerlendir(ekran.id);
+  case "yillik":return vYillik();
+  case "top":return vTopListe();
+  case "topYeni":return vTopYeni();
+  case "topDetay":return vTopDetay(ekran.id);
+  case "kontrol":return yon()?vKontrol():vOzet();
+ }
+ return vOzet();
+}
+
+/* ================ KİMLİK ================ */
+function authKap(ic){return '<div class="auth"><div><div class="alogo">ARKAÇ <span>AVM</span><small>Etkinlik Merkezi</small></div>'+dilBar("alangs")+'<div class="box">'+flashHtml()+ic+'</div></div></div>';}
+function vGirisE(){
+ return authKap('<h1>'+t("girisBaslik")+'</h1><p class="d">'+t("girisAlt")+'</p>'+
+ '<form onsubmit="return girisYapE(event)">'+
+ '<label>'+t("kadiL")+'</label><input name="kadi" required autofocus>'+
+ '<label>'+t("sifreL")+'</label><input type="password" name="pw" required>'+
+ '<button class="btn" type="submit">'+t("girisBaslik")+'</button></form>'+
+ '<div class="alt"><a onclick="git({ad:\'kayitE\'})">'+t("kayitLink")+'</a> &nbsp;·&nbsp; <a onclick="git({ad:\'unut\'})">'+t("unutLink")+'</a></div>');}
+function vKayitE(){
+ return authKap('<h1>'+t("kayitBaslik")+'</h1><p class="d">'+t("kayitAlt")+'</p>'+
+ '<form onsubmit="return kayitOlE(event)">'+
+ '<label>'+t("adSoyad")+'</label><input name="ad" required autofocus>'+
+ '<label>'+t("kadiL")+'</label><input name="kadi" required>'+
+ '<label>'+t("sifre4")+'</label><input type="password" name="pw" required minlength="4">'+
+ '<button class="btn" type="submit">'+t("kayitBtn")+'</button></form>'+
+ '<div class="alt"><a onclick="git({ad:\'girisE\'})">'+t("girisDon")+'</a></div>');}
+function vUnut(){
+ return authKap('<h1>'+t("unutBaslik")+'</h1><p class="d">'+t("unutAlt")+'</p>'+
+ '<form onsubmit="return talepGonder(event)">'+
+ '<label>'+t("kadiL")+'</label><input name="kadi" required autofocus>'+
+ '<button class="btn" type="submit">'+t("talepBtn")+'</button></form>'+
+ '<div class="alt"><a onclick="git({ad:\'girisE\'})">'+t("girisDon")+'</a></div>');}
+function girisYapE(ev2){ev2.preventDefault();
+ var u=kadiBul(fd(ev2,"kadi")),pw=fd(ev2,"pw");
+ if(!u||u.pw!==hash(pw))fls(t("fGirisHata"),"error");
+ else if(u.durum==="bekliyor")fls(t("fBekliyor"),"error");
+ else if(u.durum==="pasif")fls(t("fPasif"),"error");
+ else{BEN=u;dYaz(OKE,u.id);
+  if(u.dil&&DILLER.indexOf(u.dil)>=0){dil=u.dil;dYaz(DILK,dil);}
+  ekran={ad:"ozet"};logla("sistem","Sisteme giriş yaptı");}
+ ciz();return false;}
+function kayitOlE(ev2){ev2.preventDefault();
+ var ad2=fd(ev2,"ad"),kadi=fd(ev2,"kadi").toLowerCase(),pw=fd(ev2,"pw");
+ if(!ad2||!kadi||pw.length<4)fls(t("fKayitEksik"),"error");
+ else if(kadiBul(kadi))fls(t("fKadiVar"),"error");
+ else{var u={id:yeniId(),kadi:kadi,ad:ad2,pw:hash(pw),rol:"kullanici",durum:"bekliyor",talep:false,dil:dil,o:simdi()};
+  KUL.push(u);koy("kul",u);
+  logla("kullanici","Yeni kayıt: "+ad2+" ("+kadi+") — onay bekliyor",ad2);
+  fls(t("fKayitOk"));ekran={ad:"girisE"};}
+ ciz();return false;}
+function talepGonder(ev2){ev2.preventDefault();
+ var u=kadiBul(fd(ev2,"kadi"));
+ if(!u)fls(t("fTalepYok"),"error");
+ else{u.talep=true;koy("kul",u);
+  logla("kullanici","Şifre sıfırlama talebi gönderdi",u.ad);
+  fls(t("fTalepOk"));ekran={ad:"girisE"};}
+ ciz();return false;}
+function cikisE(){if(BEN)logla("sistem","Sistemden çıkış yaptı");
+ BEN=null;dSil(OKE);ekran={ad:"girisE"};ciz();}
+
+/* ================ ÖZET ================ */
+function hazirOran(e){if(!e.liste||!e.liste.length)return null;
+ var t2=e.liste.filter(function(m){return m.ok;}).length;
+ return Math.round(t2*100/e.liste.length);}
+function vOzet(){
+ var y=yil(bugun()),t0=bugun();
+ var buYil=EV.filter(function(e){return yil(e.bas)===y;});
+ var tamam=EV.filter(function(e){return e.durum==="tamamlandi";});
+ var buYilTamam=tamam.filter(function(e){return yil(e.bas)===y;});
+ var puanlar=buYilTamam.filter(function(e){return e.puan;}).map(function(e){return e.puan;});
+ var yaklasan=EV.filter(function(e){return e.durum!=="iptal"&&e.durum!=="tamamlandi"&&e.bas&&e.bas>=t0;})
+  .sort(function(a,b){return a.bas<b.bas?-1:1;});
+ var h='<h1>'+t("nav_ozet")+'</h1><p class="sub">'+t("ozetAlt")+' — '+tarih(t0)+'</p><div class="kpis">'+
+ '<div class="kpi"><span>'+t("kBuYil")+'</span><b>'+buYil.length+'</b></div>'+
+ '<div class="kpi"><span>'+t("kYaklasan")+'</span><b>'+yaklasan.length+'</b></div>'+
+ '<div class="kpi"><span>'+t("kZiyBuYil")+'</span><b>'+para(topla(buYilTamam.map(function(e){return e.gZiyaret;})))+'</b></div>'+
+ '<div class="kpi"><span>'+t("kOrtPuan")+'</span><b>'+(puanlar.length?ort(puanlar).toFixed(1)+" / 5":"—")+'</b></div>'+
+ '<div class="kpi"><span>'+t("kArsivde")+'</span><b>'+tamam.length+'</b></div></div><div class="grid2">';
+ h+='<div class="card"><h2>'+t("cYaklasan")+'</h2>';
+ if(yaklasan.length){h+='<table class="tbl"><tr><th>'+t("etkinlik")+'</th><th>'+t("tarihL")+'</th><th>'+t("thKalan")+'</th><th>'+t("thHazirlik")+'</th></tr>';
+  yaklasan.slice(0,6).forEach(function(e){var g=gunFark(e.bas),hz=hazirOran(e);
+   h+='<tr><td><a onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+esc(e.adx)+'</a></td><td>'+tarih(e.bas)+'</td>'+
+   '<td><span class="bd '+(g<=7?"kirmizi":(g<=30?"sari":"yesil"))+'">'+g+' '+t("gun")+'</span></td>'+
+   '<td style="min-width:90px">'+(hz===null?"—":hz+"%"+'<div class="prog"><i style="width:'+hz+'%"></i></div>')+'</td></tr>';});
+  h+='</table>';}else h+='<div class="mut">'+t("bosYaklasan")+'</div>';
+ h+='</div><div class="card"><h2>'+t("cSon")+'</h2>';
+ var son=tamam.slice().sort(function(a,b){return (a.bas||"")<(b.bas||"")?1:-1;}).slice(0,6);
+ if(son.length){h+='<table class="tbl"><tr><th>'+t("etkinlik")+'</th><th>'+t("tarihL")+'</th><th>'+t("puan")+'</th><th>'+t("ziyaretci")+'</th></tr>';
+  son.forEach(function(e){h+='<tr><td><a onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+esc(e.adx)+'</a></td>'+
+   '<td>'+tarih(e.bas)+'</td><td>'+yildiz(e.puan)+'</td><td>'+(e.gZiyaret!=null?para(e.gZiyaret):"—")+'</td></tr>';});
+  h+='</table>';}else h+='<div class="mut">'+t("bosArsivOzet")+'</div>';
+ return h+'</div></div>';
+}
+
+/* ================ PLANLAMA ================ */
+function kapak(e){
+ var f=(FOTO[e.id]&&FOTO[e.id][0])?FOTO[e.id][0].src:null;
+ return '<div class="ekapak">'+(f?'<img src="'+f+'">':esc((e.adx||"?").charAt(0).toUpperCase()))+'</div>';
+}
+function vPlan(){
+ var liste=EV.filter(function(e){return e.durum==="planlandi"||e.durum==="devam";})
+  .sort(function(a,b){return (a.bas||"9999")<(b.bas||"9999")?-1:1;});
+ var h='<div class="bar"><div><h1>'+t("nav_plan")+'</h1><p class="sub" style="margin:0">'+t("planAlt",liste.length)+'</p></div>'+
+ '<a class="btn" onclick="git({ad:\'form\'})">'+t("yeniEtk")+'</a></div>';
+ if(!liste.length)return h+'<div class="card mut">'+t("bosPlanKart")+'</div>';
+ h+='<div class="egrid">';
+ liste.forEach(function(e){var g=gunFark(e.bas),hz=hazirOran(e);
+  h+='<div class="ecard" onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+kapak(e)+'<div class="egov">'+
+  '<div class="eust"><span class="bd '+DRENK[e.durum]+'">'+durumAd(e.durum)+'</span>'+
+  (g!==null?'<span class="bd '+(g<0?"gri":(g<=7?"kirmizi":(g<=30?"sari":"yesil")))+'">'+(g<0?t("tarihGecti"):t("gunKaldi",g))+'</span>':"")+'</div>'+
+  '<div class="ead">'+esc(e.adx)+'</div>'+
+  '<div class="emeta">'+turAd(e.tur)+(e.yer?" · "+esc(e.yer):"")+'</div>'+
+  '<div class="emeta">'+tarih(e.bas)+(e.bit&&e.bit!==e.bas?" – "+tarih(e.bit):"")+'</div>'+
+  (e.pButce!=null?'<div class="emeta">'+t("butce")+': <b>'+para(e.pButce)+'</b></div>':"")+
+  (hz!==null?'<div class="emeta">'+t("thHazirlik")+': '+hz+'%<div class="prog"><i style="width:'+hz+'%"></i></div></div>':"")+
+  '</div></div>';});
+ return h+'</div>';
+}
+
+/* ================ ARŞİV ================ */
+function vArsiv(){
+ var gec=EV.filter(gecmisMi).sort(function(a,b){return (a.bas||"")<(b.bas||"")?1:-1;});
+ var yillar=[];gec.forEach(function(e){var y=yil(e.bas);if(y&&yillar.indexOf(y)<0)yillar.push(y);});
+ var ara=(ekran.ara||"").toLowerCase(),fy=ekran.yil||"",ft=ekran.tur||"";
+ var L=gec.filter(function(e){
+  if(ara&&(e.adx||"").toLowerCase().indexOf(ara)<0)return false;
+  if(fy&&yil(e.bas)!==fy)return false;
+  if(ft&&e.tur!==ft)return false;return true;});
+ var h='<div class="bar"><div><h1>'+t("nav_arsiv")+'</h1><p class="sub" style="margin:0">'+t("arsivAlt",gec.length)+'</p></div>'+
+ '<div class="filters"><input id="araK" placeholder="'+t("araPh")+'" value="'+esc(ekran.ara||"")+'">'+
+ '<select id="yilK"><option value="">'+t("tumYillar")+'</option>'+yillar.map(function(y){return '<option '+(fy===y?"selected":"")+'>'+y+'</option>';}).join("")+'</select>'+
+ '<select id="turK"><option value="">'+t("tumTurler")+'</option>'+TURLER.map(function(k){return '<option value="'+k+'" '+(ft===k?"selected":"")+'>'+turAd(k)+'</option>';}).join("")+'</select>'+
+ '<a class="btn-ghost" onclick="arsivFiltre()">'+t("filtre")+'</a></div></div>';
+ if(!L.length)return h+'<div class="card mut">'+t("kayitYok")+'</div>';
+ h+='<div class="egrid">';
+ L.forEach(function(e){
+  h+='<div class="ecard" onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+kapak(e)+'<div class="egov">'+
+  '<div class="eust">'+yildiz(e.puan)+'<span class="bd '+DRENK[e.durum]+'">'+durumAd(e.durum)+'</span></div>'+
+  '<div class="ead">'+esc(e.adx)+'</div>'+
+  '<div class="emeta">'+turAd(e.tur)+' · '+tarih(e.bas)+'</div>'+
+  '<div class="emeta">'+(e.gZiyaret!=null?para(e.gZiyaret)+' '+t("ziyaretci"):"")+(e.gMaliyet!=null?(e.gZiyaret!=null?" · ":"")+t("maliyet")+': '+para(e.gMaliyet):"")+'</div>'+
+  '</div></div>';});
+ return h+'</div>';
+}
+function arsivFiltre(){
+ var a=document.getElementById("araK"),y=document.getElementById("yilK"),tu=document.getElementById("turK");
+ git({ad:"arsiv",ara:(a&&a.value)||"",yil:(y&&y.value)||"",tur:(tu&&tu.value)||""});}
+
+/* ================ FORM ================ */
+function vForm(id){
+ var e=id?bul(id):null;if(id&&!e)return vOzet();e=e||{};
+ var h='<h1>'+(id?t("duzEtk"):t("yeniEtk2"))+'</h1><p class="sub">'+t("formAlt")+'</p>'+
+ '<div class="card"><form onsubmit="return formKaydet(event,\''+(id||"")+'\')"><div class="frm">'+
+ '<div class="full"><label>'+t("lAd")+'</label><input name="adx" required value="'+esc(e.adx||"")+'"></div>'+
+ '<div class="full"><label>'+t("lSeri")+'</label><input name="seri" value="'+esc(e.seri||"")+'" placeholder="'+esc(e.adx||"")+'"></div>'+
+ '<div><label>'+t("turL")+'</label><select name="tur">'+TURLER.map(function(k){return '<option value="'+k+'" '+((e.tur||"diger")===k?"selected":"")+'>'+turAd(k)+'</option>';}).join("")+'</select></div>'+
+ '<div><label>'+t("durumL")+'</label><select name="durum">'+DURUMLAR.map(function(k){return '<option value="'+k+'" '+((e.durum||"planlandi")===k?"selected":"")+'>'+durumAd(k)+'</option>';}).join("")+'</select></div>'+
+ '<div><label>'+t("lBas")+'</label><input type="date" name="bas" value="'+esc(e.bas||(ekran.ay?ekran.ay+"-01":""))+'"></div>'+
+ '<div><label>'+t("lBit")+'</label><input type="date" name="bit" value="'+esc(e.bit||"")+'"></div>'+
+ '<div><label>'+t("yerL")+'</label><input name="yer" value="'+esc(e.yer||"")+'"></div>'+
+ '<div><label>'+t("lSor")+'</label><input name="sor" value="'+esc(e.sor||"")+'"></div>'+
+ '<div><label>'+t("lPButce")+'</label><input name="pButce" value="'+(e.pButce!=null?e.pButce:"")+'"></div>'+
+ '<div><label>'+t("lPZiy")+'</label><input name="pZiyaret" value="'+(e.pZiyaret!=null?e.pZiyaret:"")+'"></div>'+
+ '<div class="full"><label>'+t("lAmac")+'</label><textarea name="amac" rows="3">'+esc(e.amac||"")+'</textarea></div>'+
+ '</div><div class="frm-alt"><button class="btn" type="submit">'+t("kaydet")+'</button>'+
+ '<a class="btn-ghost" onclick="git({ad:\''+(id?"detay":"plan")+'\',id:\''+(id||"")+'\'})">'+t("vazgec")+'</a></div></form></div>';
+ return h;
+}
+function formKaydet(ev2,id){ev2.preventDefault();
+ var v={adx:fd(ev2,"adx"),seri:fd(ev2,"seri"),tur:fd(ev2,"tur"),durum:fd(ev2,"durum"),
+  bas:fd(ev2,"bas"),bit:fd(ev2,"bit"),yer:fd(ev2,"yer"),sor:fd(ev2,"sor"),
+  pButce:sayi(fd(ev2,"pButce")),pZiyaret:sayi(fd(ev2,"pZiyaret")),amac:fd(ev2,"amac")};
+ if(!v.adx){fls(t("fAdZorunlu"),"error");ciz();return false;}
+ var e;
+ if(id){e=bul(id);for(var k in v)e[k]=v[k];fls(t("fGuncel"));
+  logla("etkinlik","Etkinlik güncellendi: "+v.adx);}
+ else{e=v;e.id=yeniId();e.liste=[];e.fotolar=[];e.o=simdi();EV.push(e);fls(t("fKayit"));
+  logla("etkinlik","Etkinlik eklendi: "+v.adx);}
+ evKaydet(e).then(function(){git({ad:"detay",id:e.id});});return false;}
+function etkSil(id){if(!yon()){fls(t("silYetki"),"error");ciz();return;}
+ if(!confirm(t("silOnayEtk")))return;
+ var e=bul(id);if(!e)return;
+ var isler=[silK("ev",id)];
+ (e.fotolar||[]).forEach(function(f){isler.push(silK("foto",f));});
+ TOP.filter(function(m){return m.evId===id;}).forEach(function(m){isler.push(silK("top",m.id));});
+ TOP=TOP.filter(function(m){return m.evId!==id;});
+ logla("etkinlik","Etkinlik silindi: "+e.adx);
+ Promise.all(isler).then(function(){
+  EV=EV.filter(function(x){return x.id!==id;});delete FOTO[id];
+  fls(t("fSilindi"));git({ad:"arsiv"});});}
+
+/* ================ DETAY ================ */
+function vDetay(id){
+ var e=bul(id);if(!e)return vOzet();
+ var g=gunFark(e.bas),gecmis=gecmisMi(e);
+ var h='<div class="bar"><div><h1>'+esc(e.adx)+'</h1><p class="sub" style="margin:0">'+
+ (e.seri?t("seriEt")+': '+esc(e.seri)+' · ':"")+turAd(e.tur)+' · <span class="bd '+DRENK[e.durum]+'">'+durumAd(e.durum)+'</span>'+
+ (g!==null&&!gecmis?' · '+(g<0?'<span class="gec">'+t("tarihGecti")+'</span>':t("gunKaldi",g)):"")+'</p></div>'+
+ '<div class="filters">'+
+ '<a class="btn-ghost" onclick="git({ad:\'form\',id:\''+e.id+'\'})">'+t("duzenle")+'</a>'+
+ (yon()?'<button class="btn-danger" onclick="etkSil(\''+e.id+'\')">'+t("sil")+'</button>':"")+
+ (e.durum==="tamamlandi"?'<a class="btn-ghost" onclick="kopyala(\''+e.id+'\')">'+t("kopyalaBtn")+'</a>'+
+  '<a class="btn-ghost" onclick="topAcVeyaOlustur(\''+e.id+'\')">'+t("toplantiBtn")+'</a>':"")+
+ '<a class="btn-ghost" onclick="git({ad:\''+(gecmis?"arsiv":"plan")+'\'})">'+t("listeyeDon")+'</a>'+
+ '</div></div>';
+ h+='<div class="card"><div class="detK">'+
+ '<div><span>'+t("tarihL")+'</span><b>'+tarih(e.bas)+(e.bit&&e.bit!==e.bas?" – "+tarih(e.bit):"")+'</b></div>'+
+ '<div><span>'+t("yerL")+'</span><b>'+esc(e.yer||"—")+'</b></div>'+
+ '<div><span>'+t("sorumluL")+'</span><b>'+esc(e.sor||"—")+'</b></div>'+
+ '<div><span>'+t("detPButce")+'</span><b>'+para(e.pButce)+'</b></div>'+
+ '<div><span>'+t("detPZiy")+'</span><b>'+para(e.pZiyaret)+'</b></div>'+
+ '</div>'+(e.amac?'<div class="mut" style="margin-top:8px">'+esc(e.amac)+'</div>':"")+'</div>';
+ var ders=oncekiDers(e);
+ if(ders&&!gecmis){
+  h+='<div class="card" style="border-left:4px solid #E5A93D"><h2>'+t("dersBaslik",esc(ders.adx),yil(ders.bas))+'</h2>';
+  var ek=eksiListe(ders),on=oneriListe(ders);
+  if(ek.length)h+='<div style="margin-bottom:6px"><b style="font-size:12.5px">'+t("dersEksiler")+'</b><div class="mut">'+ek.map(esc).join("<br>")+'</div></div>';
+  if(on.length)h+='<div style="margin-bottom:6px"><b style="font-size:12.5px">'+t("dersFikirler")+'</b><div class="mut">'+on.map(esc).join("<br>")+'</div></div>';
+  h+='<a class="btn-ghost" onclick="dersAktar(\''+e.id+'\')">'+t("dersBtn")+'</a></div>';}
+ h+='<div class="grid2">';
+ h+='<div class="card"><h2>'+t("hazBaslik")+(e.liste&&e.liste.length?" — "+hazirOran(e)+"%":"")+'</h2>';
+ (e.liste||[]).forEach(function(m,i){
+  h+='<div class="madde"><input type="checkbox" '+(m.ok?"checked":"")+' onchange="maddeToggle(\''+e.id+'\','+i+')">'+
+  '<span class="'+(m.ok?"tamamx":"")+'">'+esc(m.metin)+'</span>'+
+  '<button class="kaldir" onclick="maddeSil(\''+e.id+'\','+i+')">✕</button></div>';});
+ h+='<div style="display:flex;gap:8px;margin-top:10px"><input id="yeniMadde" style="flex:1" placeholder="'+t("maddePh")+'" onkeydown="maddeEnter(event,\''+e.id+'\')">'+
+ '<a class="btn-ghost" onclick="maddeEkle(\''+e.id+'\')">'+t("ekleBtn")+'</a></div>'+
+ '<div style="margin-top:8px"><a class="btn-ghost" onclick="sablonEkle(\''+e.id+'\')">'+t("sablonBtn",turAd(e.tur))+'</a></div>'+
+ '<details style="margin-top:10px"><summary class="mut" style="cursor:pointer">'+t("topluOzet")+'</summary>'+
+ '<textarea id="topluKutu" rows="4" style="width:100%;margin-top:6px"></textarea>'+
+ '<div style="margin-top:6px"><a class="btn-ghost" onclick="topluEkle(\''+e.id+'\')">'+t("topluBtn")+'</a></div></details></div>';
+ var fl=FOTO[e.id];
+ h+='<div class="card"><h2>'+t("fotoBaslik",(e.fotolar||[]).length)+'</h2>';
+ if(!fl&&(e.fotolar||[]).length)h+='<div class="mut">'+t("fotoYukleniyor")+'</div>';
+ else if(fl&&fl.length){h+='<div class="fgrid">';
+  fl.forEach(function(f){h+='<div class="fkut"><img src="'+f.src+'" onclick="fotoBuyut(\''+f.id+'\',\''+e.id+'\')">'+
+   '<button class="fsil" onclick="fotoSil(\''+f.id+'\',\''+e.id+'\')">✕</button></div>';});
+  h+='</div>';}
+ else h+='<div class="mut">'+t("fotoBos")+'</div>';
+ h+='<div style="margin-top:10px"><label class="btn-ghost" style="cursor:pointer">'+t("fotoEkleBtn")+
+ '<input type="file" accept="image/*" multiple style="display:none" onchange="fotoEkle(this,\''+e.id+'\')"></label>'+
+ ' <span class="mut">'+t("fotoNot")+'</span></div></div>';
+ h+='</div>';
+ if(e.durum==="tamamlandi"){h+=degerKart(e)+yorumKart(e);}
+ else if(e.durum!=="iptal"){
+  h+='<div class="card"><div class="mut">'+t("degerBekleNot")+'</div>'+
+  '<div style="margin-top:10px">'+(e.bas&&e.bas<bugun()?'<span class="gec">'+t("tarihGectiUyari")+'</span> ':"")+
+  '<a class="btn" onclick="etkinligiTamamla(\''+e.id+'\')">'+t("tamamlaBtn")+'</a></div></div>';}
+ h+=seriTablo(e);
+ return h;
+}
+function starsHtml(p){var h='<span class="stars" id="stars">';
+ for(var i=1;i<=5;i++)h+='<button type="button" class="'+(i<=p?"dolu":"")+'" onclick="puanSec('+i+')">★</button>';
+ return h+'</span>';}
+function puanSec(p){_puan=p;var el=document.getElementById("stars");
+ if(el&&el.getElementsByTagName){var b=el.getElementsByTagName("button");
+  for(var i=0;i<b.length;i++)b[i].className=(i<_puan)?"dolu":"";}}
+function sapma(e){if(e.pButce==null||e.gMaliyet==null||!e.pButce)return null;
+ return Math.round((e.gMaliyet-e.pButce)*100/e.pButce);}
+function netM(e){if(e.gMaliyet==null)return null;return e.gMaliyet-(e.gGelir||0);}
+function karsilama(e){if(!e.gMaliyet)return null;return Math.round((e.gGelir||0)*100/e.gMaliyet);}
+function uplift(e){if(e.nGiris==null||e.eGiris==null||!e.nGiris)return null;
+ return Math.round((e.eGiris-e.nGiris)*100/e.nGiris);}
+function upliftBd(e){var u=uplift(e);if(u===null)return "—";
+ return '<span class="bd '+(u>=30?"yesil":(u>=10?"sari":"gri"))+'">'+(u>0?"+":"")+u+'%</span>';}
+function anketTxt(e){if(e.anket==null)return "—";
+ return Number(e.anket).toFixed(1)+" / 5"+(e.anketSayi?" ("+e.anketSayi+" "+t("kisi")+")":"");}
+function degerKart(e){
+ var h='<div class="card"><h2>'+t("degerBaslik")+'</h2>'+
+ '<form onsubmit="return degerKaydet(event,\''+e.id+'\')"><div class="frm">'+
+ '<div><label>'+t("lGM")+'</label><input name="gMaliyet" value="'+(e.gMaliyet!=null?e.gMaliyet:"")+'"></div>'+
+ '<div><label>'+t("lGG")+'</label><input name="gGelir" value="'+(e.gGelir!=null?e.gGelir:"")+'"></div>'+
+ '<div><label>'+t("lGZ")+'</label><input name="gZiyaret" value="'+(e.gZiyaret!=null?e.gZiyaret:"")+'"></div>'+
+ '<div></div>'+
+ '<div><label>'+t("lNG")+'</label><input name="nGiris" value="'+(e.nGiris!=null?e.nGiris:"")+'"></div>'+
+ '<div><label>'+t("lEG")+'</label><input name="eGiris" value="'+(e.eGiris!=null?e.eGiris:"")+'"></div>'+
+ '<div><label>'+t("lAnk")+'</label><input name="anket" value="'+(e.anket!=null?e.anket:"")+'"></div>'+
+ '<div><label>'+t("lAnkS")+'</label><input name="anketSayi" value="'+(e.anketSayi!=null?e.anketSayi:"")+'"></div>'+
+ '<div><label>'+t("lPuan")+'</label>'+starsHtml(_puan||e.puan||0)+'</div>'+
+ '<div><label>'+t("lTekrar")+'</label><select name="tekrar"><option value="">'+t("secilmedi")+'</option>'+
+ TEKRARLAR.map(function(k){return '<option value="'+k+'" '+(e.tekrar===k?"selected":"")+'>'+t("tk_"+k)+'</option>';}).join("")+'</select></div>'+
+ '<div class="full"><label>'+t("lArti")+'</label><textarea name="arti" rows="2">'+esc(e.arti||"")+'</textarea></div>'+
+ '<div class="full"><label>'+t("lEksi")+'</label><textarea name="eksi" rows="2">'+esc(e.eksi||"")+'</textarea></div>'+
+ '<div class="full"><label>'+t("lOneri")+'</label><textarea name="oneri" id="oneriKutu" rows="2">'+esc(e.oneri||"")+'</textarea></div>'+
+ '</div><div class="frm-alt"><button class="btn" type="submit">'+t("degerKaydetBtn")+'</button></div></form>';
+ var u=uplift(e),n=netM(e),ka=karsilama(e),sp=sapma(e);
+ h+='<div class="detK" style="margin-top:16px">'+
+ '<div><span>'+t("puan")+'</span><b>'+(e.puan?e.puan+" / 5":"—")+'</b></div>'+
+ '<div><span>'+t("anket")+'</span><b>'+anketTxt(e)+'</b></div>'+
+ '<div><span>'+t("trafik")+'</span><b>'+upliftBd(e)+'</b></div>'+
+ '<div><span>'+t("gelir")+'</span><b>'+para(e.gGelir)+'</b></div>'+
+ '<div><span>'+t("netMaliyet")+'</span><b>'+(n!=null?para(n):"—")+'</b></div>'+
+ '<div><span>'+t("mKarsUzun")+'</span><b>'+(ka!=null?"%"+ka:"—")+'</b></div>'+
+ '<div><span>'+t("sapmaL")+'</span><b>'+(sp!=null?(sp>0?"+":"")+sp+"%":"—")+'</b></div>'+
+ '<div><span>'+t("mZiyBG")+'</span><b>'+(e.pZiyaret!=null?para(e.pZiyaret):"—")+' → '+(e.gZiyaret!=null?para(e.gZiyaret):"—")+'</b></div>'+
+ '<div><span>'+t("mZiyBasi")+'</span><b>'+((n!=null&&e.gZiyaret)?para(Math.round(n*100/e.gZiyaret)/100):"—")+'</b></div>'+
+ '</div>';
+ var bank=oneriBankasi(e);
+ if(bank.length){h+='<div style="margin-top:14px"><h2 style="font-size:14px;margin-bottom:4px">'+t("bankBaslik")+'</h2>'+
+  '<div class="mut" style="margin-bottom:8px">'+t("bankNot")+'</div>';
+  bank.forEach(function(g2){h+='<div style="margin-bottom:8px"><b style="font-size:12.5px">'+g2.b+'</b><div>';
+   g2.f.forEach(function(f){h+='<a class="btn-ghost" style="margin:3px 4px 0 0" data-f="'+esc(f)+'" onclick="oneriTxtEkle(this)">'+esc(f)+'</a>';});
+   h+='</div></div>';});
+  h+='</div>';}
+ return h+'</div>';
+}
+function etkinligiTamamla(id){var e=bul(id);if(!e)return;
+ e.durum="tamamlandi";
+ logla("etkinlik","Etkinlik tamamlandı: "+e.adx);
+ fls(t("fTamamla"));
+ evKaydet(e).then(function(){git({ad:"detay",id:id});});}
+function vDegerlendir(id){var e=bul(id);if(!e)return vAnaliz();
+ return '<div class="bar"><div><h1>'+t("dBaslik")+' — '+esc(e.adx)+'</h1><p class="sub" style="margin:0">'+tarih(e.bas)+' · '+turAd(e.tur)+'</p></div>'+
+ '<div class="filters"><a class="btn-ghost" onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+t("etkGit")+'</a>'+
+ '<a class="btn-ghost" onclick="git({ad:\'analiz\'})">'+t("analizDon")+'</a></div></div>'+
+ degerKart(e)+yorumKart(e);}
+function degAc(){var s=document.getElementById("degSec");
+ if(s&&s.value)git({ad:"degerlendir",id:s.value});}
+function satirAyir(t2){return (t2||"").split(/\n|;/).map(function(x){return x.trim();}).filter(Boolean);}
+function eksiListe(e){return satirAyir(e.eksi);}
+function oneriListe(e){return satirAyir(e.oneri);}
+function oncekiDers(e){
+ var k=seriKey(e);if(!k)return null;
+ var g=EV.filter(function(x){return x.id!==e.id&&seriKey(x)===k&&x.durum==="tamamlandi"&&(x.eksi||x.oneri);})
+  .sort(function(a,b){return (a.bas||"")<(b.bas||"")?1:-1;});
+ return g[0]||null;}
+function dersAktar(id){var e=bul(id);if(!e)return;
+ var k=oncekiDers(e);if(!k)return;
+ if(!e.liste)e.liste=[];var n=0;
+ eksiListe(k).forEach(function(m){var tx=t("pfxGelistir")+m;
+  if(!e.liste.some(function(y){return y.metin===tx;})){e.liste.push({metin:tx,ok:false});n++;}});
+ oneriListe(k).forEach(function(m){var tx=t("pfxFikir")+m;
+  if(!e.liste.some(function(y){return y.metin===tx;})){e.liste.push({metin:tx,ok:false});n++;}});
+ fls(n?t("fDers",n):t("fDersVar"));
+ if(n)logla("plan","Dersler aktarıldı: "+k.adx+" → "+e.adx+" ("+n+" madde)");
+ evKaydet(e).then(ciz);}
+function kopyaTemel(x){
+ var yeni={id:yeniId(),adx:x.adx,seri:seriKey(x),tur:x.tur,durum:"planlandi",
+  bas:kaydir(x.bas),bit:kaydir(x.bit),yer:x.yer,sor:x.sor,
+  pButce:(x.gMaliyet!=null?x.gMaliyet:x.pButce),pZiyaret:(x.gZiyaret!=null?x.gZiyaret:x.pZiyaret),
+  amac:x.amac,fotolar:[],o:simdi(),liste:[]};
+ (x.liste||[]).forEach(function(m){yeni.liste.push({metin:m.metin,ok:false});});
+ eksiListe(x).forEach(function(m){var tx=t("pfxGelistir")+m;
+  if(!yeni.liste.some(function(y){return y.metin===tx;}))yeni.liste.push({metin:tx,ok:false});});
+ oneriListe(x).forEach(function(m){var tx=t("pfxFikir")+m;
+  if(!yeni.liste.some(function(y){return y.metin===tx;}))yeni.liste.push({metin:tx,ok:false});});
+ return yeni;}
+function kopyala(id){var e=bul(id);if(!e)return;
+ var yeni=kopyaTemel(e);EV.push(yeni);
+ logla("plan","Gelecek yıl kopyası oluşturuldu: "+yeni.adx+" ("+yil(yeni.bas)+")");
+ fls(t("fKopya"));
+ evKaydet(yeni).then(function(){git({ad:"detay",id:yeni.id});});}
+function degerKaydet(ev2,id){ev2.preventDefault();
+ var e=bul(id);if(!e)return false;
+ e.gMaliyet=sayi(fd(ev2,"gMaliyet"));e.gGelir=sayi(fd(ev2,"gGelir"));e.gZiyaret=sayi(fd(ev2,"gZiyaret"));
+ e.nGiris=sayi(fd(ev2,"nGiris"));e.eGiris=sayi(fd(ev2,"eGiris"));
+ var an=sayi(fd(ev2,"anket"));if(an!=null){if(an<0)an=0;if(an>5)an=5;}e.anket=an;
+ e.anketSayi=sayi(fd(ev2,"anketSayi"));
+ if(_puan)e.puan=_puan;
+ e.tekrar=fd(ev2,"tekrar")||e.tekrar||"";
+ e.arti=fd(ev2,"arti");e.eksi=fd(ev2,"eksi");e.oneri=fd(ev2,"oneri");
+ fls(t("fDeger"));
+ logla("değerlendirme","Değerlendirme kaydedildi: "+e.adx);
+ var dg=(ekran.ad==="degerlendir");
+ evKaydet(e).then(function(){_puan=0;
+  if(dg)git({ad:"analiz"});else ciz();});
+ return false;}
+function oneriTxtEkle(el){var k=document.getElementById("oneriKutu");if(!k)return;
+ var tx=el.getAttribute("data-f");
+ if(!tx||k.value.indexOf(tx)>=0)return;
+ k.value=(k.value?k.value+"\n":"")+"• "+tx;}
+function oneriBankasi(e){
+ var g=[],u=uplift(e),ka=karsilama(e),sp=sapma(e);
+ var kf=null;if(e.pZiyaret&&e.gZiyaret!=null)kf=Math.round((e.gZiyaret-e.pZiyaret)*100/e.pZiyaret);
+ if((e.anket!=null&&e.anket<3.5)||(e.puan&&e.puan<=3))g.push({b:t("b_mem"),f:[t("bMem1"),t("bMem2"),t("bMem3"),t("bMem4")]});
+ if(!e.gGelir||(ka!==null&&ka<60))g.push({b:t("b_gel"),f:[t("bGel1"),t("bGel2"),t("bGel3"),t("bGel4")]});
+ if(u!==null&&u<15)g.push({b:t("b_traf"),f:[t("bTraf1"),t("bTraf2"),t("bTraf3"),t("bTraf4")]});
+ if(kf!==null&&kf<=-15)g.push({b:t("b_kat"),f:[t("bKat1"),t("bKat2"),t("bKat3")]});
+ if(kf!==null&&kf>=15)g.push({b:t("b_kap"),f:[t("bKap1"),t("bKap2"),t("bKap3")]});
+ if(sp!==null&&sp>10)g.push({b:t("b_but"),f:[t("bBut1"),t("bBut2"),t("bBut3")]});
+ if(!g.length)g.push({b:t("b_buy"),f:[t("bBuy1"),t("bBuy2"),t("bBuy3"),t("bBuy4")]});
+ return g;}
+function yorumOlustur(e){
+ var c=[],iyi=0,kotu=0;
+ var u=uplift(e),ka=karsilama(e),sp=sapma(e);
+ if(u!==null){if(u>=30){c.push(t("y_traf_hi",u));iyi++;}
+  else if(u>=10){c.push(t("y_traf_orta",u));iyi++;}
+  else{c.push(t("y_traf_dusuk",u));kotu++;}}
+ if(e.anket!=null){if(e.anket>=4.3){c.push(t("y_anket_hi",Number(e.anket).toFixed(1)));iyi++;}
+  else if(e.anket<3){c.push(t("y_anket_lo",Number(e.anket).toFixed(1)));kotu++;}}
+ if(e.puan&&e.anket!=null){var fark=e.puan-e.anket;
+  if(fark>=1){c.push(t("y_gap1"));kotu++;}
+  else if(fark<=-1){c.push(t("y_gap2"));iyi++;}}
+ if(e.gMaliyet!=null){
+  if(!e.gGelir){c.push(t("y_gelir_yok"));kotu++;}
+  else if(ka!==null){
+   if(ka>=100){c.push(t("y_kendini",ka));iyi++;}
+   else if(ka<60){c.push(t("y_gelir_dusuk",ka));kotu++;}
+   else c.push(t("y_karsilama",ka));}}
+ var kf=null;if(e.pZiyaret&&e.gZiyaret!=null)kf=Math.round((e.gZiyaret-e.pZiyaret)*100/e.pZiyaret);
+ if(kf!==null){if(kf>=15){c.push(t("y_kat_hi",kf));iyi++;}
+  else if(kf<=-15){c.push(t("y_kat_lo",Math.abs(kf)));kotu++;}}
+ if(sp!==null&&sp>10){c.push(t("y_butce",sp));kotu++;}
+ var onceki=oncekiEtkinlik(e);
+ if(onceki&&e.gZiyaret!=null&&onceki.gZiyaret){
+  var dg=Math.round((e.gZiyaret-onceki.gZiyaret)*100/onceki.gZiyaret);
+  if(dg>=10){c.push(t("y_yoy_art",yil(onceki.bas),dg));iyi++;}
+  else if(dg<=-10){c.push(t("y_yoy_dus",yil(onceki.bas),Math.abs(dg)));kotu++;}}
+ if(e.tekrar==="evet"&&e.puan>=4){c.push(t("y_gelenek"));iyi++;}
+ if(!c.length)return null;
+ var bas2=iyi>kotu?t("v_guclu"):(kotu>iyi?t("v_gelistir"):t("v_dengeli"));
+ return {bas:bas2,c:c};}
+function yorumKart(e){var y=yorumOlustur(e);if(!y)return "";
+ var h='<div class="card" style="border-left:4px solid #4C7FC0"><h2>'+t("yorumBaslik")+'</h2>'+
+ '<div style="font-weight:600;margin-bottom:6px">'+y.bas+'</div>';
+ y.c.forEach(function(x){h+='<div style="padding:3px 0;font-size:13.5px">• '+x+'</div>';});
+ return h+'</div>';}
+
+/* ================ HAZIRLIK ================ */
+function maddeEnter(ev2,id){if(ev2.key==="Enter"){ev2.preventDefault();maddeEkle(id);}}
+function maddeEkle(id){var e=bul(id),i=document.getElementById("yeniMadde");
+ var m=(i&&i.value||"").trim();if(!e||!m)return;
+ if(!e.liste)e.liste=[];e.liste.push({metin:m,ok:false});
+ logla("hazırlık","Madde eklendi ("+e.adx+"): "+m);
+ evKaydet(e).then(ciz);}
+function topluEkle(id){var e=bul(id),k=document.getElementById("topluKutu");
+ if(!e||!k)return;
+ var satirlar2=(k.value||"").split("\n").map(function(x){return x.trim();}).filter(Boolean);
+ if(!satirlar2.length)return;
+ if(!e.liste)e.liste=[];var n=0;
+ satirlar2.forEach(function(m){if(!e.liste.some(function(y){return y.metin===m;})){e.liste.push({metin:m,ok:false});n++;}});
+ fls(t("fToplu",n));
+ logla("hazırlık","Toplu madde eklendi ("+e.adx+"): "+n+" adet");
+ evKaydet(e).then(ciz);}
+function sablonEkle(id){var e=bul(id);if(!e)return;
+ if(!e.liste)e.liste=[];var n=0;
+ ORTAK_SAB.concat(TUR_SAB[e.tur]||[]).forEach(function(key){var m=t(key);
+  if(!e.liste.some(function(y){return y.metin===m;})){e.liste.push({metin:m,ok:false});n++;}});
+ fls(n?t("fSablon",n):t("fSablonVar"));
+ if(n)logla("hazırlık","Şablon eklendi ("+e.adx+"): "+n+" madde");
+ evKaydet(e).then(ciz);}
+function maddeToggle(id,i){var e=bul(id);if(!e||!e.liste[i])return;
+ e.liste[i].ok=!e.liste[i].ok;evKaydet(e).then(ciz);}
+function maddeSil(id,i){var e=bul(id);if(!e)return;
+ var m2=e.liste[i]?e.liste[i].metin:"";
+ e.liste.splice(i,1);
+ logla("hazırlık","Madde silindi ("+e.adx+"): "+m2);
+ evKaydet(e).then(ciz);}
+
+/* ================ FOTOĞRAF ================ */
+function fotoYukle(eid){return hepsi("foto").then(function(hep){
+ FOTO[eid]=hep.filter(function(f){return f.eid===eid;}).sort(function(a,b){return a.t<b.t?-1:1;});});}
+function fotoEkle(inp,eid){var e=bul(eid);if(!e||!inp.files||!inp.files.length)return;
+ var dosyalar=Array.prototype.slice.call(inp.files),isler=[];
+ dosyalar.forEach(function(dosya){
+  isler.push(new Promise(function(res){
+   var r=new FileReader();
+   r.onload=function(){
+    var img=new Image();
+    img.onload=function(){
+     var mx=1280,w=img.width,hh=img.height;
+     if(w>mx){hh=Math.round(hh*mx/w);w=mx;}
+     var c=document.createElement("canvas");c.width=w;c.height=hh;
+     c.getContext("2d").drawImage(img,0,0,w,hh);
+     var src=c.toDataURL("image/jpeg",0.82);
+     var f={id:yeniId(),eid:eid,src:src,t:simdi()};
+     if(!e.fotolar)e.fotolar=[];e.fotolar.push(f.id);
+     koy("foto",f).then(res);};
+    img.src=r.result;};
+   r.readAsDataURL(dosya);}));});
+ Promise.all(isler).then(function(){return evKaydet(e);})
+  .then(function(){return fotoYukle(eid);})
+  .then(function(){logla("fotoğraf","Fotoğraf eklendi: "+e.adx+" ("+dosyalar.length+" adet)");
+   fls(t("fFoto"));ciz();});}
+function fotoSil(fid,eid){if(!confirm(t("fotoSilOnay")))return;
+ var e=bul(eid);if(!e)return;
+ e.fotolar=(e.fotolar||[]).filter(function(x){return x!==fid;});
+ logla("fotoğraf","Fotoğraf silindi: "+e.adx);
+ silK("foto",fid).then(function(){return evKaydet(e);})
+  .then(function(){return fotoYukle(eid);}).then(ciz);}
+function fotoBuyut(fid,eid){var fl=FOTO[eid]||[],f=null;
+ fl.forEach(function(x){if(x.id===fid)f=x;});if(!f)return;
+ document.getElementById("kutu").innerHTML='<div class="fbox" onclick="fotoKapat()"><img src="'+f.src+'"></div>';}
+function fotoKapat(){document.getElementById("kutu").innerHTML="";}
+
+/* ================ ANALİZ ================ */
+function vAnaliz(){
+ var L=EV.filter(function(e){return e.durum==="tamamlandi";});
+ var h='<h1>'+t("nav_analiz")+'</h1><p class="sub">'+t("aAlt")+'</p>';
+ if(!L.length)return h+'<div class="card mut">'+t("aBosTamam")+'</div>';
+ var eksikAd=function(e){var m=[];
+  if(!e.puan)m.push(t("puan"));
+  if(e.gMaliyet==null)m.push(t("maliyet"));
+  if(e.gZiyaret==null)m.push(t("ziyaretci"));
+  if(e.anket==null)m.push(t("anket"));
+  return m;};
+ var bek=L.filter(function(e){return !e.puan||e.gMaliyet==null||e.gZiyaret==null;});
+ if(bek.length){
+  h+='<div class="card" style="border-left:4px solid #E5A93D"><h2>'+t("bekleyenB",bek.length)+'</h2>'+
+  '<table class="tbl"><tr><th>'+t("etkinlik")+'</th><th>'+t("tarihL")+'</th><th>'+t("thEksik")+'</th><th></th></tr>';
+  bek.forEach(function(e){
+   h+='<tr><td>'+esc(e.adx)+'</td><td>'+tarih(e.bas)+'</td><td>'+
+   eksikAd(e).map(function(m){return '<span class="bd sari">'+m+'</span> ';}).join("")+'</td>'+
+   '<td><a class="btn" style="padding:6px 12px;font-size:12.5px" onclick="git({ad:\'degerlendir\',id:\''+e.id+'\'})">'+t("degerlendirBtn")+'</a></td></tr>';});
+  h+='</table></div>';}
+ else{
+  var sec='<select id="degSec"><option value="">'+t("secilmedi")+'</option>'+
+   L.slice().sort(function(a,b){return (a.bas||"")<(b.bas||"")?1:-1;}).map(function(e){
+    return '<option value="'+e.id+'">'+esc(e.adx)+' ('+yil(e.bas)+')</option>';}).join("")+'</select>';
+  h+='<div class="card"><span class="bd yesil">'+t("tamamDegerlendi")+'</span> &nbsp; <span class="mut">'+t("guncelleSec")+'</span> '+sec+
+  ' <a class="btn-ghost" onclick="degAc()">'+t("ac")+'</a></div>';}
+ var yillar={};L.forEach(function(e){var y=yil(e.bas);if(!y)return;(yillar[y]=yillar[y]||[]).push(e);});
+ var ys=Object.keys(yillar).sort();
+ h+='<div class="card" style="overflow-x:auto"><h2>'+t("yKarsBaslik")+'</h2><table class="tbl"><tr><th>'+t("yil")+'</th><th>'+t("etkinlik")+'</th><th>'+t("ziyaretci")+'</th><th>'+t("thOrtTrafik")+'</th><th>'+t("thOrtPuan")+'</th><th>'+t("thOrtAnket")+'</th></tr>';
+ ys.forEach(function(y){var g=yillar[y];
+  var zi=topla(g.map(function(e){return e.gZiyaret;}));
+  var us=g.map(uplift).filter(function(x){return x!==null;});
+  var ps=g.filter(function(e){return e.puan;}).map(function(e){return e.puan;});
+  var as2=g.filter(function(e){return e.anket!=null;}).map(function(e){return Number(e.anket);});
+  h+='<tr><td><b>'+y+'</b></td><td>'+g.length+'</td><td>'+para(zi)+'</td>'+
+  '<td>'+(us.length?(ort(us)>0?"+":"")+Math.round(ort(us))+"%":"—")+'</td>'+
+  '<td>'+(ps.length?ort(ps).toFixed(1):"—")+'</td>'+
+  '<td>'+(as2.length?ort(as2).toFixed(1):"—")+'</td></tr>';});
+ h+='</table></div>';
+ h+='<div class="card" style="overflow-x:auto"><h2>'+t("maliBaslik")+'</h2><table class="tbl"><tr><th>'+t("yil")+'</th><th>'+t("thPlanButce")+'</th><th>'+t("thGercekM")+'</th><th>'+t("sapmaL")+'</th><th>'+t("gelir")+'</th><th>'+t("netMaliyet")+'</th><th>'+t("karsilamaL")+'</th><th>'+t("thZiyBasiNet")+'</th></tr>';
+ ys.forEach(function(y){var g=yillar[y];
+  var pb=topla(g.map(function(e){return e.pButce;})),gm=topla(g.map(function(e){return e.gMaliyet;}));
+  var gg=topla(g.map(function(e){return e.gGelir;})),zi=topla(g.map(function(e){return e.gZiyaret;}));
+  var net=gm-gg,spy=pb?Math.round((gm-pb)*100/pb):null,kay=gm?Math.round(gg*100/gm):null;
+  h+='<tr><td><b>'+y+'</b></td><td>'+para(pb)+'</td><td>'+para(gm)+'</td>'+
+  '<td>'+(spy!==null?(spy>0?"+":"")+spy+"%":"—")+'</td><td>'+para(gg)+'</td><td>'+para(net)+'</td>'+
+  '<td>'+(kay!==null?"%"+kay:"—")+'</td><td>'+(zi?para(Math.round(net*100/zi)/100):"—")+'</td></tr>';});
+ h+='</table></div>';
+ function grafik(baslik,dizi,fmt){
+  var mx=Math.max.apply(null,dizi.map(function(x){return x.v||0;}).concat([1]));
+  var g2='<div class="card"><h2>'+baslik+'</h2>';
+  dizi.forEach(function(x){g2+='<div class="crow"><div class="cl">'+x.k+'</div>'+
+   '<div class="cb"><i style="width:'+Math.round((x.v||0)*100/mx)+'%"></i></div>'+
+   '<div class="cv">'+fmt(x.v)+'</div></div>';});
+  return g2+'</div>';}
+ h+='<div class="grid2">'+
+ grafik(t("grfZiy"),ys.map(function(y){return {k:y,v:topla(yillar[y].map(function(e){return e.gZiyaret;}))};}),function(v){return para(v);})+
+ grafik(t("grfPuan"),ys.map(function(y){var ps=yillar[y].filter(function(e){return e.puan;}).map(function(e){return e.puan;});return {k:y,v:ps.length?ort(ps):0};}),function(v){return v?v.toFixed(1)+" / 5":"—";})+
+ '</div>';
+ var turler={};L.forEach(function(e){var k=e.tur||"diger";(turler[k]=turler[k]||[]).push(e);});
+ h+='<div class="card" style="overflow-x:auto"><h2>'+t("turBaslik")+'</h2><table class="tbl"><tr><th>'+t("turL")+'</th><th>'+t("etkinlik")+'</th><th>'+t("thOrtZiy")+'</th><th>'+t("thOrtNet")+'</th><th>'+t("thOrtPuan")+'</th><th>'+t("thOrtAnket")+'</th></tr>';
+ Object.keys(turler).forEach(function(k){var g=turler[k];
+  var zi=g.filter(function(e){return e.gZiyaret!=null;}).map(function(e){return e.gZiyaret;});
+  var ns=g.map(netM).filter(function(x){return x!==null;});
+  var ps=g.filter(function(e){return e.puan;}).map(function(e){return e.puan;});
+  var as2=g.filter(function(e){return e.anket!=null;}).map(function(e){return Number(e.anket);});
+  h+='<tr><td><b>'+turAd(k)+'</b></td><td>'+g.length+'</td>'+
+  '<td>'+(zi.length?para(Math.round(ort(zi))):"—")+'</td>'+
+  '<td>'+(ns.length?para(Math.round(ort(ns))):"—")+'</td>'+
+  '<td>'+(ps.length?ort(ps).toFixed(1):"—")+'</td><td>'+(as2.length?ort(as2).toFixed(1):"—")+'</td></tr>';});
+ h+='</table></div>';
+ var tek=L.filter(function(e){return e.tekrar==="evet"||(e.puan&&e.puan>=4);})
+  .sort(function(a,b){return (b.puan||0)-(a.puan||0);});
+ h+='<div class="card" style="overflow-x:auto"><h2>'+t("tekrarBaslik")+'</h2>';
+ if(tek.length){h+='<table class="tbl"><tr><th>'+t("etkinlik")+'</th><th>'+t("yil")+'</th><th>'+t("puan")+'</th><th>'+t("anket")+'</th><th>'+t("ziyaretci")+'</th><th>'+t("thKarar")+'</th></tr>';
+  tek.forEach(function(e){
+   h+='<tr><td><a onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+esc(e.adx)+'</a></td><td>'+yil(e.bas)+'</td>'+
+   '<td>'+yildiz(e.puan)+'</td><td>'+anketTxt(e)+'</td><td>'+(e.gZiyaret!=null?para(e.gZiyaret):"—")+'</td>'+
+   '<td>'+(e.tekrar?'<span class="bd '+(e.tekrar==="evet"?"yesil":(e.tekrar==="hayir"?"kirmizi":"sari"))+'">'+t("tk_k_"+e.tekrar)+'</span>':"—")+'</td></tr>';});
+  h+='</table>';}else h+='<div class="mut">'+t("tekrarBos")+'</div>';
+ h+='</div>';
+ var seriler={};L.forEach(function(e){var k=seriKey(e);if(!k)return;(seriler[k]=seriler[k]||[]).push(e);});
+ var cok=Object.keys(seriler).filter(function(k){return seriler[k].length>=2;});
+ if(cok.length){
+  h+='<div class="card" style="overflow-x:auto"><h2>'+t("seriGelisim")+'</h2>';
+  cok.forEach(function(k){var g=seriler[k].sort(function(a,b){return (a.bas||"")<(b.bas||"")?-1:1;});
+   h+='<h2 style="margin-top:10px">'+esc(k)+'</h2><table class="tbl"><tr><th>'+t("yil")+'</th><th>'+t("ziyaretci")+'</th><th>'+t("trafik")+'</th><th>'+t("netMaliyet")+'</th><th>'+t("puan")+'</th><th>'+t("anket")+'</th><th>'+t("thEgilim")+'</th></tr>';
+   g.forEach(function(e,i){
+    var n=netM(e),eg="";
+    if(i>0&&g[i-1].gZiyaret!=null&&e.gZiyaret!=null){
+     var f2=e.gZiyaret-g[i-1].gZiyaret;
+     eg=f2>0?'<span class="bd yesil">'+t("artis")+'</span>':(f2<0?'<span class="bd kirmizi">'+t("dusus")+'</span>':'<span class="bd gri">'+t("ayni")+'</span>');}
+    h+='<tr><td><b>'+yil(e.bas)+'</b></td><td>'+(e.gZiyaret!=null?para(e.gZiyaret):"—")+'</td>'+
+    '<td>'+upliftBd(e)+'</td><td>'+(n!=null?para(n):"—")+'</td>'+
+    '<td>'+yildiz(e.puan)+'</td><td>'+anketTxt(e)+'</td><td>'+eg+'</td></tr>';});
+   h+='</table>';});
+  h+='</div>';}
+ return h;
+}
+function seriTablo(e){
+ var k=seriKey(e);if(!k)return "";
+ var g=EV.filter(function(x){return x.id!==e.id&&seriKey(x)===k&&x.durum==="tamamlandi";})
+  .sort(function(a,b){return (a.bas||"")<(b.bas||"")?-1:1;});
+ if(!g.length)return "";
+ var h='<div class="card" style="overflow-x:auto"><h2>'+t("seriGecmis",esc(k))+'</h2>'+
+ '<table class="tbl"><tr><th>'+t("yil")+'</th><th>'+t("ziyaretci")+'</th><th>'+t("trafik")+'</th><th>'+t("netMaliyet")+'</th><th>'+t("puan")+'</th><th>'+t("anket")+'</th><th></th></tr>';
+ g.forEach(function(x){var n=netM(x);
+  h+='<tr><td><b>'+yil(x.bas)+'</b></td><td>'+(x.gZiyaret!=null?para(x.gZiyaret):"—")+'</td>'+
+  '<td>'+upliftBd(x)+'</td><td>'+(n!=null?para(n):"—")+'</td><td>'+yildiz(x.puan)+'</td>'+
+  '<td>'+anketTxt(x)+'</td><td><a class="btn-ghost" onclick="git({ad:\'detay\',id:\''+x.id+'\'})">'+t("ac")+'</a></td></tr>';});
+ return h+'</table></div>';}
+
+/* ================ YILLIK PLAN ================ */
+function adaylarBul(){
+ var seriler={};
+ EV.filter(function(e){return e.durum==="tamamlandi";}).forEach(function(e){
+  var k=seriKey(e);if(!k)return;
+  if(!seriler[k]||(e.bas||"")>(seriler[k].bas||""))seriler[k]=e;});
+ return Object.keys(seriler).map(function(k){return seriler[k];})
+  .sort(function(a,b){return (b.puan||0)-(a.puan||0);});}
+function plandaSeriler(hYil){
+ var s={};EV.forEach(function(e){
+  if(e.durum!=="tamamlandi"&&e.durum!=="iptal"&&yil(e.bas)===String(hYil)){var k=seriKey(e);if(k)s[k]=1;}});
+ return s;}
+function vYillik(){
+ var yilx=+(ekran.yil||(+yil(bugun())+1));
+ var evler=EV.filter(function(e){return yil(e.bas)===String(yilx)&&e.durum!=="iptal";});
+ var aylar={};evler.forEach(function(e){var m=+e.bas.slice(5,7);(aylar[m]=aylar[m]||[]).push(e);});
+ var bos=0;for(var m2=1;m2<=12;m2++)if(!aylar[m2])bos++;
+ var h='<div class="bar"><div><h1>'+t("nav_yillik")+' — '+yilx+'</h1><p class="sub" style="margin:0">'+t("yAlt",yilx)+'</p></div>'+
+ '<div class="filters"><a class="btn-ghost" onclick="git({ad:\'yillik\',yil:'+(yilx-1)+'})">‹ '+(yilx-1)+'</a>'+
+ '<span class="bd gri">'+yilx+'</span>'+
+ '<a class="btn-ghost" onclick="git({ad:\'yillik\',yil:'+(yilx+1)+'})">'+(yilx+1)+' ›</a></div></div>';
+ h+='<div class="kpis">'+
+ '<div class="kpi"><span>'+yilx+'</span><b>'+t("kEtiketEtk",evler.length)+'</b></div>'+
+ '<div class="kpi"><span>'+t("kToplamButce")+'</span><b>'+para(topla(evler.map(function(e){return e.pButce;})))+'</b></div>'+
+ '<div class="kpi'+(bos?" warn":"")+'"><span>'+t("kBosAy")+'</span><b>'+bos+'</b></div></div>';
+ h+='<div class="ygrid">';
+ for(var m3=1;m3<=12;m3++){
+  var g=aylar[m3]||[];
+  h+='<div class="ykart"><h3>'+ay(m3-1)+'<span>'+(g.length?t("kEtiketEtk",g.length):"")+'</span></h3>';
+  g.sort(function(a,b){return a.bas<b.bas?-1:1;}).forEach(function(e){
+   h+='<div class="yev '+(e.durum==="tamamlandi"?"tamam":"")+'" onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+
+   '<b>'+esc(e.adx)+'</b><span>'+(+e.bas.slice(8,10))+' '+ay(m3-1)+(e.pButce!=null?' · '+para(e.pButce):"")+'</span></div>';});
+  h+='<div class="yekle" onclick="git({ad:\'form\',ay:\''+yilx+'-'+(m3<10?"0":"")+m3+'\'})">'+t("ekleAy")+'</div></div>';}
+ h+='</div>';
+ var adaylar=adaylarBul(),planda=plandaSeriler(yilx);
+ h+='<div class="card" style="overflow-x:auto"><h2>'+t("gecmisSecB",yilx)+'</h2>'+
+ '<div class="mut" style="margin-bottom:10px">'+t("gecmisAltN")+'</div>';
+ if(!adaylar.length)h+='<div class="mut">'+t("arsivBosY")+'</div>';
+ else{
+  h+='<div style="margin-bottom:8px"><a class="btn-ghost" onclick="onerilenSec()">'+t("onerBtn")+'</a></div>';
+  h+='<table class="tbl"><tr><th></th><th>'+t("etkinlik")+'</th><th>'+t("thSonYil")+'</th><th>'+t("puan")+'</th><th>'+t("anket")+'</th><th>'+t("ziyaretci")+'</th><th>'+t("netMaliyet")+'</th><th>'+t("thKarar")+'</th><th>'+t("thHedefAy")+'</th></tr>';
+  adaylar.forEach(function(e){var n=netM(e),pd=planda[seriKey(e)];
+   var orjAy=+((e.bas||"0000-01").slice(5,7))||1;
+   h+='<tr><td>'+(pd?'<span class="bd yesil">'+t("plandaEt")+'</span>':'<input type="checkbox" id="sec_'+e.id+'">')+'</td>'+
+   '<td><b>'+esc(seriKey(e))+'</b></td><td>'+yil(e.bas)+'</td><td>'+yildiz(e.puan)+'</td>'+
+   '<td>'+anketTxt(e)+'</td><td>'+(e.gZiyaret!=null?para(e.gZiyaret):"—")+'</td><td>'+(n!=null?para(n):"—")+'</td>'+
+   '<td>'+(e.tekrar?'<span class="bd '+(e.tekrar==="evet"?"yesil":(e.tekrar==="hayir"?"kirmizi":"sari"))+'">'+t("tk_k_"+e.tekrar)+'</span>':"—")+'</td>'+
+   '<td>'+(pd?"—":'<select id="ay_'+e.id+'">'+AY[dil].map(function(a2,i){return '<option value="'+(i+1)+'" '+((i+1)===orjAy?"selected":"")+'>'+a2+'</option>';}).join("")+'</select>')+'</td></tr>';});
+  h+='</table><div style="margin-top:12px"><a class="btn" onclick="planaEkle('+yilx+')">'+t("secEkleBtn",yilx)+'</a></div>';}
+ h+='</div>';
+ return h;
+}
+function onerilenSec(){
+ adaylarBul().forEach(function(e){
+  if((e.puan||0)>=4||e.tekrar==="evet"){
+   var c=document.getElementById("sec_"+e.id);if(c)c.checked=true;}});}
+function planaEkle(hYil){
+ var adaylar=adaylarBul(),planda=plandaSeriler(hYil),n=0,isler=[];
+ adaylar.forEach(function(e){
+  if(planda[seriKey(e)])return;
+  var c=document.getElementById("sec_"+e.id);
+  if(!c||!c.checked)return;
+  var aySec=document.getElementById("ay_"+e.id);
+  var m=aySec?+aySec.value:(+e.bas.slice(5,7)||1);if(!m||m<1||m>12)m=+e.bas.slice(5,7)||1;
+  var yeni=kopyaTemel(e);
+  var gunler=(e.bas&&e.bit)?farkGun(e.bas,e.bit):0;if(gunler<0)gunler=0;
+  var g0=+e.bas.slice(8,10)||1,gm=gunSayisi(hYil,m);if(g0>gm)g0=gm;
+  yeni.bas=hYil+"-"+(m<10?"0":"")+m+"-"+(g0<10?"0":"")+g0;
+  yeni.bit=gunler?tarihEkleGun(yeni.bas,gunler):yeni.bas;
+  EV.push(yeni);isler.push(evKaydet(yeni));n++;});
+ if(!n){fls(t("fSecYok"),"error");ciz();return;}
+ ekran={ad:"yillik",yil:hYil};
+ logla("plan",n+" etkinlik "+hYil+" yıllık planına eklendi");
+ fls(t("fPlanEkle",n,hYil));
+ Promise.all(isler).then(ciz);}
+
+/* ================ TOPLANTILAR ================ */
+function topBul(id){for(var i=0;i<TOP.length;i++)if(TOP[i].id===id)return TOP[i];return null;}
+function oncekiEtkinlik(e){
+ var k=seriKey(e);if(!k)return null;
+ var g=EV.filter(function(x){return x.id!==e.id&&seriKey(x)===k&&x.durum==="tamamlandi"&&x.gZiyaret!=null&&(x.bas||"")<(e.bas||"");})
+  .sort(function(a,b){return a.bas<b.bas?1:-1;});
+ return g[0]||null;}
+function soruListesi(e){
+ var s=[],u=uplift(e),ka=karsilama(e),sp=sapma(e);
+ s.push({id:"iyi",q:t("s_iyi")});
+ s.push({id:"degistir",q:t("s_degistir")});
+ if(u!==null){if(u>=30)s.push({id:"uplift_hi",q:t("s_uplift_hi",u)});
+  else if(u<15)s.push({id:"uplift_lo",q:t("s_uplift_lo",u)});}
+ if(e.puan&&e.anket!=null){var fark=e.puan-e.anket;
+  if(fark>=1)s.push({id:"gap1",q:t("s_gap1",e.puan,Number(e.anket).toFixed(1))});
+  else if(fark<=-1)s.push({id:"gap2",q:t("s_gap2",Number(e.anket).toFixed(1),e.puan)});}
+ if(e.anket==null)s.push({id:"anket_yok",q:t("s_anket_yok")});
+ if(sp!==null){if(sp>10)s.push({id:"butce_asim",q:t("s_butce_asim",sp)});
+  else if(sp<-10)s.push({id:"butce_alt",q:t("s_butce_alt",Math.abs(sp))});}
+ if(e.gMaliyet!=null){
+  if(!e.gGelir)s.push({id:"gelir_yok",q:t("s_gelir_yok")});
+  else if(ka!==null&&ka>=100)s.push({id:"kendini",q:t("s_kendini",ka)});
+  else if(ka!==null&&ka<60)s.push({id:"gelir_dusuk",q:t("s_gelir_dusuk",ka)});}
+ var kf=null;if(e.pZiyaret&&e.gZiyaret!=null)kf=Math.round((e.gZiyaret-e.pZiyaret)*100/e.pZiyaret);
+ if(kf!==null){if(kf<=-15)s.push({id:"katilim_az",q:t("s_katilim_az",Math.abs(kf))});
+  else if(kf>=15)s.push({id:"katilim_cok",q:t("s_katilim_cok",kf)});}
+ var onc=oncekiEtkinlik(e);
+ if(onc&&e.gZiyaret!=null&&onc.gZiyaret){
+  var dg=Math.round((e.gZiyaret-onc.gZiyaret)*100/onc.gZiyaret);
+  if(dg<=-10)s.push({id:"yoy_dus",q:t("s_yoy_dus",yil(onc.bas),Math.abs(dg))});
+  else if(dg>=10)s.push({id:"yoy_art",q:t("s_yoy_art",yil(onc.bas),dg)});}
+ if(e.eksi)s.push({id:"kok",q:t("s_kok")});
+ if(e.oneri)s.push({id:"fikir",q:t("s_fikir")});
+ s.push({id:"hedef",q:t("s_hedef")});
+ return s;}
+function vTopListe(){
+ var h='<div class="bar"><div><h1>'+t("nav_top")+'</h1><p class="sub" style="margin:0">'+t("tAlt")+'</p></div>'+
+ '<a class="btn" onclick="git({ad:\'topYeni\'})">'+t("yeniTopB")+'</a></div>';
+ if(!TOP.length)return h+'<div class="card mut">'+t("tBosL")+'</div>';
+ var L=TOP.slice().sort(function(a,b){return (a.tarih||"")<(b.tarih||"")?1:-1;});
+ h+='<div class="card" style="padding:6px 8px;overflow-x:auto"><table class="tbl"><tr><th>'+t("tarihL")+'</th><th>'+t("etkinlik")+'</th><th>'+t("thKatilim")+'</th><th>'+t("thCevap")+'</th><th>'+t("thKararS")+'</th><th></th></tr>';
+ L.forEach(function(m){var e=bul(m.evId);
+  var cs=Object.keys(m.cevaplar||{}).filter(function(k){return (m.cevaplar[k]||"").trim();}).length;
+  h+='<tr><td>'+tarih(m.tarih)+'</td><td>'+(e?'<a onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+esc(e.adx)+'</a> <span class="mut">('+yil(e.bas)+')</span>':'<span class="mut">'+t("silinmisEtk")+'</span>')+'</td>'+
+  '<td>'+esc(m.katilim||"—")+'</td><td>'+cs+'</td><td>'+(m.kararlar||[]).length+'</td>'+
+  '<td><div style="display:flex;gap:6px;align-items:center"><a class="btn-ghost" onclick="git({ad:\'topDetay\',id:\''+m.id+'\'})">'+t("ac")+'</a>'+
+  (yon()?'<button class="btn-danger" onclick="topSil(\''+m.id+'\')">'+t("sil")+'</button>':"")+'</div></td></tr>';});
+ return h+'</table></div>';}
+function vTopYeni(){
+ var L=EV.filter(function(e){return e.durum==="tamamlandi";})
+  .sort(function(a,b){return (a.bas||"")<(b.bas||"")?1:-1;});
+ var h='<h1>'+t("tYeniBaslik")+'</h1><p class="sub">'+t("tYeniAlt")+'</p><div class="card">';
+ if(!L.length)return h+'<div class="mut">'+t("tYeniBos")+'</div></div>';
+ h+='<form onsubmit="return topOlustur(event)"><div class="frm">'+
+ '<div class="full"><label>'+t("lEtkSec")+'</label><select name="evId" required>'+
+ L.map(function(e){return '<option value="'+e.id+'">'+esc(e.adx)+' ('+yil(e.bas)+')</option>';}).join("")+'</select></div>'+
+ '<div><label>'+t("lTTarih")+'</label><input type="date" name="tarih" value="'+bugun()+'"></div>'+
+ '<div><label>'+t("thKatilim")+'</label><input name="katilim" placeholder="'+t("katPh")+'"></div>'+
+ '</div><div class="frm-alt"><button class="btn" type="submit">'+t("baslatBtn")+'</button>'+
+ '<a class="btn-ghost" onclick="git({ad:\'top\'})">'+t("vazgec")+'</a></div></form></div>';
+ return h;}
+function topOlustur(ev2){ev2.preventDefault();
+ var evId=fd(ev2,"evId");if(!evId)return false;
+ var m={id:yeniId(),evId:evId,tarih:fd(ev2,"tarih")||bugun(),katilim:fd(ev2,"katilim"),cevaplar:{},kararlar:[],o:simdi()};
+ TOP.push(m);
+ var e3=bul(evId);logla("toplantı","Toplantı oluşturuldu: "+(e3?e3.adx:""));
+ koy("top",m).then(function(){git({ad:"topDetay",id:m.id});});return false;}
+function topAcVeyaOlustur(evId){
+ var var2=TOP.filter(function(m){return m.evId===evId;}).sort(function(a,b){return (a.tarih||"")<(b.tarih||"")?1:-1;});
+ if(var2.length){git({ad:"topDetay",id:var2[0].id});return;}
+ var m={id:yeniId(),evId:evId,tarih:bugun(),katilim:"",cevaplar:{},kararlar:[],o:simdi()};
+ TOP.push(m);
+ var e4=bul(evId);logla("toplantı","Toplantı oluşturuldu: "+(e4?e4.adx:""));
+ koy("top",m).then(function(){git({ad:"topDetay",id:m.id});});}
+function topSil(id){if(!yon()){fls(t("silYetki"),"error");ciz();return;}
+ if(!confirm(t("silOnayTop")))return;
+ TOP=TOP.filter(function(m){return m.id!==id;});
+ logla("toplantı","Toplantı silindi");
+ silK("top",id).then(function(){fls(t("fSilindi"));git({ad:"top"});});}
+function vTopDetay(id){
+ var m=topBul(id);if(!m)return vTopListe();
+ var e=bul(m.evId);
+ var h='<div class="bar"><div><h1>'+t("tDetBaslik")+(e?' — '+esc(e.adx):"")+'</h1>'+
+ '<p class="sub" style="margin:0">'+tarih(m.tarih)+(e?' · '+esc(e.adx)+' ('+yil(e.bas)+')':' · '+t("silinmisEtk"))+'</p></div>'+
+ '<div class="filters">'+(e?'<a class="btn-ghost" onclick="git({ad:\'detay\',id:\''+e.id+'\'})">'+t("etkGit")+'</a>':"")+
+ '<a class="btn-ghost" onclick="window.print()">'+t("yazdir")+'</a>'+
+ (yon()?'<button class="btn-danger" onclick="topSil(\''+m.id+'\')">'+t("sil")+'</button>':"")+
+ '<a class="btn-ghost" onclick="git({ad:\'top\'})">← '+t("nav_top")+'</a></div></div>';
+ if(e){
+  var n=netM(e),ka=karsilama(e),sp=sapma(e);
+  h+='<div class="card"><h2>'+t("karneBaslik")+'</h2><div class="detK">'+
+  '<div><span>'+t("puan")+'</span><b>'+(e.puan?e.puan+" / 5":"—")+'</b></div>'+
+  '<div><span>'+t("anket")+'</span><b>'+anketTxt(e)+'</b></div>'+
+  '<div><span>'+t("trafik")+'</span><b>'+upliftBd(e)+'</b></div>'+
+  '<div><span>'+t("mZiyBG")+'</span><b>'+(e.pZiyaret!=null?para(e.pZiyaret):"—")+' → '+(e.gZiyaret!=null?para(e.gZiyaret):"—")+'</b></div>'+
+  '<div><span>'+t("netMaliyet")+'</span><b>'+(n!=null?para(n):"—")+'</b></div>'+
+  '<div><span>'+t("karsilamaL")+'</span><b>'+(ka!=null?"%"+ka:"—")+'</b></div>'+
+  '<div><span>'+t("sapmaL")+'</span><b>'+(sp!=null?(sp>0?"+":"")+sp+"%":"—")+'</b></div></div>';
+  if(e.arti)h+='<div style="margin-top:8px"><b style="font-size:12.5px">'+t("artilarE")+'</b> <span class="mut">'+esc(e.arti)+'</span></div>';
+  if(e.eksi)h+='<div style="margin-top:4px"><b style="font-size:12.5px">'+t("dersEksiler")+'</b> <span class="mut">'+esc(e.eksi)+'</span></div>';
+  if(e.oneri)h+='<div style="margin-top:4px"><b style="font-size:12.5px">'+t("dersFikirler")+'</b> <span class="mut">'+esc(e.oneri)+'</span></div>';
+  h+='</div>'+yorumKart(e);}
+ h+='<div class="card"><h2>'+(e?t("soruBaslikT"):t("tBilgiBaslik"))+'</h2>'+
+ '<form onsubmit="return topKaydet(event,\''+m.id+'\')"><div class="frm">'+
+ '<div><label>'+t("lTTarih")+'</label><input type="date" name="tarih" value="'+esc(m.tarih||"")+'"></div>'+
+ '<div><label>'+t("thKatilim")+'</label><input name="katilim" value="'+esc(m.katilim||"")+'"></div></div>';
+ if(e){soruListesi(e).forEach(function(s2){
+  h+='<div style="margin-top:12px"><label style="display:block;font-size:12.5px;font-weight:600;margin-bottom:4px">'+s2.q+'</label>'+
+  '<textarea name="c_'+s2.id+'" rows="2" style="width:100%">'+esc((m.cevaplar||{})[s2.id]||"")+'</textarea></div>';});}
+ h+='<div class="frm-alt"><button class="btn" type="submit">'+t("topKaydetBtn")+'</button></div></form></div>';
+ h+='<div class="card"><h2>'+t("kararBaslik")+'</h2>';
+ if(!(m.kararlar||[]).length)h+='<div class="mut">'+t("kararBos")+'</div>';
+ (m.kararlar||[]).forEach(function(k2,i){
+  h+='<div class="madde"><input type="checkbox" '+(k2.ok?"checked":"")+' onchange="kararToggle(\''+m.id+'\','+i+')">'+
+  '<span class="'+(k2.ok?"tamamx":"")+'">'+esc(k2.metin)+(k2.sorumlu?' <span class="mut">('+esc(k2.sorumlu)+')</span>':"")+'</span>'+
+  '<button class="kaldir" onclick="kararSil(\''+m.id+'\','+i+')">✕</button></div>';});
+ h+='<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'+
+ '<input id="kMetin" style="flex:2;min-width:180px" placeholder="'+t("kararPh")+'">'+
+ '<input id="kSorumlu" style="flex:1;min-width:110px" placeholder="'+t("sorumluPh")+'">'+
+ '<a class="btn-ghost" onclick="kararEkle(\''+m.id+'\')">'+t("ekleBtn")+'</a></div>';
+ if(e)h+='<div style="margin-top:10px"><a class="btn-ghost" onclick="kararAktar(\''+m.id+'\')">'+t("kararAktarBtn")+'</a></div>';
+ h+='</div>';
+ return h;}
+function topKaydet(ev2,id){ev2.preventDefault();
+ var m=topBul(id);if(!m)return false;
+ m.tarih=fd(ev2,"tarih")||m.tarih;m.katilim=fd(ev2,"katilim");
+ var e=bul(m.evId);
+ if(e){m.cevaplar=m.cevaplar||{};
+  soruListesi(e).forEach(function(s2){m.cevaplar[s2.id]=fd(ev2,"c_"+s2.id);});}
+ fls(t("fTop"));
+ logla("toplantı","Toplantı cevapları kaydedildi: "+(e?e.adx:""));
+ koy("top",m).then(ciz);return false;}
+function kararEkle(id){var m=topBul(id);if(!m)return;
+ var a=document.getElementById("kMetin"),b=document.getElementById("kSorumlu");
+ var metin=(a&&a.value||"").trim();if(!metin)return;
+ m.kararlar=m.kararlar||[];
+ m.kararlar.push({metin:metin,sorumlu:(b&&b.value||"").trim(),ok:false});
+ logla("toplantı","Karar eklendi: "+metin);
+ koy("top",m).then(ciz);}
+function kararToggle(id,i){var m=topBul(id);if(!m||!m.kararlar[i])return;
+ m.kararlar[i].ok=!m.kararlar[i].ok;koy("top",m).then(ciz);}
+function kararSil(id,i){var m=topBul(id);if(!m)return;
+ m.kararlar.splice(i,1);koy("top",m).then(ciz);}
+function kararAktar(id){var m=topBul(id);if(!m||!(m.kararlar||[]).length)return;
+ var e=bul(m.evId);if(!e)return;
+ var k=seriKey(e);
+ var hedef=EV.filter(function(x){return x.id!==e.id&&seriKey(x)===k&&(x.durum==="planlandi"||x.durum==="devam");})
+  .sort(function(a,b){return (a.bas||"9999")<(b.bas||"9999")?-1:1;})[0];
+ if(!hedef){fls(t("fHedefYok"),"error");ciz();return;}
+ if(!hedef.liste)hedef.liste=[];var n=0;
+ m.kararlar.forEach(function(k2){
+  var tx=t("pfxKarar")+k2.metin+(k2.sorumlu?" ("+k2.sorumlu+")":"");
+  if(!hedef.liste.some(function(y){return y.metin===tx;})){hedef.liste.push({metin:tx,ok:false});n++;}});
+ fls(n?t("fKararAktar",n,esc(hedef.adx)+" ("+yil(hedef.bas)+")"):t("fKararVar"));
+ if(n)logla("toplantı",n+" karar aktarıldı → "+hedef.adx+" ("+yil(hedef.bas)+")");
+ evKaydet(hedef).then(ciz);}
+
+/* ================ YÖNETİCİ KONTROL ================ */
+function vKontrol(){
+ var L=KUL.slice().sort(function(a,b){
+  return (a.durum==="bekliyor"?0:1)-(b.durum==="bekliyor"?0:1);});
+ var h='<h1>'+t("nav_kontrol")+'</h1><p class="sub">'+t("konAlt")+'</p>';
+ h+='<div class="card" style="padding:6px 8px;overflow-x:auto"><h2 style="padding:10px 10px 0">'+t("kulBaslik")+'</h2>'+
+ '<table class="tbl"><tr><th>'+t("adSoyad")+'</th><th>'+t("thKadi")+'</th><th>'+t("thRol")+'</th><th>'+t("durumL")+'</th><th></th></tr>';
+ L.forEach(function(u){
+  var ben2=BEN&&u.id===BEN.id;
+  h+='<tr><td><b>'+esc(u.ad)+'</b>'+(ben2?' <span class="mut">'+t("siz")+'</span>':"")+'</td>'+
+  '<td>'+esc(u.kadi)+'</td>'+
+  '<td>'+(u.rol==="yonetici"?'<span class="bd sari">'+t("rolYon")+'</span>':'<span class="bd gri">'+t("rolKul")+'</span>')+'</td>'+
+  '<td>'+(u.durum==="bekliyor"?'<span class="bd sari">'+t("stBekliyor")+'</span>':
+   (u.durum==="aktif"?'<span class="bd yesil">'+t("stAktif")+'</span>':'<span class="bd kirmizi">'+t("stPasif")+'</span>'))+
+  (u.talep?' <span class="bd kirmizi">'+t("talepBadge")+'</span>':"")+'</td>'+
+  '<td><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">';
+  if(u.durum==="bekliyor")h+='<button class="btn" style="padding:6px 12px;font-size:12.5px" onclick="kulOnay(\''+u.id+'\')">'+t("onayla")+'</button>';
+  if(!ben2){
+   if(u.durum==="aktif")h+='<button class="btn-danger" onclick="kulDurum(\''+u.id+'\',\'pasif\')">'+t("pasifYap")+'</button>';
+   else if(u.durum==="pasif")h+='<button class="btn-ghost" onclick="kulDurum(\''+u.id+'\',\'aktif\')">'+t("aktifYap")+'</button>';
+   h+='<button class="btn-ghost" onclick="kulRol(\''+u.id+'\')">'+(u.rol==="yonetici"?t("kulYap"):t("yonYap"))+'</button>';}
+  h+='<input id="kpw_'+u.id+'" type="password" placeholder="'+t("yeniSifrePh")+'" style="padding:5px 8px;width:110px">'+
+  '<button class="btn-ghost" onclick="kulSifre(\''+u.id+'\')">'+t("sifreBelirle")+'</button>'+
+  '</div></td></tr>';});
+ h+='</table></div>';
+ h+='<div class="card" style="padding:6px 8px;overflow-x:auto"><h2 style="padding:10px 10px 0">'+t("logBaslik")+'</h2>'+
+ '<table class="tbl"><tr><th>'+t("thZaman")+'</th><th>'+t("thKul")+'</th><th>'+t("thModul")+'</th><th>'+t("thDetayL")+'</th></tr>';
+ if(!LOG.length)h+='<tr><td colspan="4" class="mut" style="padding:16px">'+t("logBos")+'</td></tr>';
+ LOG.slice(0,300).forEach(function(r){
+  h+='<tr><td style="white-space:nowrap">'+r.t+'</td><td>'+esc(r.u)+'</td>'+
+  '<td><span class="bd gri">'+esc(r.m)+'</span></td><td>'+esc(r.d)+'</td></tr>';});
+ h+='</table></div>';
+ return h;}
+function kulOnay(id){var u=kulBul(id);if(!u)return;
+ u.durum="aktif";koy("kul",u);
+ logla("kullanici","Kullanıcı onaylandı: "+u.ad);
+ fls(t("fOnay",esc(u.ad)));ciz();}
+function kulDurum(id,d2){var u=kulBul(id);if(!u)return;
+ if(BEN&&id===BEN.id){fls(t("fKendi"),"error");ciz();return;}
+ u.durum=d2;koy("kul",u);
+ logla("kullanici","Kullanıcı "+(d2==="pasif"?"pasifleştirildi":"aktifleştirildi")+": "+u.ad);
+ fls(d2==="pasif"?t("fPasifOk",esc(u.ad)):t("fAktifOk",esc(u.ad)));ciz();}
+function kulRol(id){var u=kulBul(id);if(!u)return;
+ if(BEN&&id===BEN.id){fls(t("fKendiRol"),"error");ciz();return;}
+ u.rol=(u.rol==="yonetici")?"kullanici":"yonetici";koy("kul",u);
+ logla("kullanici","Rol değişti: "+u.ad+" → "+(u.rol==="yonetici"?"Yönetici":"Kullanıcı"));
+ fls(t("fRol"));ciz();}
+function kulSifre(id){var u=kulBul(id);if(!u)return;
+ var i2=document.getElementById("kpw_"+id),pw=(i2&&i2.value)||"";
+ if(pw.length<4){fls(t("fSifreKisa"),"error");ciz();return;}
+ u.pw=hash(pw);u.talep=false;koy("kul",u);
+ logla("kullanici","Şifre sıfırlandı: "+u.ad);
+ fls(t("fSifreOk",esc(u.ad)));ciz();}
+
+/* ================ YEDEK ================ */
+function yedekIndir(){
+ logla("sistem","Yedek indirildi");
+ Promise.all([hepsi("foto"),hepsi("top"),hepsi("kul"),hepsi("log")]).then(function(r){
+  var b=new Blob([JSON.stringify({ev:EV,foto:r[0],top:r[1],kul:r[2],log:r[3]},null,1)],{type:"application/json"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(b);
+  a.download="arkac_etkinlik_yedek_"+bugun()+".json";a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},2000);});}
+function yedekYukle(inp){
+ if(!inp.files||!inp.files[0])return;
+ var r=new FileReader();
+ r.onload=function(){
+  try{
+   var y=JSON.parse(r.result),isler=[];
+   (y.ev||[]).forEach(function(e){isler.push(koy("ev",e));});
+   (y.foto||[]).forEach(function(f){isler.push(koy("foto",f));});
+   (y.top||[]).forEach(function(m){isler.push(koy("top",m));});
+   (y.kul||[]).forEach(function(u){isler.push(koy("kul",u));});
+   (y.log||[]).forEach(function(g){isler.push(koy("log",g));});
+   Promise.all(isler).then(function(){return hepsi("ev");}).then(function(t1){
+    EV=t1;FOTO={};return hepsi("top");}).then(function(t2){
+    TOP=t2;return hepsi("kul");}).then(function(t3){
+    KUL=t3;return hepsi("log");}).then(function(t4){
+    LOG=(t4||[]).sort(function(a,b){return (a.t<b.t?1:(a.t>b.t?-1:0));});
+    logla("sistem","Yedekten geri yükleme yapıldı");
+    if(BEN){var u2=kulBul(BEN.id);
+     if(u2&&u2.durum==="aktif")BEN=u2;else{BEN=null;dSil(OKE);ekran={ad:"girisE"};}}
+    fls(t("fYedek"));ciz();});
+  }catch(err){fls(t("fYedekHata"),"error");ciz();}
+ };
+ r.readAsText(inp.files[0]);}
+
+/* ================ BAŞLAT ================ */
+var _basladi=false;
+function baslat(){
+ if(_basladi)return Promise.resolve();
+ _basladi=true;
+ return idbBaslat().then(function(){return hepsi("ev");}).then(function(t1){
+  EV=t1||[];
+  var mig=[];
+  EV.forEach(function(e){if(ESKI_TUR[e.tur]){e.tur=ESKI_TUR[e.tur];mig.push(koy("ev",e));}});
+  return Promise.all(mig);}).then(function(){return hepsi("top");}).then(function(t2){
+  TOP=t2||[];return hepsi("kul");}).then(function(t3){
+  KUL=t3||[];
+  if(!KUL.length){
+   var admin={id:yeniId(),kadi:"avm",ad:"Yönetici",pw:hash("123654"),
+    rol:"yonetici",durum:"aktif",talep:false,o:simdi()};
+   KUL.push(admin);return koy("kul",admin);}
+  }).then(function(){return hepsi("log");}).then(function(t4){
+  LOG=(t4||[]).sort(function(a,b){return (a.t<b.t?1:(a.t>b.t?-1:0));});
+  var oid=dOku(OKE);BEN=null;
+  if(oid){var u=kulBul(oid);if(u&&u.durum==="aktif")BEN=u;}
+  if(BEN&&BEN.dil&&DILLER.indexOf(BEN.dil)>=0)dil=BEN.dil;
+  if(!BEN)ekran={ad:"girisE"};
+  ciz();
+  var sp=document.getElementById("acilis");
+  if(sp&&sp.className!==undefined){
+   setTimeout(function(){sp.className="git";
+    setTimeout(function(){if(sp.parentNode&&sp.parentNode.removeChild)sp.parentNode.removeChild(sp);},600);},2600);}
+ });}
+if(typeof document!=="undefined"&&document.getElementById("app"))baslat();
+</script>
+</body>
+</html>
