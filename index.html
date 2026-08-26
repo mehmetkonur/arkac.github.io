@@ -294,6 +294,7 @@ nav_arsiv:d("Arşiv","Arhiw","Архив","Archive"),
 nav_analiz:d("Analiz","Seljerme","Анализ","Analysis"),
 nav_top:d("Toplantılar","Ýygnaklar","Совещания","Meetings"),
 nav_kontrol:d("Yönetici Kontrol","Dolandyryjy gözegçiligi","Панель администратора","Admin Control"),
+nav_siparis:d("Yeme-İçme Siparişi","Iýmit sargydy","Заказ еды","Food Ordering"),
 yeniEtk:d("+ Yeni etkinlik","+ Täze çäre","+ Новое мероприятие","+ New event"),
 cikis:d("Çıkış","Çykyş","Выход","Sign out"),
 rolYon:d("Yönetici","Dolandyryjy","Администратор","Administrator"),
@@ -753,7 +754,8 @@ function kenar(){
  var h='<aside class="side"><div class="logo">ARKAÇ <span>AVM</span><small>Etkinlik Merkezi</small></div><nav>'+
  m("ozet",t("nav_ozet"))+m("plan",t("nav_plan"))+m("yillik",t("nav_yillik"))+m("arsiv",t("nav_arsiv"))+m("analiz",t("nav_analiz"))+m("top",t("nav_top"));
  if(yon())h+='<a class="'+(ekran.ad==="kontrol"?"on":"")+'" onclick="git({ad:\'kontrol\'})">'+t("nav_kontrol")+(bekleyen?' <i class="pill">'+bekleyen+'</i>':"")+'</a>';
- h+='<div style="padding:10px 2px"><a class="btn" style="display:block;text-align:center" onclick="git({ad:\'form\'})">'+t("yeniEtk")+'</a></div>'+
+ h+='<a href="siparis.html">🍽 '+t("nav_siparis")+'</a>'+
+ '<div style="padding:10px 2px"><a class="btn" style="display:block;text-align:center" onclick="git({ad:\'form\'})">'+t("yeniEtk")+'</a></div>'+
  '</nav><div class="side-foot">'+
  '<div class="uname">'+esc(BEN.ad)+'</div>'+
  '<div class="urole">'+(yon()?t("rolYon"):t("rolKul"))+' · <span class="cikis" onclick="cikisE()">'+t("cikis")+'</span></div>'+
