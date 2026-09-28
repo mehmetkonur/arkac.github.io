@@ -22,6 +22,7 @@
 
 1. `0001_lavka_sema.sql` — tablolar, RLS kuralları, fonksiyonlar, canlı yayın
 2. `0002_lavka_menu.sql` — menü (30 ürün; `lavka.html` içindeki MENÜ bloğundan üretilir)
+3. `0003_lavka_adisyon.sql` — masalar ve adisyon (POS) tabloları (24 masa)
 
 Supabase panelinde **SQL Editor → New query** ekranına dosyaların içeriğini yapıştırıp
 çalıştırmak yeterlidir. (Aynı dosyalar tekrar çalıştırılabilir; menü güncellenir, stok
@@ -79,6 +80,16 @@ GitHub'a bağlayıp her push'ta otomatik yayın için:
 - [ ] Bar ekranında durum değiştirince misafir takip ekranı kendiliğinden güncelleniyor
 - [ ] Hazır Panosu tezgâh ekranında kodları gösteriyor
 - [ ] Çıkış yapıldığında ekip ekranları giriş istiyor
+
+## Masa / POS hakkında
+
+Masa haritası, adisyon (POS) ve QR menü ekranları **şu an yerel modda çalışır**: adisyonlar
+tarayıcıda tutulur, mutfağa gönderilen kalemler normal sipariş kaydına dönüşür. Bulut modunda
+bu ekranların çalışması için `0003_lavka_adisyon.sql` yüklenmeli ve sayfa tarafındaki adisyon
+işlemleri Supabase'e bağlanmalıdır (proje açıldıktan sonra yapılacak son adım).
+
+Masa düzenini değiştirmek için `lavka.html` başındaki **KATLAR** bloğunu düzenleyin; aynı
+tanımdan `0003_lavka_adisyon.sql` içindeki masa listesi üretilir.
 
 ## Güvenlik notları
 

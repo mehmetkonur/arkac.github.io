@@ -27,6 +27,9 @@ Tek işletme için sadeleştirilmiş, Lavka kimliğine göre tasarlanmış sür�
 * **Hazır sipariş panosu:** tezgâh üstü ekran için büyük sipariş kodları, tam ekran desteği
 * **Menü & stok yönetimi:** fiyat ve hazırlık süresi sayfa içinden düzenlenir, tükenen ürün satışa kapatılır, menü JSON olarak dışa aktarılır
 * **Gün raporu:** saatlik dağılım, en çok satanlar, istasyon (bar/fırın) ciro kırılımı, süreç adımı süreleri ve hedef karşılaştırması, memnuniyet puanı, CSV dışa aktarım
+* **Masa haritası ve adisyon:** salon/teras/tezgâh katları, boş-dolu-rezerve masa kartları, masa başına açık hesap tutarı ve süresi
+* **Dokunmatik POS ekranı:** adisyon fişi, büyük ürün kartları, ikram, iade, iskonto, adisyon bölme/taşıma, fiş yazdırma, nakit/kart tahsilat
+* **QR menü:** masadaki karekoddan açılan fotoğraflı misafir menüsü (kategori kapakları, ürün detayı, sepete ekleme)
 * **Açık / koyu görünüm:** sistem temasına uyar, sol alttan da değiştirilebilir (gece vardiyasında bar ekranı için)
 
 ### Gerçek menüyü yükleme
