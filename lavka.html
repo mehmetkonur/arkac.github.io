@@ -252,14 +252,17 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bakir);outline-o
   <div class="yan-alt">
    <button class="sbtn" id="dgAkis">Otomatik akış: AÇIK</button>
    <button class="sbtn" id="dgTema">Görünüm: Sistem</button>
-   <button class="sbtn" onclick="demoUret()">Demo sipariş üret</button>
-   <div class="kunye">2. Kat · Food Court A-12<br>Açılış 08:30 – 22:00<br><span id="saat" class="mono"></span></div>
+   <button class="sbtn" id="dgDemo" onclick="demoUret()">Demo sipariş üret</button>
+   <div id="yanEk"></div>
+   <div class="kunye"><span id="baglanti"></span>2. Kat · Food Court A-12<br>Açılış 08:30 – 22:00<br><span id="saat" class="mono"></span></div>
   </div>
  </aside>
  <main class="main" id="ekran"></main>
 </div>
 <div id="pencere"></div>
 <div id="bildirim"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="lavka-config.js"></script>
 <script>
 "use strict";
 /* ══════════════════════════════════════════════════════════════════
@@ -336,7 +339,8 @@ function urun(uid){
   var u=MENU[i].urunler[j];
   if(u.id===uid){var d=VERI.menuDuzen[uid]||{};
    return {id:u.id,ad:u.ad,ikon:u.ikon,aciklama:u.aciklama,istasyon:u.istasyon,kat:MENU[i].kat,
-    fiyat:(d.fiyat!=null?d.fiyat:u.fiyat),sure:(d.sure!=null?d.sure:u.sure),kapali:!!d.kapali};}}
+    fiyat:(d.fiyat!=null?d.fiyat:u.fiyat),sure:(d.sure!=null?d.sure:u.sure),
+    kapali:(BULUT.acik?(u.satista===false):!!d.kapali)};}}
  return null;}
 function tumUrunler(){var a=[];for(var i=0;i<MENU.length;i++)for(var j=0;j<MENU[i].urunler.length;j++)
  a.push(urun(MENU[i].urunler[j].id));return a;}
@@ -435,17 +439,22 @@ function aciliyet(s){if(s.durum==="teslim"||s.durum==="iptal")return "";
 function sonraki(s){var a=akisAdimlari(s),i=a.indexOf(s.durum);return (i<0||i>=a.length-1)?null:a[i+1];}
 
 function durumDegis(kod,yeni,kim,sessiz){
+ if(BULUT.acik)return bulutDurum(kod,yeni);
  var s=siparis(kod);if(!s)return;var t=simdi();
  s.durum=yeni;s.zaman[yeni]=t;
  if(yeni==="yolda"&&!s.kurye)s.kurye=sec(KURYELER);
  s.gecmis.push({ts:t,dur:yeni,kim:kim||"Sistem",mesaj:durum(yeni).ad});
  kaydet();if(!sessiz)bildir(s.kod+" → "+durum(yeni).ad,yeni==="teslim"?"ok":"");ciz();}
 function ilerlet(kod,kim){var s=siparis(kod);if(!s)return;var n=sonraki(s);if(n)durumDegis(kod,n,kim||"Ekip");}
-function iptalEt(kod,sebep,kim){var s=siparis(kod);if(!s)return;var t=simdi();
+function iptalEt(kod,sebep,kim){
+ if(BULUT.acik)return bulutIptal(kod,sebep,kim==="Misafir");
+ var s=siparis(kod);if(!s)return;var t=simdi();
  s.durum="iptal";s.zaman.iptal=t;s.iptalSebep=sebep||"Belirtilmedi";
  s.gecmis.push({ts:t,dur:"iptal",kim:kim||"Sistem",mesaj:"İptal: "+s.iptalSebep});
  kaydet();bildir(s.kod+" iptal edildi","hata");ciz();}
-function sureEkle(kod,d){var s=siparis(kod);if(!s)return;s.ekSure+=d;
+function sureEkle(kod,d){
+ if(BULUT.acik)return bulutSureEkle(kod,d);
+ var s=siparis(kod);if(!s)return;s.ekSure+=d;
  s.gecmis.push({ts:simdi(),dur:s.durum,kim:"Ekip",mesaj:"Hazırlık süresi +"+d+" dk uzatıldı"});
  kaydet();bildir(s.kod+" için süre +"+d+" dk");ciz();}
 
@@ -540,12 +549,14 @@ function demoSiparis(dkOnce,hedef){
   s.gecmis.push({ts:s.zaman.iptal,dur:"iptal",kim:"Kasa",mesaj:"İptal: "+s.iptalSebep});}
  kaydet();return s;}
 function demoUret(){
+ if(BULUT.acik)return bildir("Bulut modunda demo sipariş üretilmez","hata");
  var n=0,i;
  for(i=0;i<18;i++){demoSiparis(rnd(45,300),"teslim");n++;}
  for(i=0;i<2;i++){demoSiparis(rnd(5,18),sec(["hazir","hazirlik"]));n++;}
  for(i=0;i<4;i++){demoSiparis(rnd(.2,4),"akis");n++;}
  kaydet();bildir(n+" demo sipariş oluşturuldu","ok");ciz();}
 function hepsiniSil(){
+ if(BULUT.acik)return bildir("Bulut modunda kayıtlar buradan silinemez","hata");
  if(!confirm("Tüm sipariş kayıtları silinecek. Onaylıyor musunuz?"))return;
  VERI.siparisler=[];VERI.sayac=100;kaydet();bildir("Kayıtlar silindi");ciz();}
 
@@ -561,7 +572,13 @@ var FORM={ad:"",tel:"",tip:"masa",masa:"",magaza:"",kat:"",odeme:"online",not:""
 
 function git(h){location.hash="#/"+h;}
 function route(){var h=location.hash.replace(/^#\/?/,""),p=h.split("/");
- SAYFA={ad:p[0]||"menu",arg:p[1]||""};ciz();window.scrollTo(0,0);}
+ SAYFA={ad:p[0]||"menu",arg:p[1]||""};ciz();window.scrollTo(0,0);
+ if(BULUT.acik&&BULUT.hazir)routeCek();}
+function routeCek(){
+ if(SAYFA.ad==="pano"&&!BULUT.personel){panoCek().then(function(){ciz();});return;}
+ if(SAYFA.ad==="takip"&&SAYFA.arg){takipCek(SAYFA.arg).then(function(){ciz();});return;}
+ if(SAYFA.ad==="takip"){var k=Object.keys(TOKENLER).slice(-10);
+  if(k.length)Promise.all(k.map(takipCek)).then(function(){ciz();});}}
 window.addEventListener("hashchange",route);
 
 function sepetAdet(){var n=0;for(var k in SEPET)n+=SEPET[k];return n;}
@@ -589,10 +606,15 @@ function navCiz(){
   a("ekran","Bar &amp; Fırın Ekranı",bekleyen)+a("pano","Hazır Panosu",hazir)+a("servis","Servis / Kurye",hazir)+
   '<div class="grp">Yönetim</div>'+
   a("rapor","Gün Raporu",geciken)+a("siparisler","Sipariş Kayıtları",bugun.length)+a("menuyonetim","Menü &amp; Stok");
- var d=document.getElementById("dgAkis");
+ var d=document.getElementById("dgAkis"),dd=document.getElementById("dgDemo"),ek=document.getElementById("yanEk");
  d.textContent="Otomatik akış: "+(VERI.ayar.otomatik?"AÇIK":"KAPALI");
  d.className="sbtn"+(VERI.ayar.otomatik?" aktif":"");
  document.getElementById("dgTema").textContent="Görünüm: "+({sistem:"Sistem",light:"Açık",dark:"Koyu"})[VERI.ayar.tema||"sistem"];
+ d.style.display=dd.style.display=BULUT.acik?"none":"block";
+ if(!BULUT.acik){ek.innerHTML="";return;}
+ ek.innerHTML=BULUT.personel
+  ? '<button class="sbtn" onclick="cikisYap()">Çıkış · '+esc(BULUT.personel.ad)+'</button>'
+  : '<button class="sbtn" onclick="git(\'giris\')">Ekip girişi</button>';
 }
 function temaDegis(){
  var s=VERI.ayar.tema||"sistem",yeni=s==="sistem"?"light":(s==="light"?"dark":"sistem");
@@ -731,6 +753,7 @@ function siparisiGonder(){
  if(!FORM.ad.trim())return bildir("Lütfen ad soyad girin","hata");
  if(FORM.tip==="masa"&&!FORM.masa.trim())return bildir("Masa numarası gerekli","hata");
  if(FORM.tip==="magaza"&&(!FORM.magaza.trim()||!FORM.kat.trim()))return bildir("Mağaza ve kat bilgisi gerekli","hata");
+ if(BULUT.acik)return bulutSiparisVer(k);
  var s=siparisOlustur({kalemler:k,tip:FORM.tip,masa:FORM.masa,magaza:FORM.magaza,kat:FORM.kat,
   ad:FORM.ad,tel:FORM.tel,not:FORM.not,odeme:FORM.odeme});
  SEPET={};sepetKaydet();bildir("Siparişiniz alındı: "+s.kod,"ok");git("takip/"+s.kod);}
@@ -738,13 +761,16 @@ function siparisiGonder(){
 /* ---------------- sipariş takip ---------------- */
 function ekTakip(kod){
  if(!kod){
-  var liste=VERI.siparisler.slice().sort(function(a,b){return b.zaman.yeni-a.zaman.yeni;}).slice(0,12);
+  var liste=VERI.siparisler.slice();
+  if(BULUT.acik&&!BULUT.personel)liste=liste.filter(function(s){return !!TOKENLER[s.kod];});
+  liste=liste.sort(function(a,b){return b.zaman.yeni-a.zaman.yeni;}).slice(0,12);
   var h='<div class="bslk"><div><h1>Sipariş Takip</h1><p class="alt">Sipariş kodunuzu girin ya da listeden seçin; süreci canlı izleyin.</p></div></div>';
   h+='<div class="kart"><div class="araclar"><input id="kodAra" placeholder="Sipariş kodu (örn. '+ISLETME.kodOnEk+'-101)" style="min-width:250px">'+
    '<button class="dg" onclick="kodAraGit()">Sorgula</button></div></div>';
   h+='<div class="kart"><h2>Son Siparişler<span><span class="canli"></span>canlı</span></h2><div class="sar"><table class="tbl"><thead><tr>'+
    '<th>Kod</th><th>Saat</th><th>Teslimat</th><th>Durum</th><th>Geçen</th><th>Kalan / Sonuç</th><th class="sag">Tutar</th><th></th></tr></thead><tbody>';
-  if(!liste.length)h+='<tr><td colspan="8"><div class="bos">Henüz sipariş yok. Soldan <b>Menü &amp; Sipariş</b> ile başlayın.</div></td></tr>';
+  if(!liste.length)h+='<tr><td colspan="8"><div class="bos">'+
+   (BULUT.acik?'Bu cihazdan verilmiş sipariş yok. Kodunuzu yukarıdan sorgulayabilirsiniz.':'Henüz sipariş yok. Soldan <b>Menü &amp; Sipariş</b> ile başlayın.')+'</div></td></tr>';
   for(var i=0;i<liste.length;i++){var s=liste[i];
    h+='<tr><td class="mono"><b>'+s.kod+'</b></td><td class="soluk mono">'+ss(s.zaman.yeni)+'</td>'+
     '<td>'+tipRozet(s)+'<br><span class="soluk">'+nokta(s)+'</span></td><td>'+rozet(s)+'</td>'+
@@ -754,7 +780,8 @@ function ekTakip(kod){
   return h+'</tbody></table></div></div>';}
  var s2=siparis(kod);
  if(!s2)return '<div class="bslk"><div><h1>Sipariş Takip</h1></div></div><div class="kart"><div class="bos">'+
-  esc(kod)+' kodlu sipariş bulunamadı.<br><br><button class="dg" onclick="git(\'takip\')">← Takip ekranı</button></div></div>';
+  esc(kod)+' kodlu sipariş '+(BULUT.acik?'bu cihazda kayıtlı değil. Siparişi veren cihazdan takip edebilir ya da ekibimize sorabilirsiniz.':'bulunamadı.')+
+  '<br><br><button class="dg" onclick="git(\'takip\')">← Takip ekranı</button></div></div>';
  var d=durum(s2.durum),kal=kalanMs(s2);
  var h2='<div class="bslk"><div><h1 class="mono">'+s2.kod+' <span class="rz '+d.rz+'" style="vertical-align:middle;font-family:\'IBM Plex Sans\',sans-serif">'+d.ad+'</span></h1>'+
   '<p class="alt">'+tar(s2.zaman.yeni)+' '+ss(s2.zaman.yeni)+' · '+TIPLER[s2.tip].ad+' · '+nokta(s2)+'</p></div>'+
@@ -787,7 +814,7 @@ function ekTakip(kod){
  if(s2.durum==="yeni"||s2.durum==="onay")
   h2+='<button class="dg-x" onclick="misafirIptal(\''+s2.kod+'\')">Siparişi İptal Et</button> <span class="soluk">Hazırlığa başlanana kadar iptal edebilirsiniz.</span>';
  else if(s2.durum==="hazir"&&s2.tip==="gelal")
-  h2+='<button class="dg-ok" onclick="durumDegis(\''+s2.kod+'\',\'teslim\',\'Misafir · gel-al\')">Siparişi Teslim Aldım</button>';
+  h2+='<button class="dg-ok" onclick="'+(BULUT.acik?'bulutTeslimAldim':'misafirTeslimAldi')+'(\''+s2.kod+'\')">Siparişi Teslim Aldım</button>';
  else if(s2.durum==="teslim")h2+=puanKutu(s2);
  else if(s2.durum==="hazir"&&s2.tip==="masa")
   h2+='<div class="iyi-y">Siparişiniz hazır — servis ekibimiz masanıza getiriyor.</div>';
@@ -802,7 +829,10 @@ function puanKutu(s){
  var h='<div class="soluk" style="margin-bottom:8px">Siparişinizi değerlendirin:</div>';
  for(var i=1;i<=5;i++)h+='<button class="dg-h" onclick="puanVer(\''+s.kod+'\','+i+')">'+i+' ★</button> ';
  return h;}
-function puanVer(kod,p){var s=siparis(kod);if(!s)return;s.puan=p;kaydet();bildir("Teşekkürler, "+p+" yıldız verdiniz","ok");ciz();}
+function puanVer(kod,p){
+ if(BULUT.acik)return bulutPuan(kod,p);
+ var s=siparis(kod);if(!s)return;s.puan=p;kaydet();bildir("Teşekkürler, "+p+" yıldız verdiniz","ok");ciz();}
+function misafirTeslimAldi(kod){durumDegis(kod,"teslim","Misafir · gel-al");}
 function misafirIptal(kod){var sb=prompt("İptal sebebi:","Vazgeçtim");if(sb===null)return;iptalEt(kod,sb,"Misafir");}
 function kodAraGit(){var v=(document.getElementById("kodAra").value||"").trim().toUpperCase();
  if(!v)return bildir("Sipariş kodu girin","hata");
@@ -891,9 +921,10 @@ function ekipIptal(kod){var sb=prompt("Sipariş neden reddediliyor?","Ürün tü
 
 /* ---------------- hazır panosu (müşteri ekranı) ---------------- */
 function ekPano(){
- var hazir=VERI.siparisler.filter(function(s){return s.durum==="hazir";})
+ var kaynak=(BULUT.acik&&!BULUT.personel)?BULUT.panoVeri:VERI.siparisler;
+ var hazir=kaynak.filter(function(s){return s.durum==="hazir";})
   .sort(function(a,b){return b.zaman.hazir-a.zaman.hazir;});
- var hazirlanan=VERI.siparisler.filter(function(s){return s.durum==="hazirlik"||s.durum==="onay";})
+ var hazirlanan=kaynak.filter(function(s){return s.durum==="hazirlik"||s.durum==="onay";})
   .sort(function(a,b){return a.zaman.yeni-b.zaman.yeni;});
  var h='<div class="bslk"><div><h1>Hazır Siparişler Panosu</h1>'+
   '<p class="alt">Tezgâh üstü ekran için · Kodu görünen misafirler siparişlerini alabilir</p></div>'+
@@ -1155,12 +1186,14 @@ function satisAdedi(liste,uid){var n=0;
   for(var j=0;j<liste[i].kalemler.length;j++)if(liste[i].kalemler[j].id===uid)n+=liste[i].kalemler[j].adet;}
  return n;}
 function menuAyar(uid,alan,deger){
+ if(BULUT.acik)return bulutMenuAyar(uid,alan,deger);
  var d=VERI.menuDuzen[uid]||{};
  if(alan==="kapali")d.kapali=(deger===true||deger==="true");
  else{var v=parseFloat(deger);if(isNaN(v)||v<0)return bildir("Geçerli bir sayı girin","hata");d[alan]=v;}
  VERI.menuDuzen[uid]=d;kaydet();
  bildir(urun(uid).ad+" güncellendi",alan==="kapali"?"":"ok");ciz();}
 function menuSifirla(){
+ if(BULUT.acik)return bildir("Bulut modunda menü doğrudan veritabanında tutulur","hata");
  if(!confirm("Fiyat, süre ve stok düzenlemeleri silinip dosyadaki menüye dönülecek. Onaylıyor musunuz?"))return;
  VERI.menuDuzen={};kaydet();bildir("Menü düzenlemeleri sıfırlandı");ciz();}
 function menuDisaAktar(){
@@ -1211,11 +1244,219 @@ function pencereKapat(){var p=document.getElementById("pencere");p.className="";
 document.addEventListener("keydown",function(e){if(e.key==="Escape")pencereKapat();});
 
 /* ══════════════════════════════════════════════════════════════════
+   BULUT KATMANI — Supabase (gerçek zamanlı, çok cihazlı çalışma)
+   lavka-config.js doldurulmuşsa devreye girer; boşsa sayfa eskisi gibi
+   tarayıcıda çalışan demo modunda kalır.
+   ══════════════════════════════════════════════════════════════════ */
+var BULUT={acik:false,sb:null,kullanici:null,personel:null,kanal:null,
+           hazir:false,hata:"",sonCekme:0,panoVeri:[],takipVeri:null};
+/* Misafirin kendi siparişleri: {kod:takip_token} — tarayıcıda saklanır */
+var TOKENLER={};
+try{var _t=dOku("lavka_tokenler");if(_t)TOKENLER=JSON.parse(_t);}catch(e){}
+function tokenKaydet(){try{dYaz("lavka_tokenler",JSON.stringify(TOKENLER));}catch(e){}}
+
+function bulutVarMi(){
+ var c=window.LAVKA_CONFIG||{};
+ return !!(c.supabaseUrl&&c.supabaseKey&&window.supabase&&window.supabase.createClient);}
+
+function ts(x){return x?new Date(x).getTime():0;}
+/* Veritabanı satırını sayfanın kullandığı sipariş nesnesine çevirir */
+function dbden(r){
+ return {id:r.id,kod:r.kod,ad:r.ad,tel:r.tel||"",tip:r.tip,masa:r.masa||"",magaza:r.magaza||"",kat:r.kat||"",
+  not:r.siparis_notu||"",odeme:r.odeme||"online",kalemler:(r.kalemler||[]).map(function(k){
+   return {id:k.id,ad:k.ad,fiyat:+k.fiyat,sure:+k.sure,istasyon:k.istasyon||"firin",adet:+k.adet};}),
+  araToplam:+r.ara_toplam,servis:+r.servis,toplam:+r.toplam,durum:r.durum,
+  sozDk:+r.soz_dk,ekSure:+r.ek_sure,kurye:r.kurye||"",iptalSebep:r.iptal_sebep||"",puan:r.puan||null,
+  zaman:{yeni:ts(r.t_yeni),onay:ts(r.t_onay),hazirlik:ts(r.t_hazirlik),hazir:ts(r.t_hazir),
+         yolda:ts(r.t_yolda),teslim:ts(r.t_teslim),iptal:ts(r.t_iptal)},
+  gecmis:(r.gecmis||[]).map(function(g){return {ts:ts(g.ts),dur:g.dur,kim:g.kim,mesaj:g.mesaj};}),
+  oto:{},elle:true};}
+
+function siparisiYerlestir(o){
+ for(var i=0;i<VERI.siparisler.length;i++)
+  if(VERI.siparisler[i].kod===o.kod){VERI.siparisler[i]=o;return;}
+ VERI.siparisler.push(o);}
+
+/* ---- başlatma ---- */
+function bulutBaslat(){
+ var c=window.LAVKA_CONFIG;
+ BULUT.sb=window.supabase.createClient(c.supabaseUrl,c.supabaseKey,{auth:{persistSession:true}});
+ BULUT.acik=true; VERI.ayar.otomatik=false; VERI.siparisler=[];
+ return menuCek().then(oturumTazele).then(function(){
+  BULUT.hazir=true; ciz(); routeCek();
+ }).catch(function(e){bulutHata(e);BULUT.hazir=true;ciz();});}
+
+function bulutHata(e){
+ var m=(e&&(e.message||e.error_description))||String(e);
+ BULUT.hata=m; bildir("Sunucu hatası: "+m,"hata"); return null;}
+
+/* Menü: veritabanı tek doğru kaynak */
+function menuCek(){
+ return BULUT.sb.from("lavka_menu").select("*").order("sira").then(function(r){
+  if(r.error)throw r.error;
+  var kat=[],ix={};
+  (r.data||[]).forEach(function(u){
+   if(!ix[u.kategori]){ix[u.kategori]={kat:u.kategori,urunler:[]};kat.push(ix[u.kategori]);}
+   ix[u.kategori].urunler.push({id:u.id,ad:u.ad,fiyat:+u.fiyat,sure:+u.sure,ikon:u.ikon||"",
+    istasyon:u.istasyon,aciklama:u.aciklama||"",satista:u.satista});});
+  if(kat.length){MENU=kat;VERI.menuDuzen={};}
+  return true;});}
+
+/* Oturum + personel kaydı */
+function oturumTazele(){
+ return BULUT.sb.auth.getSession().then(function(r){
+  var o=r.data&&r.data.session;
+  BULUT.kullanici=o?o.user:null;
+  if(!BULUT.kullanici){BULUT.personel=null;return null;}
+  return BULUT.sb.from("lavka_personel").select("*").eq("user_id",BULUT.kullanici.id).maybeSingle()
+   .then(function(p){BULUT.personel=(p.data&&p.data.aktif)?p.data:null;
+    if(BULUT.personel)return siparisleriCek().then(kanalAc);
+    return null;});});}
+
+function girisYap(mail,sifre){
+ return BULUT.sb.auth.signInWithPassword({email:mail,password:sifre}).then(function(r){
+  if(r.error)throw r.error;
+  return oturumTazele();}).then(function(){
+  if(!BULUT.personel){bildir("Bu hesap ekip üyesi olarak tanımlı değil","hata");return;}
+  bildir("Hoş geldiniz, "+BULUT.personel.ad,"ok");ciz();})
+ .catch(function(e){bulutHata(e);});}
+function cikisYap(){
+ return BULUT.sb.auth.signOut().then(function(){
+  BULUT.kullanici=null;BULUT.personel=null;VERI.siparisler=[];
+  if(BULUT.kanal){BULUT.sb.removeChannel(BULUT.kanal);BULUT.kanal=null;}
+  bildir("Oturum kapatıldı");git("menu");});}
+
+/* Personel: tüm siparişler + canlı yayın */
+function siparisleriCek(){
+ var gun=new Date();gun.setHours(0,0,0,0);
+ return BULUT.sb.from("lavka_siparis").select("*")
+  .gte("t_yeni",new Date(gun.getTime()-2*86400000).toISOString())
+  .order("t_yeni",{ascending:false}).limit(500).then(function(r){
+   if(r.error)throw r.error;
+   VERI.siparisler=(r.data||[]).map(dbden);
+   BULUT.sonCekme=simdi();return true;});}
+function kanalAc(){
+ if(BULUT.kanal)return;
+ BULUT.kanal=BULUT.sb.channel("lavka-siparis")
+  .on("postgres_changes",{event:"*",schema:"public",table:"lavka_siparis"},function(p){
+    if(p.eventType==="DELETE")return;
+    var o=dbden(p.new);
+    var yeniMi=!siparis(o.kod);
+    siparisiYerlestir(o);
+    if(yeniMi&&o.durum==="yeni")bildir("Yeni sipariş: "+o.kod,"ok");
+    if(!formAcikMi())ciz();})
+  .on("postgres_changes",{event:"*",schema:"public",table:"lavka_menu"},function(){menuCek();})
+  .subscribe();}
+
+/* ---- misafir işlemleri ---- */
+function bulutSiparisVer(kalemler){
+ var gonder=kalemler.map(function(k){return {id:k.id,adet:k.adet};});
+ return BULUT.sb.rpc("lavka_siparis_olustur",{
+  p_kalemler:gonder,p_tip:FORM.tip,p_ad:FORM.ad,p_tel:FORM.tel,
+  p_masa:FORM.masa,p_magaza:FORM.magaza,p_kat:FORM.kat,p_not:FORM.not,p_odeme:FORM.odeme})
+ .then(function(r){
+  if(r.error)throw r.error;
+  var d=(r.data&&r.data[0])||r.data;
+  if(!d)throw new Error("Sipariş oluşturulamadı");
+  TOKENLER[d.kod]=d.takip_token;tokenKaydet();
+  SEPET={};sepetKaydet();
+  bildir("Siparişiniz alındı: "+d.kod,"ok");
+  git("takip/"+d.kod);})
+ .catch(function(e){bulutHata(e);});}
+
+function takipCek(kod){
+ var tk=TOKENLER[kod];
+ if(!tk){BULUT.takipVeri=null;return Promise.resolve(null);}
+ return BULUT.sb.rpc("lavka_siparis_durum",{p_kod:kod,p_token:tk}).then(function(r){
+  if(r.error)throw r.error;
+  if(!r.data)return null;
+  var o=dbden(r.data);siparisiYerlestir(o);return o;}).catch(function(e){return bulutHata(e);});}
+function panoCek(){
+ return BULUT.sb.rpc("lavka_pano").then(function(r){
+  if(r.error)throw r.error;
+  BULUT.panoVeri=(r.data||[]).map(function(x){
+   return {kod:x.kod,durum:x.durum,tip:x.tip,ad:x.ad_kisa||"",sozDk:+x.soz_dk,ekSure:+x.ek_sure,
+    kalemler:[],zaman:{yeni:ts(x.t_yeni),hazir:ts(x.t_hazir)},gecmis:[],elle:true};});
+  return BULUT.panoVeri;}).catch(function(e){return bulutHata(e);});}
+
+/* ---- ortak işlem yönlendirmesi ---- */
+function bulutDurum(kod,yeni){
+ var s=siparis(kod);if(!s||!s.id)return;
+ return BULUT.sb.rpc("lavka_durum_degis",{p_id:s.id,p_durum:yeni,p_kurye:""}).then(function(r){
+  if(r.error)throw r.error;
+  siparisiYerlestir(dbden(r.data));bildir(kod+" → "+durum(yeni).ad,yeni==="teslim"?"ok":"");ciz();})
+ .catch(function(e){bulutHata(e);});}
+function bulutSureEkle(kod,d){
+ var s=siparis(kod);if(!s||!s.id)return;
+ return BULUT.sb.rpc("lavka_sure_ekle",{p_id:s.id,p_dk:d}).then(function(r){
+  if(r.error)throw r.error;
+  siparisiYerlestir(dbden(r.data));bildir(kod+" için süre +"+d+" dk");ciz();})
+ .catch(function(e){bulutHata(e);});}
+function bulutIptal(kod,sebep,misafir){
+ var s=siparis(kod);if(!s)return;
+ var istek=misafir
+  ? BULUT.sb.rpc("lavka_siparis_iptal",{p_kod:kod,p_token:TOKENLER[kod],p_sebep:sebep})
+  : BULUT.sb.rpc("lavka_personel_iptal",{p_id:s.id,p_sebep:sebep});
+ return istek.then(function(r){
+  if(r.error)throw r.error;
+  siparisiYerlestir(dbden(r.data));bildir(kod+" iptal edildi","hata");ciz();})
+ .catch(function(e){bulutHata(e);});}
+function bulutPuan(kod,p){
+ return BULUT.sb.rpc("lavka_puan_ver",{p_kod:kod,p_token:TOKENLER[kod],p_puan:p}).then(function(r){
+  if(r.error)throw r.error;
+  siparisiYerlestir(dbden(r.data));bildir("Teşekkürler, "+p+" yıldız verdiniz","ok");ciz();})
+ .catch(function(e){bulutHata(e);});}
+function bulutTeslimAldim(kod){
+ return BULUT.sb.rpc("lavka_siparis_teslim_aldim",{p_kod:kod,p_token:TOKENLER[kod]}).then(function(r){
+  if(r.error)throw r.error;
+  siparisiYerlestir(dbden(r.data));bildir(kod+" teslim alındı","ok");ciz();})
+ .catch(function(e){bulutHata(e);});}
+function bulutMenuAyar(uid,alan,deger){
+ var y={};
+ if(alan==="kapali")y.satista=!(deger===true||deger==="true");
+ else y[alan]=parseFloat(deger);
+ return BULUT.sb.from("lavka_menu").update(y).eq("id",uid).then(function(r){
+  if(r.error)throw r.error;
+  return menuCek();}).then(function(){bildir("Menü güncellendi","ok");ciz();})
+ .catch(function(e){bulutHata(e);});}
+
+/* ---- ekip girişi ekranı ---- */
+var EKIP_SAYFALARI=["ekran","servis","rapor","siparisler","menuyonetim"];
+function ekGiris(){
+ var h='<div class="bslk"><div><h1>Ekip Girişi</h1>'+
+  '<p class="alt">Bar, servis ve yönetim ekranları için Lavka ekip hesabınızla giriş yapın.</p></div>'+
+  '<button class="dg-h" onclick="git(\'menu\')">← Misafir menüsü</button></div>';
+ h+='<div class="kart" style="max-width:460px"><h2>Giriş</h2><div class="frm">'+
+  '<div class="tam"><label>E-posta</label><input id="gMail" type="email" autocomplete="username" placeholder="ad@ornek.com"></div>'+
+  '<div class="tam"><label>Şifre</label><input id="gSifre" type="password" autocomplete="current-password" '+
+  'onkeydown="if(event.key===\'Enter\')girisGonder()"></div>'+
+  '<div class="tam"><button class="dg" style="width:100%" onclick="girisGonder()">Giriş Yap</button></div>'+
+  '</div><div class="soluk" style="margin-top:12px">Hesabınız yoksa Lavka yöneticisinden ekip hesabı isteyin.</div></div>';
+ if(BULUT.kullanici&&!BULUT.personel)
+  h+='<div class="kart" style="border-color:var(--kotu);background:var(--kotu-bg)">'+
+   '<b class="kotu-y">'+esc(BULUT.kullanici.email)+' hesabı ekip üyesi olarak tanımlı değil.</b>'+
+   '<div class="soluk" style="margin-top:6px">Yöneticinin bu hesabı <code>lavka_personel</code> listesine eklemesi gerekir.</div>'+
+   '<button class="dg-h" style="margin-top:10px" onclick="cikisYap()">Oturumu kapat</button></div>';
+ return h;}
+function girisGonder(){
+ var m=(document.getElementById("gMail").value||"").trim(),
+     s=document.getElementById("gSifre").value||"";
+ if(!m||!s)return bildir("E-posta ve şifre gerekli","hata");
+ girisYap(m,s);}
+
+/* ══════════════════════════════════════════════════════════════════
    ÇİZİM DÖNGÜSÜ
    ══════════════════════════════════════════════════════════════════ */
 function ciz(){
  navCiz();
  var h="";
+ if(BULUT.acik&&!BULUT.hazir){
+  document.getElementById("ekran").innerHTML=
+   '<div class="kart"><div class="bos"><span class="canli"></span>Sunucuya bağlanılıyor…</div></div>';
+  return;}
+ if(BULUT.acik&&EKIP_SAYFALARI.indexOf(SAYFA.ad)>=0&&!BULUT.personel){
+  document.getElementById("ekran").innerHTML=ekGiris();return;}
+ if(SAYFA.ad==="giris"){document.getElementById("ekran").innerHTML=ekGiris();return;}
  switch(SAYFA.ad){
   case "menu":        h=ekMenu(); break;
   case "sepet":       h=ekSepet(); break;
@@ -1252,9 +1493,26 @@ function tikGuncelle(){
   else if(tip==="kalan-dk")el.textContent=(kalanMs(s)<0?"birazdan":sureK(kalanMs(s)));
   else if(tip==="cubuk")el.style.width=yuzde(s)+"%";}
  var sa=document.getElementById("saat");
- if(sa)sa.textContent=sss(simdi());}
+ if(sa)sa.textContent=sss(simdi());
+ var bg=document.getElementById("baglanti");
+ if(bg)bg.innerHTML=BULUT.acik
+  ? '<span class="canli"></span>Canlı · '+(BULUT.personel?esc(BULUT.personel.ad):"misafir")+'<br>'
+  : 'Demo modu (tarayıcı belleği)<br>';}
 function formAcikMi(){var a=document.activeElement;return !!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName));}
+var _yoklama={takip:0,pano:0,tazele:0};
+function bulutYoklama(){
+ var t=simdi();
+ if(SAYFA.ad==="takip"&&SAYFA.arg&&t-_yoklama.takip>4000){_yoklama.takip=t;
+  takipCek(SAYFA.arg).then(function(o){if(o&&!formAcikMi())ciz();});}
+ if(SAYFA.ad==="takip"&&!SAYFA.arg&&t-_yoklama.takip>8000){_yoklama.takip=t;
+  var kodlar=Object.keys(TOKENLER).slice(-10);
+  if(kodlar.length)Promise.all(kodlar.map(takipCek)).then(function(){if(!formAcikMi())ciz();});}
+ if(SAYFA.ad==="pano"&&!BULUT.personel&&t-_yoklama.pano>5000){_yoklama.pano=t;
+  panoCek().then(function(){if(!formAcikMi())ciz();});}
+ if(BULUT.personel&&t-_yoklama.tazele>60000){_yoklama.tazele=t;
+  siparisleriCek().then(function(){if(!formAcikMi())ciz();});}}
 function dongu(){
+ if(BULUT.acik){bulutYoklama();tikGuncelle();return;}
  var degisti=otomatik();
  if(degisti&&!formAcikMi()){
   var acik=document.getElementById("pencere").className==="ac";
@@ -1270,12 +1528,27 @@ document.getElementById("dgTema").onclick=temaDegis;
 /* ---------------- başlangıç ---------------- */
 yukle();
 temaUygula();
-if(!VERI.siparisler.length){
- for(var _i=0;_i<16;_i++)demoSiparis(rnd(40,290),"teslim");
- for(var _j=0;_j<2;_j++)demoSiparis(rnd(4,16),sec(["hazir","hazirlik"]));
- for(var _k=0;_k<3;_k++)demoSiparis(rnd(.3,3.5),"akis");
- kaydet();}
-route();
+var _c=window.LAVKA_CONFIG||{};
+if(_c.supabaseUrl&&_c.supabaseKey&&!(window.supabase&&window.supabase.createClient)){
+ document.getElementById("ekran").innerHTML=
+  '<div class="kart" style="border-color:var(--kotu);background:var(--kotu-bg)">'+
+  '<h2 class="kotu-y">Sunucu kütüphanesi yüklenemedi</h2>'+
+  '<p>Sayfa Supabase\'e bağlanacak şekilde yapılandırılmış ancak <code>@supabase/supabase-js</code> '+
+  'yüklenemedi (internet erişimi ya da reklam engelleyici kaynaklı olabilir). Siparişlerin kaybolmaması için '+
+  'demo moduna düşülmedi.</p><p class="soluk">Sayfayı yenileyin; sorun sürerse yöneticinize bildirin.</p></div>';
+ navCiz();
+}else if(bulutVarMi()){
+ VERI.siparisler=[];
+ route();
+ bulutBaslat();
+}else{
+ if(!VERI.siparisler.length){
+  for(var _i=0;_i<16;_i++)demoSiparis(rnd(40,290),"teslim");
+  for(var _j=0;_j<2;_j++)demoSiparis(rnd(4,16),sec(["hazir","hazirlik"]));
+  for(var _k=0;_k<3;_k++)demoSiparis(rnd(.3,3.5),"akis");
+  kaydet();}
+ route();
+}
 setInterval(dongu,1000);
 tikGuncelle();
 </script>
