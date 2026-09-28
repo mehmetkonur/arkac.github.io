@@ -1924,6 +1924,17 @@ function bulutMenuAyar(uid,alan,deger){
 /* ---- ekip girişi ekranı ---- */
 var EKIP_SAYFALARI=["ekran","servis","rapor","siparisler","menuyonetim","masalar","pos"];
 function ekGiris(){
+ if(!BULUT.acik)
+  return '<div class="bslk"><div><h1>Ekip Girişi</h1>'+
+   '<p class="alt">Sayfa şu an demo modunda çalışıyor.</p></div>'+
+   '<button class="dg-h" onclick="git(\'menu\')">← Misafir menüsü</button></div>'+
+   '<div class="kart" style="max-width:520px"><h2>Girişe gerek yok</h2>'+
+   '<p>Demo modunda tüm ekranlar (masalar, POS, bar &amp; fırın, rapor) şifresiz açıktır; '+
+   'veriler yalnızca bu tarayıcıda tutulur.</p>'+
+   '<p class="soluk">Ekip girişi, sayfa Supabase\'e bağlandığında devreye girer: misafir ekranları '+
+   'herkese açık kalır, ekip ekranları e-posta + şifre ister. Kurulum adımları depodaki '+
+   '<code>KURULUM.md</code> dosyasında.</p>'+
+   '<button class="dg" onclick="git(\'masalar\')">Masalara git</button></div>';
  var h='<div class="bslk"><div><h1>Ekip Girişi</h1>'+
   '<p class="alt">Bar, servis ve yönetim ekranları için Lavka ekip hesabınızla giriş yapın.</p></div>'+
   '<button class="dg-h" onclick="git(\'menu\')">← Misafir menüsü</button></div>';
@@ -1940,6 +1951,7 @@ function ekGiris(){
    '<button class="dg-h" style="margin-top:10px" onclick="cikisYap()">Oturumu kapat</button></div>';
  return h;}
 function girisGonder(){
+ if(!BULUT.acik)return bildir("Demo modunda giriş gerekmez","hata");
  var m=(document.getElementById("gMail").value||"").trim(),
      s=document.getElementById("gSifre").value||"";
  if(!m||!s)return bildir("E-posta ve şifre gerekli","hata");
