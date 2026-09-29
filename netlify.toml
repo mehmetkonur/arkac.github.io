@@ -1,0 +1,42 @@
+# ════════════════════════════════════════════════════════════════════
+# Netlify yapılandırması — Lavka Sipariş Merkezi
+# Depo statik HTML dosyalarından oluşur; derleme adımı yoktur.
+# ════════════════════════════════════════════════════════════════════
+[build]
+  publish = "."
+
+# Site kökü Lavka sipariş sayfasını gösterir
+[[redirects]]
+  from = "/"
+  to = "/lavka.html"
+  status = 200
+
+[[redirects]]
+  from = "/lavka"
+  to = "/lavka.html"
+  status = 200
+
+# AVM etkinlik merkezi ve food court demosu da aynı siteden erişilebilir
+[[redirects]]
+  from = "/avm"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/foodcourt"
+  to = "/siparis.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Yapılandırma dosyası önbelleğe alınmasın: anahtar değişince anında yansısın
+[[headers]]
+  for = "/lavka-config.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
