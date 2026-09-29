@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lavka Sipariş Merkezi</title>
 <meta name="description" content="Lavka kafe & fırın — online sipariş, bar/mutfak ekranı ve sipariş süreç takibi.">
+<meta name="theme-color" content="#23302B">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="ikon/lavka-192.png">
+<link rel="icon" href="ikon/lavka-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
@@ -317,6 +321,28 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bakir);outline-o
  .pos-rail button{flex:1 1 auto;padding:10px 12px;font-size:12px}.pos-fis{position:static}
  .pos-kat{flex-direction:row;flex-wrap:wrap;position:static}.pos-kat button{flex:1 1 auto;text-align:center}
  .masa-duzen{grid-template-columns:1fr}}
+/* ---------- seçenek penceresi ---------- */
+.sec-grup{margin-bottom:16px}
+.sec-grup h3{margin:0 0 8px;font-size:13px;font-family:'IBM Plex Sans',sans-serif;font-weight:600;
+ letter-spacing:.05em;text-transform:uppercase;color:var(--soluk)}
+.sec-grup h3 em{font-style:normal;color:var(--bakir-koyu);text-transform:none;letter-spacing:0;font-size:11.5px}
+.sec-btnler{display:flex;gap:7px;flex-wrap:wrap}
+.sec-btn{background:var(--kart);border:1.5px solid var(--cizgi);border-radius:10px;padding:9px 14px;
+ font:inherit;font-size:13.5px;cursor:pointer;color:var(--murekkep);display:flex;gap:7px;align-items:center}
+.sec-btn:hover{border-color:var(--bakir)}
+.sec-btn.on{border-color:var(--bakir);background:var(--kart2);font-weight:600}
+.sec-btn i{font-style:normal;font-size:11.5px;color:var(--bakir-koyu);font-family:'IBM Plex Mono',monospace}
+.sec-ozet{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--kart2);
+ border-radius:11px;padding:12px 14px;margin-bottom:14px}
+.sec-ozet b{font-family:'Fraunces',serif;font-size:21px}
+/* ---------- fotoğraflı menü satırı ---------- */
+.urun .gorsel{width:88px;height:66px;border-radius:10px;background:var(--kart2);background-size:cover;
+ background-position:center;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.urun .sec-not{font-size:11.5px;color:var(--bakir-koyu);margin-top:3px}
+.foto-yukle{position:relative;overflow:hidden;display:inline-block}
+.foto-yukle input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.foto-onizleme{width:54px;height:40px;border-radius:7px;background:var(--kart2);background-size:cover;
+ background-position:center;display:inline-flex;align-items:center;justify-content:center;font-size:18px;vertical-align:middle}
 /* ---------- pencere & bildirim ---------- */
 #pencere{position:fixed;inset:0;background:rgba(18,26,23,.55);display:none;align-items:flex-start;justify-content:center;
  padding:40px 16px;overflow-y:auto;z-index:60}
@@ -347,6 +373,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bakir);outline-o
   <div class="yan-alt">
    <button class="sbtn" id="dgAkis">Otomatik akış: AÇIK</button>
    <button class="sbtn" id="dgTema">Görünüm: Sistem</button>
+   <button class="sbtn" id="dgDil" onclick="dilDegis()">TR / EN</button>
    <button class="sbtn" id="dgDemo" onclick="demoUret()">Demo sipariş üret</button>
    <div id="yanEk"></div>
    <div class="kunye"><span id="baglanti"></span>2. Kat · Food Court A-12<br>Açılış 08:30 – 22:00<br><span id="saat" class="mono"></span></div>
@@ -367,6 +394,59 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bakir);outline-o
    ══════════════════════════════════════════════════════════════════ */
 
 /* ┌──────────────────────────────────────────────────────────────┐
+   │  ÜRÜN SEÇENEKLERİ (boy, süt, şeker, ekstra…)                  │
+   │  tip "tek"   : tek seçim (radyo)    · zorunlu olabilir        │
+   │  tip "coklu" : çoklu seçim (ekstra) · fark = fiyat farkı ₺    │
+   │  sure        : hazırlık süresine eklenecek dakika              │
+   └──────────────────────────────────────────────────────────────┘ */
+var SECENEK_SETLERI={
+ kahve:[
+  {kod:"boy",ad:"Boy",tip:"tek",zorunlu:true,secimler:[
+   {ad:"Küçük",fark:-10},{ad:"Orta",fark:0,varsayilan:true},{ad:"Büyük",fark:22,sure:1}]},
+  {kod:"sut",ad:"Süt",tip:"tek",secimler:[
+   {ad:"Tam yağlı",fark:0,varsayilan:true},{ad:"Yarım yağlı",fark:0},
+   {ad:"Laktozsuz",fark:12},{ad:"Yulaf sütü",fark:18},{ad:"Badem sütü",fark:20},{ad:"Sütsüz",fark:0}]},
+  {kod:"seker",ad:"Şeker",tip:"tek",secimler:[
+   {ad:"Şekersiz",fark:0,varsayilan:true},{ad:"Az şekerli",fark:0},{ad:"Orta",fark:0},{ad:"Bol şekerli",fark:0}]},
+  {kod:"ekstra",ad:"Ekstra",tip:"coklu",secimler:[
+   {ad:"Ekstra shot",fark:20,sure:1},{ad:"Vanilya şurubu",fark:15},
+   {ad:"Karamel şurubu",fark:15},{ad:"Fındık şurubu",fark:15},{ad:"Tarçın",fark:0},{ad:"Buz",fark:0}]},
+  {kod:"paket",ad:"Servis",tip:"tek",secimler:[
+   {ad:"Burada (porselen)",fark:0,varsayilan:true},{ad:"Paket (karton bardak)",fark:0}]}],
+ turkKahve:[
+  {kod:"seker",ad:"Pişirme",tip:"tek",zorunlu:true,secimler:[
+   {ad:"Sade",fark:0,varsayilan:true},{ad:"Az şekerli",fark:0},{ad:"Orta",fark:0},{ad:"Şekerli",fark:0}]},
+  {kod:"ekstra",ad:"Yanında",tip:"coklu",secimler:[
+   {ad:"Lokum",fark:10},{ad:"Çikolata",fark:12},{ad:"Duble (çift)",fark:35,sure:2}]}],
+ cay:[
+  {kod:"boy",ad:"Boy",tip:"tek",zorunlu:true,secimler:[
+   {ad:"İnce belli",fark:0,varsayilan:true},{ad:"Fincan",fark:8},{ad:"Demlik (2 kişi)",fark:45,sure:3}]},
+  {kod:"ekstra",ad:"Yanında",tip:"coklu",secimler:[{ad:"Limon",fark:0},{ad:"Bal",fark:12}]}],
+ soguk:[
+  {kod:"boy",ad:"Boy",tip:"tek",zorunlu:true,secimler:[
+   {ad:"Orta",fark:0,varsayilan:true},{ad:"Büyük",fark:20}]},
+  {kod:"ekstra",ad:"Ekstra",tip:"coklu",secimler:[
+   {ad:"Buzsuz",fark:0},{ad:"Ekstra buz",fark:0},{ad:"Pipet istemiyorum",fark:0}]}],
+ firin:[
+  {kod:"servis",ad:"Servis",tip:"tek",secimler:[
+   {ad:"Normal",fark:0,varsayilan:true},{ad:"Isıtılsın",fark:0,sure:2},{ad:"Paket",fark:0}]},
+  {kod:"ekstra",ad:"Yanında",tip:"coklu",secimler:[
+   {ad:"Tereyağı",fark:10},{ad:"Reçel",fark:12},{ad:"Bal",fark:15}]}],
+ tatli:[
+  {kod:"servis",ad:"Servis",tip:"tek",secimler:[
+   {ad:"Normal",fark:0,varsayilan:true},{ad:"Isıtılsın",fark:0,sure:2}]},
+  {kod:"ekstra",ad:"Yanında",tip:"coklu",secimler:[
+   {ad:"Top dondurma",fark:45,sure:1},{ad:"Krem şanti",fark:25},{ad:"Fıstık",fark:20}]}],
+ yiyecek:[
+  {kod:"servis",ad:"Servis",tip:"tek",secimler:[
+   {ad:"Burada",fark:0,varsayilan:true},{ad:"Paket",fark:0}]},
+  {kod:"cikar",ad:"Çıkarılsın",tip:"coklu",secimler:[
+   {ad:"Soğansız",fark:0},{ad:"Sossuz",fark:0},{ad:"Acısız",fark:0},{ad:"Glutensiz ekmek",fark:25}]},
+  {kod:"ekstra",ad:"Ekstra",tip:"coklu",secimler:[
+   {ad:"Ekstra peynir",fark:30},{ad:"Avokado",fark:45},{ad:"Yumurta",fark:25,sure:2},{ad:"Patates",fark:40,sure:4}]}]
+};
+
+/* ┌──────────────────────────────────────────────────────────────┐
    │  MENÜ — GERÇEK MENÜYÜ BURADAN DÜZENLEYİN                     │
    │  id      : benzersiz kod (değiştirmeyin, sipariş kayıtları    │
    │            bu koda bağlıdır)                                  │
@@ -378,39 +458,39 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--bakir);outline-o
    └──────────────────────────────────────────────────────────────┘ */
 var MENU=[
 {kat:"Kahveler",urunler:[
- {id:"kh01",ad:"Espresso",fiyat:60,sure:2,ikon:"☕",istasyon:"bar",aciklama:"Tek shot"},
- {id:"kh02",ad:"Double Espresso",fiyat:75,sure:2,ikon:"☕",istasyon:"bar",aciklama:"Çift shot"},
- {id:"kh03",ad:"Americano",fiyat:80,sure:3,ikon:"☕",istasyon:"bar",aciklama:"Sıcak / soğuk"},
- {id:"kh04",ad:"Filtre Kahve",fiyat:75,sure:3,ikon:"🫖",istasyon:"bar",aciklama:"Günün çekirdeği, 300 ml"},
- {id:"kh05",ad:"Latte",fiyat:95,sure:4,ikon:"🥛",istasyon:"bar",aciklama:"Çift shot espresso + süt"},
- {id:"kh06",ad:"Cappuccino",fiyat:92,sure:4,ikon:"☕",istasyon:"bar",aciklama:"Yoğun süt köpüğü"},
- {id:"kh07",ad:"Flat White",fiyat:98,sure:4,ikon:"🥛",istasyon:"bar",aciklama:"İnce köpük, çift shot"},
- {id:"kh08",ad:"Türk Kahvesi",fiyat:70,sure:5,ikon:"🫖",istasyon:"bar",aciklama:"Sade / orta / şekerli"},
- {id:"kh09",ad:"Ice Latte",fiyat:105,sure:4,ikon:"🧊",istasyon:"bar",aciklama:"Buzlu, soğuk süt"}]},
+ {id:"kh01",ad:"Espresso",fiyat:60,sure:2,ikon:"☕",istasyon:"bar",set:"kahve",aciklama:"Tek shot"},
+ {id:"kh02",ad:"Double Espresso",fiyat:75,sure:2,ikon:"☕",istasyon:"bar",set:"kahve",aciklama:"Çift shot"},
+ {id:"kh03",ad:"Americano",fiyat:80,sure:3,ikon:"☕",istasyon:"bar",set:"kahve",aciklama:"Sıcak / soğuk"},
+ {id:"kh04",ad:"Filtre Kahve",fiyat:75,sure:3,ikon:"🫖",istasyon:"bar",set:"kahve",aciklama:"Günün çekirdeği, 300 ml"},
+ {id:"kh05",ad:"Latte",fiyat:95,sure:4,ikon:"🥛",istasyon:"bar",set:"kahve",aciklama:"Çift shot espresso + süt"},
+ {id:"kh06",ad:"Cappuccino",fiyat:92,sure:4,ikon:"☕",istasyon:"bar",set:"kahve",aciklama:"Yoğun süt köpüğü"},
+ {id:"kh07",ad:"Flat White",fiyat:98,sure:4,ikon:"🥛",istasyon:"bar",set:"kahve",aciklama:"İnce köpük, çift shot"},
+ {id:"kh08",ad:"Türk Kahvesi",fiyat:70,sure:5,ikon:"🫖",istasyon:"bar",set:"turkKahve",aciklama:"Sade / orta / şekerli"},
+ {id:"kh09",ad:"Ice Latte",fiyat:105,sure:4,ikon:"🧊",istasyon:"bar",set:"soguk",aciklama:"Buzlu, soğuk süt"}]},
 {kat:"Diğer İçecekler",urunler:[
- {id:"ic01",ad:"Demleme Çay",fiyat:35,sure:2,ikon:"🍵",istasyon:"bar",aciklama:"İnce belli bardak"},
- {id:"ic02",ad:"Bitki Çayı",fiyat:60,sure:4,ikon:"🌿",istasyon:"bar",aciklama:"Ihlamur / papatya / nane-limon"},
- {id:"ic03",ad:"Sıcak Çikolata",fiyat:98,sure:5,ikon:"🍫",istasyon:"bar",aciklama:"Bitter çikolata, marshmallow"},
- {id:"ic04",ad:"Limonata",fiyat:85,sure:3,ikon:"🍋",istasyon:"bar",aciklama:"Ev yapımı, naneli"},
- {id:"ic05",ad:"Portakal Suyu",fiyat:95,sure:4,ikon:"🍊",istasyon:"bar",aciklama:"Taze sıkım"},
- {id:"ic06",ad:"Su (50 cl)",fiyat:25,sure:1,ikon:"💧",istasyon:"bar",aciklama:"Soğuk"}]},
+ {id:"ic01",ad:"Demleme Çay",fiyat:35,sure:2,ikon:"🍵",istasyon:"bar",set:"cay",aciklama:"İnce belli bardak"},
+ {id:"ic02",ad:"Bitki Çayı",fiyat:60,sure:4,ikon:"🌿",istasyon:"bar",set:"cay",aciklama:"Ihlamur / papatya / nane-limon"},
+ {id:"ic03",ad:"Sıcak Çikolata",fiyat:98,sure:5,ikon:"🍫",istasyon:"bar",set:"kahve",aciklama:"Bitter çikolata, marshmallow"},
+ {id:"ic04",ad:"Limonata",fiyat:85,sure:3,ikon:"🍋",istasyon:"bar",set:"soguk",aciklama:"Ev yapımı, naneli"},
+ {id:"ic05",ad:"Portakal Suyu",fiyat:95,sure:4,ikon:"🍊",istasyon:"bar",set:"soguk",aciklama:"Taze sıkım"},
+ {id:"ic06",ad:"Su (50 cl)",fiyat:25,sure:1,ikon:"💧",istasyon:"bar",set:"",aciklama:"Soğuk"}]},
 {kat:"Fırın & Tatlı",urunler:[
- {id:"fr01",ad:"Tereyağlı Kruvasan",fiyat:85,sure:4,ikon:"🥐",istasyon:"firin",aciklama:"Günlük, fırından"},
- {id:"fr02",ad:"Çikolatalı Kruvasan",fiyat:95,sure:4,ikon:"🥐",istasyon:"firin",aciklama:"Bitter çikolata dolgulu"},
- {id:"fr03",ad:"Peynirli Poğaça",fiyat:45,sure:3,ikon:"🥯",istasyon:"firin",aciklama:"Beyaz peynirli"},
- {id:"fr04",ad:"Zeytinli Poğaça",fiyat:45,sure:3,ikon:"🫒",istasyon:"firin",aciklama:"Siyah zeytinli"},
- {id:"fr05",ad:"San Sebastian Cheesecake",fiyat:145,sure:3,ikon:"🍰",istasyon:"firin",aciklama:"Dilim, ev yapımı"},
- {id:"fr06",ad:"Havuçlu Kek",fiyat:110,sure:3,ikon:"🍥",istasyon:"firin",aciklama:"Cevizli, tarçınlı"},
- {id:"fr07",ad:"Brownie",fiyat:120,sure:5,ikon:"🍫",istasyon:"firin",aciklama:"Sıcak servis, dondurmalı"},
- {id:"fr08",ad:"Günün Kurabiyesi",fiyat:55,sure:2,ikon:"🍪",istasyon:"firin",aciklama:"3 adet"}]},
+ {id:"fr01",ad:"Tereyağlı Kruvasan",fiyat:85,sure:4,ikon:"🥐",istasyon:"firin",set:"firin",aciklama:"Günlük, fırından"},
+ {id:"fr02",ad:"Çikolatalı Kruvasan",fiyat:95,sure:4,ikon:"🥐",istasyon:"firin",set:"firin",aciklama:"Bitter çikolata dolgulu"},
+ {id:"fr03",ad:"Peynirli Poğaça",fiyat:45,sure:3,ikon:"🥯",istasyon:"firin",set:"firin",aciklama:"Beyaz peynirli"},
+ {id:"fr04",ad:"Zeytinli Poğaça",fiyat:45,sure:3,ikon:"🫒",istasyon:"firin",set:"firin",aciklama:"Siyah zeytinli"},
+ {id:"fr05",ad:"San Sebastian Cheesecake",fiyat:145,sure:3,ikon:"🍰",istasyon:"firin",set:"tatli",aciklama:"Dilim, ev yapımı"},
+ {id:"fr06",ad:"Havuçlu Kek",fiyat:110,sure:3,ikon:"🍥",istasyon:"firin",set:"tatli",aciklama:"Cevizli, tarçınlı"},
+ {id:"fr07",ad:"Brownie",fiyat:120,sure:5,ikon:"🍫",istasyon:"firin",set:"tatli",aciklama:"Sıcak servis, dondurmalı"},
+ {id:"fr08",ad:"Günün Kurabiyesi",fiyat:55,sure:2,ikon:"🍪",istasyon:"firin",set:"firin",aciklama:"3 adet"}]},
 {kat:"Sandviç & Kahvaltı",urunler:[
- {id:"sn01",ad:"Tavuklu Sandviç",fiyat:180,sure:8,ikon:"🥪",istasyon:"firin",aciklama:"Ekşi maya ekmek, közlenmiş biber"},
- {id:"sn02",ad:"Kaşarlı Tost",fiyat:135,sure:7,ikon:"🧀",istasyon:"firin",aciklama:"Trakya kaşarı"},
- {id:"sn03",ad:"Karışık Tost",fiyat:165,sure:8,ikon:"🥪",istasyon:"firin",aciklama:"Sucuk + kaşar"},
- {id:"sn04",ad:"Avokadolu Bagel",fiyat:195,sure:9,ikon:"🥑",istasyon:"firin",aciklama:"Poşe yumurta ile"},
- {id:"sn05",ad:"Serpme Kahvaltı Tabağı",fiyat:290,sure:14,ikon:"🍳",istasyon:"firin",aciklama:"9 çeşit, çay dahil"},
- {id:"sn06",ad:"Menemen",fiyat:175,sure:12,ikon:"🍅",istasyon:"firin",aciklama:"Sucuklu / sade"},
- {id:"sn07",ad:"Omlet",fiyat:150,sure:10,ikon:"🍳",istasyon:"firin",aciklama:"Peynirli / sebzeli"}]}
+ {id:"sn01",ad:"Tavuklu Sandviç",fiyat:180,sure:8,ikon:"🥪",istasyon:"firin",set:"yiyecek",aciklama:"Ekşi maya ekmek, közlenmiş biber"},
+ {id:"sn02",ad:"Kaşarlı Tost",fiyat:135,sure:7,ikon:"🧀",istasyon:"firin",set:"yiyecek",aciklama:"Trakya kaşarı"},
+ {id:"sn03",ad:"Karışık Tost",fiyat:165,sure:8,ikon:"🥪",istasyon:"firin",set:"yiyecek",aciklama:"Sucuk + kaşar"},
+ {id:"sn04",ad:"Avokadolu Bagel",fiyat:195,sure:9,ikon:"🥑",istasyon:"firin",set:"yiyecek",aciklama:"Poşe yumurta ile"},
+ {id:"sn05",ad:"Serpme Kahvaltı Tabağı",fiyat:290,sure:14,ikon:"🍳",istasyon:"firin",set:"yiyecek",aciklama:"9 çeşit, çay dahil"},
+ {id:"sn06",ad:"Menemen",fiyat:175,sure:12,ikon:"🍅",istasyon:"firin",set:"yiyecek",aciklama:"Sucuklu / sade"},
+ {id:"sn07",ad:"Omlet",fiyat:150,sure:10,ikon:"🍳",istasyon:"firin",set:"yiyecek",aciklama:"Peynirli / sebzeli"}]}
 ];
 /* İşletme ayarları — burayı da düzenleyebilirsiniz */
 var ISLETME={
@@ -444,13 +524,23 @@ function masaBul(id){for(var i=0;i<KATLAR.length;i++)for(var j=0;j<KATLAR[i].mas
 var ANAHTAR="lavka_siparis_v1", _ram={};
 function dOku(k){try{return localStorage.getItem(k);}catch(e){return _ram[k]||null;}}
 function dYaz(k,v){try{localStorage.setItem(k,v);}catch(e){_ram[k]=v;}}
-var VERI={siparisler:[],sayac:100,ayar:{otomatik:true,tema:"sistem"},menuDuzen:{},
-          adisyonlar:[],adisyonSayac:0,rezerve:{}};
+var VERI={siparisler:[],sayac:100,ayar:{otomatik:true,tema:"sistem",ses:true,siparisDurdu:false,durdurmaNotu:""},
+          menuDuzen:{},adisyonlar:[],adisyonSayac:0,rezerve:{},
+          vardiya:null,vardiyaGecmis:[],musteriler:{}};
 function yukle(){try{var h=dOku(ANAHTAR);if(h){var o=JSON.parse(h);
  VERI.siparisler=o.siparisler||[];VERI.sayac=o.sayac||100;
  VERI.ayar=o.ayar||{otomatik:true,tema:"sistem"};VERI.menuDuzen=o.menuDuzen||{};
- VERI.adisyonlar=o.adisyonlar||[];VERI.adisyonSayac=o.adisyonSayac||0;VERI.rezerve=o.rezerve||{};}}catch(e){}}
-function kaydet(){try{dYaz(ANAHTAR,JSON.stringify(VERI));}catch(e){}}
+ VERI.adisyonlar=o.adisyonlar||[];VERI.adisyonSayac=o.adisyonSayac||0;VERI.rezerve=o.rezerve||{};
+ VERI.vardiya=o.vardiya||null;VERI.vardiyaGecmis=o.vardiyaGecmis||[];VERI.musteriler=o.musteriler||{};
+ if(VERI.ayar.ses==null)VERI.ayar.ses=true;
+ if(VERI.ayar.siparisDurdu==null)VERI.ayar.siparisDurdu=false;}}catch(e){}}
+var _kotaUyarildi=false;
+function kaydet(){
+ try{dYaz(ANAHTAR,JSON.stringify(VERI));}
+ catch(e){
+  if(!_kotaUyarildi){_kotaUyarildi=true;
+   try{bildir("Tarayıcı depolama alanı doldu. Büyük fotoğrafları kaldırın ya da URL kullanın.","hata");}catch(e2){}}
+ }}
 
 /* Menü düzenlemeleri (fiyat / süre / stok) uygulanmış ürün */
 function urun(uid){
@@ -458,7 +548,7 @@ function urun(uid){
   var u=MENU[i].urunler[j];
   if(u.id===uid){var d=VERI.menuDuzen[uid]||{};
    return {id:u.id,ad:u.ad,ikon:u.ikon,aciklama:u.aciklama,istasyon:u.istasyon,kat:MENU[i].kat,
-    foto:(d.foto!=null?d.foto:(u.foto||"")),
+    set:(d.set!=null?d.set:(u.set||"")),foto:(d.foto!=null?d.foto:(u.foto||"")),
     fiyat:(d.fiyat!=null?d.fiyat:u.fiyat),sure:(d.sure!=null?d.sure:u.sure),
     kapali:(BULUT.acik?(u.satista===false):!!d.kapali)};}}
  return null;}
@@ -510,6 +600,131 @@ function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){
  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
 function rnd(a,b){return a+Math.random()*(b-a);}
 function sec(a){return a[Math.floor(Math.random()*a.length)];}
+/* ════════════ ÜRÜN FOTOĞRAFI ════════════ */
+/* Seçilen görseli tarayıcıda küçültüp veri adresine çevirir (sunucu gerekmez) */
+function fotoKucult(kaynak,enBoy,kalite,bitti){
+ var img=new Image();
+ img.onload=function(){
+  var o=Math.min(1,enBoy/Math.max(img.width,img.height));
+  var w=Math.max(1,Math.round(img.width*o)),h=Math.max(1,Math.round(img.height*o));
+  var c=document.createElement("canvas");c.width=w;c.height=h;
+  var x=c.getContext("2d");
+  x.fillStyle="#fff";x.fillRect(0,0,w,h);
+  x.drawImage(img,0,0,w,h);
+  try{bitti(c.toDataURL("image/jpeg",kalite));}catch(e){bildir("Görsel işlenemedi","hata");}};
+ img.onerror=function(){bildir("Görsel okunamadı","hata");};
+ img.src=kaynak;}
+function fotoSec(uid,input){
+ var f=input&&input.files&&input.files[0];
+ if(!f)return;
+ if(!/^image\//.test(f.type))return bildir("Lütfen bir görsel dosyası seçin","hata");
+ if(f.size>8*1024*1024)return bildir("Görsel çok büyük (en fazla 8 MB)","hata");
+ var r=new FileReader();
+ r.onload=function(){fotoKucult(r.result,560,.72,function(veri){
+  menuAyar(uid,"foto",veri);
+  bildir(urun(uid).ad+" fotoğrafı eklendi","ok");});};
+ r.onerror=function(){bildir("Dosya okunamadı","hata");};
+ r.readAsDataURL(f);
+ input.value="";}
+function fotoUrlSor(uid){
+ var u=urun(uid);
+ var v=prompt("Fotoğraf adresi (https://…):",/^https:/i.test(u.foto||"")?u.foto:"");
+ if(v===null)return;
+ menuAyar(uid,"foto",String(v).trim());}
+function fotoKaldir(uid){menuAyar(uid,"foto","");}
+
+/* ════════════ ÜRÜN SEÇENEKLERİ (varyant) ════════════ */
+function secenekSeti(u){return (u&&u.set&&SECENEK_SETLERI[u.set])||null;}
+function varsayilanSecim(u){
+ var set=secenekSeti(u),r={};
+ if(!set)return r;
+ set.forEach(function(g){
+  if(g.tip==="tek"){
+   var v=g.secimler.filter(function(x){return x.varsayilan;})[0]||(g.zorunlu?g.secimler[0]:null);
+   if(v)r[g.kod]=v.ad;
+  }else r[g.kod]=[];});
+ return r;}
+function secimFark(u,sec){
+ var set=secenekSeti(u),f=0,sr=0;
+ if(!set)return {fiyat:0,sure:0};
+ set.forEach(function(g){
+  var v=sec[g.kod];
+  if(g.tip==="tek"){
+   if(!v)return;
+   var o=g.secimler.filter(function(x){return x.ad===v;})[0];
+   if(o){f+=o.fark||0;sr+=o.sure||0;}
+  }else (v||[]).forEach(function(ad){
+   var o=g.secimler.filter(function(x){return x.ad===ad;})[0];
+   if(o){f+=o.fark||0;sr+=o.sure||0;}});});
+ return {fiyat:f,sure:sr};}
+function secimMetin(u,sec){
+ var set=secenekSeti(u),p=[];
+ if(!set)return "";
+ set.forEach(function(g){
+  var v=sec[g.kod];
+  if(g.tip==="tek"){
+   if(!v)return;
+   var o=g.secimler.filter(function(x){return x.ad===v;})[0];
+   if(o&&!o.varsayilan)p.push(v);
+  }else (v||[]).forEach(function(x){p.push(x);});});
+ return p.join(" · ");}
+function varyantAnahtar(uid,sec){return uid+"|"+JSON.stringify(sec||{});}
+function varyant(uid,sec,adet){
+ var u=urun(uid); if(!u)return null;
+ var f=secimFark(u,sec||{});
+ return {anahtar:varyantAnahtar(uid,sec),id:uid,ad:u.ad,ikon:u.ikon,foto:u.foto,istasyon:u.istasyon,
+  fiyat:Math.max(0,u.fiyat+f.fiyat),sure:Math.max(1,u.sure+f.sure),
+  secim:secimMetin(u,sec||{}),secimler:sec||{},adet:adet||1};}
+/* Seçenek penceresi durumu */
+var SECIM={uid:"",sec:{},adet:1,hedef:"",not:""};
+function secenekAc(uid,hedef){
+ var u=urun(uid);
+ if(!u||u.kapali)return;
+ if(!secenekSeti(u))return hedefeEkle(hedef,uid,{},1,"");
+ SECIM={uid:uid,sec:varsayilanSecim(u),adet:1,hedef:hedef||"sepet",not:""};
+ secenekCiz();}
+function secenekCiz(){
+ var u=urun(SECIM.uid),set=secenekSeti(u),v=varyant(SECIM.uid,SECIM.sec,SECIM.adet);
+ var h='<div class="ic" style="max-width:560px"><div class="pb"><h2>'+esc(u.ad)+'</h2>'+
+  '<button class="kap" onclick="pencereKapat()" aria-label="kapat">×</button></div>';
+ h+='<div class="kart">'+
+  '<div class="sec-ozet"><span><span class="soluk" style="font-size:12px">'+esc(u.aciklama)+'</span><br>'+
+  '<b>'+para(v.fiyat)+'</b> <span class="soluk">· ~'+v.sure+' dk · '+ISTASYON[v.istasyon].ad+'</span></span>'+
+  '<span class="sayac"><button onclick="secimAdet(-1)">−</button><b>'+SECIM.adet+'</b>'+
+  '<button onclick="secimAdet(1)">+</button></span></div>';
+ set.forEach(function(g){
+  h+='<div class="sec-grup"><h3>'+g.ad+(g.tip==="coklu"?' <em>(birden fazla seçilebilir)</em>':(g.zorunlu?'':' <em>(isteğe bağlı)</em>'))+'</h3><div class="sec-btnler">';
+  g.secimler.forEach(function(o){
+   var secili=g.tip==="tek"?(SECIM.sec[g.kod]===o.ad):((SECIM.sec[g.kod]||[]).indexOf(o.ad)>=0);
+   h+='<button class="sec-btn'+(secili?" on":"")+'" onclick="'+(g.tip==="tek"?"secimTek":"secimCoklu")+
+    '(\''+g.kod+'\',\''+o.ad.replace(/'/g,"\\'")+'\')">'+esc(o.ad)+
+    (o.fark?'<i>'+(o.fark>0?"+":"−")+para(Math.abs(o.fark))+'</i>':'')+'</button>';});
+  h+='</div></div>';});
+ h+='<div class="sec-grup"><h3>Not <em>(isteğe bağlı)</em></h3>'+
+  '<input style="width:100%" placeholder="Örn. çok sıcak olmasın" value="'+esc(SECIM.not)+'" oninput="SECIM.not=this.value"></div>';
+ h+='</div><div style="display:flex;gap:8px">'+
+  '<button class="dg" style="flex:1" onclick="secimOnayla()">'+
+  (SECIM.hedef.indexOf("pos:")===0?"Adisyona Ekle":"Sepete Ekle")+' · '+para(v.fiyat*SECIM.adet)+'</button>'+
+  '<button class="dg-h" onclick="pencereKapat()">Vazgeç</button></div></div>';
+ var p=document.getElementById("pencere");p.innerHTML=h;p.className="ac";
+ cevir(p);
+ p.onclick=function(e){if(e.target===p)pencereKapat();};}
+function secimTek(kod,ad){SECIM.sec[kod]=ad;secenekCiz();}
+function secimCoklu(kod,ad){
+ var a=SECIM.sec[kod]||[],i=a.indexOf(ad);
+ if(i>=0)a.splice(i,1); else a.push(ad);
+ SECIM.sec[kod]=a;secenekCiz();}
+function secimAdet(d){SECIM.adet=Math.max(1,SECIM.adet+d);secenekCiz();}
+function secimOnayla(){
+ var u=urun(SECIM.uid),set=secenekSeti(u),eksik=null;
+ (set||[]).forEach(function(g){if(g.zorunlu&&g.tip==="tek"&&!SECIM.sec[g.kod])eksik=g.ad;});
+ if(eksik)return bildir(eksik+" seçimi zorunlu","hata");
+ hedefeEkle(SECIM.hedef,SECIM.uid,SECIM.sec,SECIM.adet,SECIM.not);
+ pencereKapat();}
+function hedefeEkle(hedef,uid,sec,adet,not){
+ if(hedef&&hedef.indexOf("pos:")===0)return adisyonVaryantEkle(hedef.slice(4),uid,sec,adet||1,not||"");
+ sepetEkle(uid,sec,adet||1,not||"");
+ bildir(urun(uid).ad+" sepete eklendi","ok");}
 function bildir(m,tip){var k=document.getElementById("bildirim"),d=document.createElement("div");
  d.className=tip||"";d.textContent=m;k.appendChild(d);
  setTimeout(function(){d.style.transition="opacity .4s";d.style.opacity="0";
@@ -538,7 +753,9 @@ function siparisOlustur(o){
   oto:{onay:Math.round(rnd(20,70)),hazirlik:Math.round(rnd(12,45)),hazir:0,
        yolda:Math.round(rnd(30,80)),teslim:Math.round(rnd(80,200))},
   gecmis:[{ts:t,dur:"yeni",kim:"Misafir · "+(o.ad||"Misafir"),mesaj:"Sipariş oluşturuldu"}]};
- for(var i=0;i<s.kalemler.length;i++)s.araToplam+=s.kalemler[i].fiyat*s.kalemler[i].adet;
+ for(var i=0;i<s.kalemler.length;i++){var _k=s.kalemler[i];
+  s.araToplam+=_k.fiyat*_k.adet;
+  if(_k.secim==null)_k.secim="";}
  s.servis=s.tip==="magaza"?ISLETME.kuryeUcreti:0;
  s.toplam=s.araToplam+s.servis;
  s.sozDk=sozSure(s.kalemler,s.tip);
@@ -564,6 +781,7 @@ function durumDegis(kod,yeni,kim,sessiz){
  s.durum=yeni;s.zaman[yeni]=t;
  if(yeni==="yolda"&&!s.kurye)s.kurye=sec(KURYELER);
  s.gecmis.push({ts:t,dur:yeni,kim:kim||"Sistem",mesaj:durum(yeni).ad});
+ if(yeni==="teslim")puanIsle(s);
  kaydet();if(!sessiz)bildir(s.kod+" → "+durum(yeni).ad,yeni==="teslim"?"ok":"");ciz();}
 function ilerlet(kod,kim){var s=siparis(kod);if(!s)return;var n=sonraki(s);if(n)durumDegis(kod,n,kim||"Ekip");}
 function iptalEt(kod,sebep,kim){
@@ -593,6 +811,7 @@ function otomatik(){
   if(n&&gec>=esik){s.durum=n;s.zaman[n]=t;
    if(n==="yolda"&&!s.kurye)s.kurye=sec(KURYELER);
    s.gecmis.push({ts:t,dur:n,kim:(n==="yolda"||n==="teslim")?"Servis":"Bar / Fırın",mesaj:durum(n).ad});
+   if(n==="teslim")puanIsle(s);
    degisti=true;}}
  if(degisti)kaydet();
  return degisti;}
@@ -635,11 +854,20 @@ function calismaSaatine(t){
  var acilis=a.getTime(),simdiki=simdi();
  if(simdiki<=acilis||t>=acilis)return t;
  return Math.round(acilis+Math.random()*(simdiki-acilis));}
+function rastgeleSecim(u){
+ var set=secenekSeti(u),r=varsayilanSecim(u);
+ if(!set)return r;
+ set.forEach(function(g){
+  if(g.tip==="tek"){if(Math.random()<.45)r[g.kod]=sec(g.secimler).ad;}
+  else if(Math.random()<.35)r[g.kod]=[sec(g.secimler).ad];});
+ return r;}
 function rastgeleSepet(){
  var kalemler=[],n=Math.floor(rnd(1,4)),kul={},acik=tumUrunler().filter(function(u){return !u.kapali;});
  for(var i=0;i<n;i++){var u=sec(acik);if(kul[u.id])continue;kul[u.id]=1;
-  kalemler.push({id:u.id,ad:u.ad,fiyat:u.fiyat,sure:u.sure,istasyon:u.istasyon,adet:Math.floor(rnd(1,3))});}
- if(!kalemler.length){var u2=acik[0];kalemler.push({id:u2.id,ad:u2.ad,fiyat:u2.fiyat,sure:u2.sure,istasyon:u2.istasyon,adet:1});}
+  var v=varyant(u.id,rastgeleSecim(u),Math.floor(rnd(1,3)));
+  kalemler.push({id:v.id,ad:v.ad,fiyat:v.fiyat,sure:v.sure,istasyon:v.istasyon,adet:v.adet,secim:v.secim,not:""});}
+ if(!kalemler.length){var u2=acik[0];
+  kalemler.push({id:u2.id,ad:u2.ad,fiyat:u2.fiyat,sure:u2.sure,istasyon:u2.istasyon,adet:1,secim:"",not:""});}
  return kalemler;}
 function demoSiparis(dkOnce,hedef){
  var tip=sec(["masa","masa","gelal","gelal","magaza"]),mg=sec(MAGAZALAR),t=calismaSaatine(simdi()-Math.round(dkOnce*60000));
@@ -679,9 +907,10 @@ function demoAdisyon(){
   if(!a)continue;
   a.garson=sec(["Ayşe K.","Mert D.","Selin T.","Barış Y."]);
   var urunler=tumUrunler().filter(function(u){return !u.kapali;}),n2=Math.floor(rnd(2,6));
-  for(var j=0;j<n2;j++){var u=sec(urunler);
-   a.kalemler.push({id:u.id,ad:u.ad,fiyat:u.fiyat,sure:u.sure,istasyon:u.istasyon,
-    adet:Math.floor(rnd(1,3)),ikram:Math.random()<.07,gonderildi:Math.random()<.75,ts:a.acilis});}
+  for(var j=0;j<n2;j++){var u=sec(urunler),vv=varyant(u.id,rastgeleSecim(u),Math.floor(rnd(1,3)));
+   a.kalemler.push({id:vv.id,anahtar:vv.anahtar,ad:vv.ad,fiyat:vv.fiyat,sure:vv.sure,istasyon:vv.istasyon,
+    secim:vv.secim,secimler:vv.secimler,not:"",
+    adet:vv.adet,ikram:Math.random()<.07,gonderildi:Math.random()<.75,ts:a.acilis});}
   if(Math.random()<.2)a.indirim={tip:"yuzde",deger:10};
  }
  /* birkaç masayı rezerve göster */
@@ -702,6 +931,184 @@ function hepsiniSil(){
  kaydet();bildir("Kayıtlar silindi");ciz();}
 
 /* ══════════════════════════════════════════════════════════════════
+   SADAKAT KARTI — telefon numarasıyla puan biriktirme
+   Her 10 ₺ harcama = 1 puan.  200 puan = 50 ₺ hediye çeki.
+   ══════════════════════════════════════════════════════════════════ */
+var PUAN_ORAN=10, PUAN_HEDIYE=200, HEDIYE_TUTAR=50;
+function telNormal(t){return String(t||"").replace(/[^0-9]/g,"").replace(/^90/,"").slice(-10);}
+function musteri(tel){var n=telNormal(tel);return n.length===10?(VERI.musteriler[n]||null):null;}
+function musteriKayit(tel,ad){
+ var n=telNormal(tel); if(n.length!==10)return null;
+ if(!VERI.musteriler[n])VERI.musteriler[n]={tel:n,ad:ad||"",puan:0,harcama:0,siparis:0,sonSiparis:0,hediye:0};
+ if(ad)VERI.musteriler[n].ad=ad;
+ return VERI.musteriler[n];}
+function puanEkle(tel,ad,tutar,kod){
+ var m=musteriKayit(tel,ad); if(!m)return null;
+ var kazanc=Math.floor(tutar/PUAN_ORAN);
+ m.puan+=kazanc; m.harcama+=tutar; m.siparis++; m.sonSiparis=simdi(); m.sonKod=kod||"";
+ kaydet(); return kazanc;}
+function hediyeKullan(tel){
+ var m=musteri(tel); if(!m)return bildir("Müşteri bulunamadı","hata");
+ if(m.puan<PUAN_HEDIYE)return bildir("Yeterli puan yok ("+m.puan+"/"+PUAN_HEDIYE+")","hata");
+ m.puan-=PUAN_HEDIYE; m.hediye++;
+ kaydet(); bildir(para(HEDIYE_TUTAR)+" hediye çeki tanımlandı","ok"); ciz();}
+/* Sipariş teslim edilince puan yaz (yerel mod) */
+function puanIsle(s){
+ if(!s||s.puanIslendi||s.durum!=="teslim"||!s.tel)return;
+ s.puanIslendi=true;
+ var k=puanEkle(s.tel,s.ad,s.toplam,s.kod);
+ if(k&&SAYFA.ad==="takip")bildir(k+" puan kazandınız","ok");}
+/* Son siparişi sepete geri yükle */
+function sonSiparisiTekrarla(kod){
+ var s=kod?siparis(kod):null;
+ if(!s){var kendi=VERI.siparisler.filter(function(x){return TOKENLER[x.kod]||x.tip!=="masa";});
+  s=kendi.sort(function(a,b){return b.zaman.yeni-a.zaman.yeni;})[0];}
+ if(!s)return bildir("Tekrarlanacak sipariş bulunamadı","hata");
+ var eklendi=0;
+ s.kalemler.forEach(function(k){
+  var u=urun(k.id);
+  if(!u||u.kapali)return;
+  var sec=k.secimler||{};
+  sepetEkle(k.id,sec,k.adet,k.not||"");eklendi++;});
+ if(!eklendi)return bildir("Bu siparişteki ürünler şu an satışta değil","hata");
+ bildir(s.kod+" siparişi sepete eklendi","ok"); git("sepet");}
+
+/* ══════════════════════════════════════════════════════════════════
+   İŞLETME — vardiya (kasa), sipariş kabulü, sesli uyarı
+   ══════════════════════════════════════════════════════════════════ */
+/* --- çalışma saati --- */
+function calismaSaati(){
+ var p=(ISLETME.saat||"").split("–");
+ if(p.length!==2)return {acik:true,bas:"",bit:""};
+ function dk(t){var x=t.trim().split(":");return (+x[0])*60+(+x[1]||0);}
+ var d=new Date(),simdiDk=d.getHours()*60+d.getMinutes();
+ var b=dk(p[0]),s2=dk(p[1]);
+ return {acik:(simdiDk>=b&&simdiDk<=s2),bas:p[0].trim(),bit:p[1].trim()};}
+function siparisAlinabilir(){
+ if(VERI.ayar.siparisDurdu)return {olur:false,sebep:VERI.ayar.durdurmaNotu||"Yoğunluk nedeniyle sipariş alımı geçici olarak durduruldu."};
+ var c=calismaSaati();
+ if(!c.acik)return {olur:false,sebep:"Şu an kapalıyız. Sipariş saatleri: "+ISLETME.saat};
+ return {olur:true,sebep:""};}
+function siparisDurdur(){
+ if(VERI.ayar.siparisDurdu){VERI.ayar.siparisDurdu=false;VERI.ayar.durdurmaNotu="";
+  kaydet();bildir("Sipariş alımı yeniden açıldı","ok");ciz();return;}
+ var n=prompt("Sipariş alımı duraklatılıyor. Misafire gösterilecek not:",
+  "Yoğunluk nedeniyle kısa bir süre sipariş alamıyoruz, anlayışınız için teşekkürler.");
+ if(n===null)return;
+ VERI.ayar.siparisDurdu=true;VERI.ayar.durdurmaNotu=String(n).slice(0,200);
+ kaydet();bildir("Sipariş alımı duraklatıldı","hata");ciz();}
+
+/* --- sesli uyarı (yeni sipariş) --- */
+var _sesCtx=null,_gorulenSiparis={},_sesHazir=false;
+function sesAc(){ /* tarayıcı ilk dokunuşta izin verir */
+ if(_sesHazir)return;
+ try{_sesCtx=new (window.AudioContext||window.webkitAudioContext)();_sesHazir=true;}catch(e){}}
+function sesCal(tekrar){
+ if(!VERI.ayar.ses)return;
+ sesAc(); if(!_sesCtx)return;
+ try{
+  if(_sesCtx.state==="suspended")_sesCtx.resume();
+  var t=_sesCtx.currentTime;
+  for(var i=0;i<(tekrar||2);i++){
+   var o=_sesCtx.createOscillator(),g=_sesCtx.createGain();
+   o.type="sine";o.frequency.value=i%2?760:980;
+   g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.22,t+.02);
+   g.gain.exponentialRampToValueAtTime(.0001,t+.22);
+   o.connect(g);g.connect(_sesCtx.destination);o.start(t);o.stop(t+.24);
+   t+=.3;}
+ }catch(e){}}
+/* Yeni sipariş var mı — bar ekranı ve panoda ses + bildirim */
+function yeniSiparisKontrol(){
+ var yeni=[];
+ for(var i=0;i<VERI.siparisler.length;i++){var s=VERI.siparisler[i];
+  if(s.durum==="yeni"&&!_gorulenSiparis[s.kod]){_gorulenSiparis[s.kod]=1;yeni.push(s);}
+  else if(s.durum!=="yeni")_gorulenSiparis[s.kod]=1;}
+ if(yeni.length&&(SAYFA.ad==="ekran"||SAYFA.ad==="pano"))sesCal(2);
+ return yeni.length;}
+
+/* --- vardiya (kasa) --- */
+function vardiyaAc(){
+ var v=prompt("Kasa açılış nakdi (₺):","500");
+ if(v===null)return;
+ var n=parseFloat(String(v).replace(",","."));
+ if(isNaN(n)||n<0)return bildir("Geçerli bir tutar girin","hata");
+ VERI.vardiya={baslangic:simdi(),acilisNakit:n,acanKisi:(BULUT.personel?BULUT.personel.ad:"Kasa"),kapanis:0};
+ kaydet();bildir("Gün açıldı · kasa "+para(n),"ok");ciz();}
+/* Vardiya dönemindeki hareketlerin özeti */
+function vardiyaOzet(v){
+ if(!v)return null;
+ var bas=v.baslangic,bit=v.kapanis||simdi();
+ var sip=VERI.siparisler.filter(function(s){return s.zaman.yeni>=bas&&s.zaman.yeni<=bit;});
+ var ad=VERI.adisyonlar.filter(function(a){return a.kapanis&&a.kapanis>=bas&&a.kapanis<=bit&&a.odeme&&a.odeme!=="iptal";});
+ var o={sipSay:sip.length,urunAdet:0,ciro:0,iptal:0,ikram:0,iskonto:0,
+        odeme:{nakit:0,kart:0,online:0,adisyon:0},masaSay:ad.length,masaCiro:0,urunler:{}};
+ sip.forEach(function(s){
+  if(s.durum==="iptal"){o.iptal++;return;}
+  s.kalemler.forEach(function(k){o.urunAdet+=k.adet;
+   var an=k.ad;if(!o.urunler[an])o.urunler[an]={adet:0,ciro:0};
+   o.urunler[an].adet+=k.adet;o.urunler[an].ciro+=k.adet*k.fiyat;});
+  if(s.odeme==="adisyon"){o.odeme.adisyon+=s.toplam;return;} /* masa hesabında tahsil edilir */
+  o.ciro+=s.toplam;
+  if(o.odeme[s.odeme]!=null)o.odeme[s.odeme]+=s.toplam; else o.odeme.online+=s.toplam;});
+ ad.forEach(function(a){
+  var t=adisyonTutar(a);
+  o.masaCiro+=t.toplam;o.ciro+=t.toplam;o.ikram+=t.ikram;o.iskonto+=t.indirim;
+  if(o.odeme[a.odeme]!=null)o.odeme[a.odeme]+=t.toplam;});
+ o.enCok=Object.keys(o.urunler).map(function(k){return {ad:k,adet:o.urunler[k].adet,ciro:o.urunler[k].ciro};})
+  .sort(function(x,y){return y.adet-x.adet;}).slice(0,10);
+ o.beklenenNakit=v.acilisNakit+o.odeme.nakit;
+ return o;}
+function vardiyaKapat(){
+ var v=VERI.vardiya; if(!v)return;
+ var o=vardiyaOzet(v);
+ var sayim=prompt("Kasada sayılan nakit (₺):\n\nBeklenen: "+para(o.beklenenNakit),
+  String(Math.round(o.beklenenNakit)));
+ if(sayim===null)return;
+ var n=parseFloat(String(sayim).replace(",","."));
+ if(isNaN(n)||n<0)return bildir("Geçerli bir tutar girin","hata");
+ var acik=VERI.adisyonlar.filter(function(a){return a.durum==="acik";});
+ if(acik.length&&!confirm(acik.length+" masa hâlâ açık. Yine de gün kapatılsın mı?"))return;
+ v.kapanis=simdi();v.sayilanNakit=n;v.fark=n-o.beklenenNakit;v.ozet=o;
+ VERI.vardiyaGecmis.push(v);VERI.vardiya=null;
+ kaydet();bildir("Gün kapatıldı · Z raporu hazır","ok");
+ zRaporu(VERI.vardiyaGecmis.length-1);ciz();}
+function zRaporu(ix){
+ var v=VERI.vardiyaGecmis[ix]; if(!v)return;
+ var o=v.ozet||vardiyaOzet(v);
+ var h='<div class="ic" style="max-width:420px"><div class="pb"><h2>Z Raporu</h2>'+
+  '<button class="kap" onclick="pencereKapat()">×</button></div>'+
+  '<div class="kart mono" style="font-size:12.5px">'+
+  '<div style="text-align:center;margin-bottom:10px"><b style="font-size:15px">LAVKA</b><br>'+
+  ISLETME.konum+'<br>GÜN SONU RAPORU</div>'+
+  '<div style="border-top:1px dashed var(--cizgi);border-bottom:1px dashed var(--cizgi);padding:8px 0;margin-bottom:8px">'+
+  'Açılış : '+tar(v.baslangic)+' '+ss(v.baslangic)+'<br>'+
+  'Kapanış: '+tar(v.kapanis)+' '+ss(v.kapanis)+'<br>'+
+  'Süre   : '+sureK(v.kapanis-v.baslangic)+'<br>'+
+  'Kasiyer: '+esc(v.acanKisi||"—")+'</div>';
+ function sat(a,b){return '<div style="display:flex;justify-content:space-between;gap:8px;padding:2px 0"><span>'+a+'</span><span>'+b+'</span></div>';}
+ h+=sat("Sipariş adedi",o.sipSay)+sat("Ürün adedi",o.urunAdet)+sat("Kapanan masa",o.masaSay)+
+  sat("İptal",o.iptal)+
+  '<div style="border-top:1px dashed var(--cizgi);margin-top:8px;padding-top:8px">'+
+  sat("Nakit",para(o.odeme.nakit))+sat("Kredi kartı",para(o.odeme.kart))+sat("Online",para(o.odeme.online))+
+  sat("İkram",'-'+para(o.ikram))+sat("İskonto",'-'+para(o.iskonto))+
+  '<div style="display:flex;justify-content:space-between;font-size:16px;font-weight:600;margin-top:6px">'+
+  '<span>TOPLAM CİRO</span><span>'+para(o.ciro)+'</span></div></div>'+
+  '<div style="border-top:1px dashed var(--cizgi);margin-top:8px;padding-top:8px">'+
+  sat("Açılış nakdi",para(v.acilisNakit))+sat("Beklenen kasa",para(o.beklenenNakit))+
+  sat("Sayılan kasa",para(v.sayilanNakit))+
+  '<div style="display:flex;justify-content:space-between;font-weight:600">'+
+  '<span>FARK</span><span>'+(v.fark>=0?"+":"")+para(v.fark)+'</span></div></div>';
+ if(o.enCok.length){h+='<div style="border-top:1px dashed var(--cizgi);margin-top:8px;padding-top:8px">'+
+  '<b>EN ÇOK SATANLAR</b>';
+  o.enCok.slice(0,5).forEach(function(u){h+=sat(esc(u.ad),u.adet+" ad.");});
+  h+='</div>';}
+ h+='</div><div style="display:flex;gap:8px">'+
+  '<button class="dg" onclick="window.print()">Yazdır</button>'+
+  '<button class="dg-h" onclick="pencereKapat()">Kapat</button></div></div>';
+ var p=document.getElementById("pencere");p.innerHTML=h;p.className="ac";
+ p.onclick=function(e){if(e.target===p)pencereKapat();};}
+
+/* ══════════════════════════════════════════════════════════════════
    ADİSYON MOTORU — masa hesabı, ikram/iskonto, mutfağa gönderim, ödeme
    Adisyon masanın açık hesabıdır. "Mutfağa gönder" denince bekleyen
    kalemler normal bir sipariş kaydına dönüşür ve bar/fırın ekranına
@@ -720,13 +1127,19 @@ function adisyonAc(masaId,kisi,ts){
   kisi:kisi||m.masa.kisi,garson:(BULUT.personel?BULUT.personel.ad:"Servis"),kalemler:[],
   acilis:ts||simdi(),kapanis:0,durum:"acik",indirim:{tip:"yuzde",deger:0},odeme:"",siparisKodlari:[]};
  VERI.adisyonlar.push(a); delete VERI.rezerve[masaId]; kaydet(); return a;}
-function adisyonKalemEkle(aid,uid,adet){
- var a=adisyon(aid),u=urun(uid); if(!a||!u||u.kapali)return;
+function adisyonKalemEkle(aid,uid){
+ var u=urun(uid); if(!u||u.kapali)return;
+ secenekAc(uid,"pos:"+aid);}
+function adisyonVaryantEkle(aid,uid,sec,adet,not){
+ var a=adisyon(aid),v=varyant(uid,sec,adet||1);
+ if(!a||!v)return;
+ var an=varyantAnahtar(uid,sec);
  for(var i=0;i<a.kalemler.length;i++){var k=a.kalemler[i];
-  if(k.id===uid&&!k.gonderildi&&!k.ikram){k.adet+=(adet||1);kaydet();ciz();return;}}
- a.kalemler.push({id:u.id,ad:u.ad,fiyat:u.fiyat,sure:u.sure,istasyon:u.istasyon,
-  adet:adet||1,ikram:false,gonderildi:false,ts:simdi()});
- kaydet(); ciz();}
+  if(k.anahtar===an&&!k.gonderildi&&!k.ikram&&(k.not||"")===(not||"")){
+   k.adet+=(adet||1);kaydet();bildir(v.ad+" eklendi");ciz();return;}}
+ a.kalemler.push({id:v.id,anahtar:an,ad:v.ad,fiyat:v.fiyat,sure:v.sure,istasyon:v.istasyon,
+  secim:v.secim,secimler:v.secimler,not:not||"",adet:adet||1,ikram:false,gonderildi:false,ts:simdi()});
+ kaydet(); bildir(v.ad+" adisyona eklendi","ok"); ciz();}
 function adisyonAdet(aid,ix,d){
  var a=adisyon(aid); if(!a||!a.kalemler[ix])return;
  var k=a.kalemler[ix];
@@ -799,7 +1212,8 @@ function mutfagaGonder(aid,sessiz){
  if(!yeni.length){if(!sessiz)bildir("Mutfağa gönderilecek yeni kalem yok","hata");return null;}
  if(BULUT.acik){bildir("Bulut modunda adisyon henüz etkin değil","hata");return null;}
  var s=siparisOlustur({kalemler:yeni.map(function(k){
-   return {id:k.id,ad:k.ad,fiyat:k.ikram?0:k.fiyat,sure:k.sure,istasyon:k.istasyon,adet:k.adet};}),
+   return {id:k.id,ad:k.ad,fiyat:k.ikram?0:k.fiyat,sure:k.sure,istasyon:k.istasyon,adet:k.adet,
+           secim:k.secim||"",not:k.not||""};}),
   tip:"masa",masa:a.masaAd,ad:a.masaAd+" · "+a.kat,tel:"",not:"",odeme:"adisyon"});
  s.adisyonId=a.id; s.elle=true;
  a.kalemler.forEach(function(k){k.gonderildi=true;});
@@ -831,7 +1245,8 @@ function adisyonFisYazdir(aid){
   a.masaAd+' · '+a.kat+' · Adisyon '+a.no+'<br>Servis: '+esc(a.garson)+'</div>';
  a.kalemler.forEach(function(k){
   h+='<div style="display:flex;justify-content:space-between;gap:8px;padding:2px 0">'+
-   '<span>'+k.adet+' × '+esc(k.ad)+(k.ikram?' (ikram)':'')+'</span><span>'+
+   '<span>'+k.adet+' × '+esc(k.ad)+(k.ikram?' (ikram)':'')+
+   (k.secim?'<br><span style="opacity:.75">&nbsp;&nbsp;'+esc(k.secim)+'</span>':'')+'</span><span>'+
    (k.ikram?"0,00 ₺":para(k.fiyat*k.adet))+'</span></div>';});
  h+='<div style="border-top:1px dashed var(--cizgi);margin-top:8px;padding-top:8px">'+
   '<div style="display:flex;justify-content:space-between"><span>Ara toplam</span><span>'+para(t.ara)+'</span></div>'+
@@ -849,6 +1264,99 @@ function rezerveTogg(masaId){
  if(VERI.rezerve[masaId])delete VERI.rezerve[masaId]; else VERI.rezerve[masaId]=simdi();
  kaydet(); ciz();}
 
+
+/* ══════════════════════════════════════════════════════════════════
+   DİL — misafir arayüzü için Türkçe / İngilizce
+   Metinler çizildikten sonra sözlükten çevrilir; ürün adları ve
+   açıklamaları olduğu gibi kalır (menü işletmenin kendi dilindedir).
+   Ekip ekranları Türkçedir.
+   ══════════════════════════════════════════════════════════════════ */
+var DIL=dOku("lavka_dil")||"tr";
+var EN={
+ /* menü ve gezinme */
+ "Misafir":"Guest","Ekip":"Team","Yönetim":"Management",
+ "Menü & Sipariş":"Menu & Order","QR Menü":"QR Menu","Sepetim":"My Cart","Sipariş Takip":"Order Tracking",
+ "Masalar":"Tables","Bar & Fırın Ekranı":"Bar & Bakery Screen","Hazır Panosu":"Ready Board",
+ "Servis / Kurye":"Service / Courier","Gün Raporu":"Daily Report","Kasa & Vardiya":"Cash & Shift",
+ "Sipariş Kayıtları":"Order Records","Menü & Stok":"Menu & Stock","Ekip girişi":"Team login",
+ /* vitrin */
+ "Günaydın, kahveniz hazırlanmaya hazır.":"Good morning — your coffee is ready to be made.",
+ "Lavka’nın taze fırın ürünlerini ve üçüncü nesil kahvelerini masanıza getirelim, tezgâhtan alın ya da AVM içindeki mağazanıza kuryeyle gönderelim.":
+ "Let us bring Lavka’s fresh bakery and specialty coffee to your table, hand it over at the counter, or deliver it to your shop inside the mall.",
+ "Kuyruk sakin":"No queue","Ortalama hazırlık":"Average prep",
+ /* sepet ve ödeme */
+ "Sepetiniz boş.":"Your cart is empty.","Menüden ürün ekleyin.":"Add items from the menu.",
+ "Siparişi Tamamla":"Checkout","Sepeti Boşalt":"Empty Cart","Sepete Ekle":"Add to Cart",
+ "Seçenekleri Aç":"Choose Options","Adisyona Ekle":"Add to Bill","Vazgeç":"Cancel",
+ "Ara toplam":"Subtotal","Toplam":"Total","Ödenecek":"Amount due","Kurye ücreti":"Delivery fee",
+ "Tahmini teslim":"Estimated delivery","Tahmini hazırlık":"Estimated prep",
+ "Sipariş Özeti":"Order Summary","Teslimat Şekli":"Delivery Method",
+ "Ad Soyad *":"Full name *","Telefon":"Phone","Masa No *":"Table no *",
+ "Mağaza / Birim *":"Shop / Unit *","Kat / Kapı No *":"Floor / Door no *",
+ "Ödeme":"Payment","Sipariş Notu":"Order note","Not":"Note",
+ "Online ödeme (kayıtlı kart)":"Online payment (saved card)","Teslimatta kredi kartı":"Card on delivery",
+ "Teslimatta nakit":"Cash on delivery","Online ödeme":"Online payment",
+ "Onayladığınızda sipariş bar ekranına anında düşer.":"Once confirmed, the order appears on the bar screen instantly.",
+ "Menüye Git":"Go to Menu","Sipariş oluşturmak için sepetinize ürün ekleyin.":"Add items to your cart to place an order.",
+ /* teslimat tipleri */
+ "Masaya Servis":"Table Service","Gel-Al":"Pick-up","Mağazaya Teslim":"Shop Delivery",
+ "Food court masanıza getirilir":"Brought to your food court table",
+ "Hazır olunca tezgâhtan alırsınız":"Collect at the counter when ready",
+ "AVM içi kurye ile mağazanıza":"Courier delivery to your shop inside the mall",
+ "Tezgâhtan teslim":"Counter pick-up",
+ /* durumlar */
+ "Sipariş Alındı":"Order Received","Onaylandı":"Confirmed","Hazırlanıyor":"Preparing","Hazır":"Ready",
+ "Yolda":"On the way","Teslim Edildi":"Delivered","İptal Edildi":"Cancelled",
+ "Kasa/bar onayı bekleniyor":"Waiting for confirmation","Sipariş kabul edildi":"Order accepted",
+ "Bar ve fırın hazırlıyor":"Bar and bakery are preparing","Teslim/servis bekliyor":"Waiting for pick-up/service",
+ "Kurye mağazaya götürüyor":"Courier is on the way","Sipariş tamamlandı":"Order completed",
+ /* takip */
+ "Süreç Zaman Çizelgesi":"Process Timeline","Sipariş İçeriği":"Order Contents","İşlemler":"Actions",
+ "Son Siparişler":"Recent Orders","Sipariş saati":"Order time","Söz verilen teslim":"Promised delivery",
+ "Geçen süre":"Elapsed","Geçen":"Elapsed","Kalan":"Remaining","Gecikme":"Delay","Sorgula":"Search",
+ "Takip Et":"Track","Yazdır":"Print","Kapat":"Close","Detay":"Details",
+ "Siparişi İptal Et":"Cancel Order","Siparişi Teslim Aldım":"I Received My Order",
+ "Bu siparişi tekrarla":"Reorder this","Siparişinizi değerlendirin:":"Rate your order:",
+ "Hazırlığa başlanana kadar iptal edebilirsiniz.":"You can cancel until preparation starts.",
+ "Siparişiniz hazır — servis ekibimiz masanıza getiriyor.":"Your order is ready — our team is bringing it to your table.",
+ "Siparişiniz hazır — kuryeye teslim edilmek üzere.":"Your order is ready — waiting for the courier.",
+ "canlı":"live","başlangıç":"start","şimdi":"now","Kod":"Code","Saat":"Time","Durum":"Status",
+ "Teslimat":"Delivery","Tutar":"Amount","Ürünler":"Items","Misafir & Teslimat":"Guest & Delivery",
+ /* seçenekler */
+ "Boy":"Size","Süt":"Milk","Şeker":"Sugar","Ekstra":"Extras","Servis":"Service","Yanında":"On the side",
+ "Çıkarılsın":"Remove","Pişirme":"Preparation","(isteğe bağlı)":"(optional)",
+ "(birden fazla seçilebilir)":"(multiple choice)","Not (isteğe bağlı)":"Note (optional)",
+ /* qr */
+ "Masa karekodu":"Table QR code","Menü":"Menu","Kategoriler":"Categories","Ürünler":"Items",
+ "Bugün tükendi":"Sold out today","Tükendi":"Sold out","Satışa kapalı":"Not available",
+ /* diğer */
+ "Şu an sipariş alamıyoruz":"We are not taking orders right now",
+ "Sipariş alımı şu an kapalı":"Ordering is currently closed",
+ "Lavka Kart":"Lavka Card","Puan":"Points","ürün":"items","Açık":"Open","Kapalı":"Closed"
+};
+function dilDegis(){DIL=(DIL==="tr"?"en":"tr");dYaz("lavka_dil",DIL);ciz();}
+function cevirMetin(v){
+ if(EN[v])return EN[v];
+ var m=v.match(/^(\d+)\s+ürün$/); if(m)return m[1]+" items";
+ if(/^[-+]?[\d\s:.,]*(dk|sn|sa)\b/.test(v))
+  return v.replace(/\bdk\b/g,"min").replace(/\bsn\b/g,"sec").replace(/\bsa\b/g,"h");
+ var y=v.match(/^~(\d+)\s*dk$/); if(y)return "~"+y[1]+" min";
+ return null;}
+function cevir(kok){
+ if(DIL!=="en"||!kok||!document.createTreeWalker)return;
+ try{
+  var yur=document.createTreeWalker(kok,NodeFilter.SHOW_TEXT,null),n,liste=[];
+  while((n=yur.nextNode()))liste.push(n);
+  liste.forEach(function(t){
+   var ham=t.nodeValue,v=ham.trim();
+   if(!v||v.length>240)return;
+   var c=cevirMetin(v);
+   if(c!=null)t.nodeValue=ham.replace(v,c);});
+  var ph=kok.querySelectorAll("[placeholder]");
+  for(var i=0;i<ph.length;i++){var p=ph[i].getAttribute("placeholder");
+   if(EN[p])ph[i].setAttribute("placeholder",EN[p]);}
+ }catch(e){}}
+
 /* ══════════════════════════════════════════════════════════════════
    ARAYÜZ
    ══════════════════════════════════════════════════════════════════ */
@@ -856,8 +1364,8 @@ var SAYFA={ad:"menu",arg:""};
 var UI={kat:"",istasyon:"hepsi",fDurum:"",fArama:"",
         masaKat:"",posKat:"",posSecili:[],qrKat:"",qrUrun:"",qrMasa:""};
 var SEPET={};
-try{var _s=dOku("lavka_sepet_v1");if(_s)SEPET=JSON.parse(_s);}catch(e){}
-function sepetKaydet(){try{dYaz("lavka_sepet_v1",JSON.stringify(SEPET));}catch(e){}}
+try{var _s=dOku("lavka_sepet_v2");if(_s)SEPET=JSON.parse(_s);}catch(e){}
+function sepetKaydet(){try{dYaz("lavka_sepet_v2",JSON.stringify(SEPET));}catch(e){}}
 var FORM={ad:"",tel:"",tip:"masa",masa:"",magaza:"",kat:"",odeme:"online",not:""};
 
 function git(h){location.hash="#/"+h;}
@@ -871,13 +1379,31 @@ function routeCek(){
   if(k.length)Promise.all(k.map(takipCek)).then(function(){ciz();});}}
 window.addEventListener("hashchange",route);
 
-function sepetAdet(){var n=0;for(var k in SEPET)n+=SEPET[k];return n;}
-function sepetKalemler(){var a=[];for(var k in SEPET){var u=urun(k);
- if(u&&SEPET[k]>0)a.push({id:u.id,ad:u.ad,fiyat:u.fiyat,sure:u.sure,istasyon:u.istasyon,adet:SEPET[k]});}
+function sepetAdet(){var n=0;for(var k in SEPET)n+=SEPET[k].adet;return n;}
+function sepetKalemler(){
+ var a=[];
+ for(var k in SEPET){var e=SEPET[k],v=varyant(e.uid,e.secimler,e.adet);
+  if(v&&e.adet>0){v.anahtar=k;v.not=e.not||"";a.push(v);}}
  return a;}
 function sepetTutar(){var a=sepetKalemler(),t=0;for(var i=0;i<a.length;i++)t+=a[i].fiyat*a[i].adet;return t;}
-function sepetEkle(uid,d){var n=(SEPET[uid]||0)+d;
- if(n<=0)delete SEPET[uid];else SEPET[uid]=n;sepetKaydet();ciz();}
+function urunSepetAdet(uid){var n=0;for(var k in SEPET)if(SEPET[k].uid===uid)n+=SEPET[k].adet;return n;}
+/* Seçeneksiz hızlı ekleme ya da seçenek penceresinden gelen ekleme */
+function sepetEkle(uid,sec,d,not){
+ var an=varyantAnahtar(uid,sec||{});
+ var e=SEPET[an]||{uid:uid,secimler:sec||{},adet:0,not:not||""};
+ if(not)e.not=not;
+ e.adet+=(d||1);
+ if(e.adet<=0)delete SEPET[an]; else SEPET[an]=e;
+ sepetKaydet();ciz();}
+function sepetAnahtarAdet(an,d){
+ var e=SEPET[an]; if(!e)return;
+ e.adet+=d; if(e.adet<=0)delete SEPET[an];
+ sepetKaydet();ciz();}
+/* Menüdeki "−" düğmesi: o üründen son eklenen varyantı azaltır */
+function urunAzalt(uid){
+ var son=null;
+ for(var k in SEPET)if(SEPET[k].uid===uid)son=k;
+ if(son)sepetAnahtarAdet(son,-1);}
 function sepetBosalt(){SEPET={};sepetKaydet();ciz();}
 
 /* ---------------- yan menü ---------------- */
@@ -897,11 +1423,13 @@ function navCiz(){
   a("masalar","Masalar",acikAdisyon)+
   a("ekran","Bar &amp; Fırın Ekranı",bekleyen)+a("pano","Hazır Panosu",hazir)+a("servis","Servis / Kurye",hazir)+
   '<div class="grp">Yönetim</div>'+
-  a("rapor","Gün Raporu",geciken)+a("siparisler","Sipariş Kayıtları",bugun.length)+a("menuyonetim","Menü &amp; Stok");
+  a("rapor","Gün Raporu",geciken)+a("kasa","Kasa &amp; Vardiya")+
+  a("siparisler","Sipariş Kayıtları",bugun.length)+a("menuyonetim","Menü &amp; Stok");
  var d=document.getElementById("dgAkis"),dd=document.getElementById("dgDemo"),ek=document.getElementById("yanEk");
  d.textContent="Otomatik akış: "+(VERI.ayar.otomatik?"AÇIK":"KAPALI");
  d.className="sbtn"+(VERI.ayar.otomatik?" aktif":"");
  document.getElementById("dgTema").textContent="Görünüm: "+({sistem:"Sistem",light:"Açık",dark:"Koyu"})[VERI.ayar.tema||"sistem"];
+ document.getElementById("dgDil").textContent=(DIL==="tr"?"Dil: Türkçe → English":"Language: English → Türkçe");
  d.style.display=dd.style.display=BULUT.acik?"none":"block";
  if(!BULUT.acik){ek.innerHTML="";return;}
  ek.innerHTML=BULUT.personel
@@ -952,7 +1480,9 @@ function olcum(ad,deger,alt,sinif){
  return '<div class="olcum '+(sinif||"")+'"><span>'+ad+'</span><b>'+deger+'</b><i>'+(alt||"")+'</i></div>';}
 function kalemSatirlari(s){var h="";
  for(var i=0;i<s.kalemler.length;i++){var k=s.kalemler[i];
-  h+='<li class="'+(k.istasyon==="bar"?"bar":"")+'">'+k.adet+' × '+esc(k.ad)+'</li>';}
+  h+='<li class="'+(k.istasyon==="bar"?"bar":"")+'">'+k.adet+' × '+esc(k.ad)+
+   (k.secim?'<br><span style="color:var(--bakir-koyu);font-size:11.5px">→ '+esc(k.secim)+'</span>':'')+
+   (k.not?'<br><span style="color:var(--uyari);font-size:11.5px">📝 '+esc(k.not)+'</span>':'')+'</li>';}
  return h;}
 
 /* ══════════════════════════════════════════════════════════════════
@@ -968,6 +1498,9 @@ function ekMenu(){
   '<span>'+(yogun>5?'<span class="uyari-y">Yoğun · '+yogun+' aktif sipariş</span>':'<span class="iyi-y">Kuyruk sakin</span>')+'</span>'+
   (o.ortHazirlik!=null?'<span>Ortalama hazırlık '+sureK(o.ortHazirlik)+'</span>':'')+'</div>'+
   '</div><div class="fincan">☕</div></div>';
+ var _sa=siparisAlinabilir();
+ if(!_sa.olur)h+='<div class="kart" style="border-color:var(--uyari);background:var(--uyari-bg)">'+
+  '<b class="uyari-y">Şu an sipariş alamıyoruz</b><div style="margin-top:4px">'+esc(_sa.sebep)+'</div></div>';
  h+='<div class="menu-duzen"><div>';
  h+='<div class="kat-serit">';
  for(var i=0;i<MENU.length;i++)
@@ -975,13 +1508,16 @@ function ekMenu(){
  h+='</div><div class="kart">';
  var kat=MENU.filter(function(k){return k.kat===UI.kat;})[0];
  for(var j=0;j<kat.urunler.length;j++){
-  var u=urun(kat.urunler[j].id),adet=SEPET[u.id]||0;
-  h+='<div class="urun'+(u.kapali?" yok":"")+'"><div class="simge">'+u.ikon+'</div>'+
+  var u=urun(kat.urunler[j].id),adet=urunSepetAdet(u.id),set=secenekSeti(u);
+  h+='<div class="urun'+(u.kapali?" yok":"")+'">'+
+   '<div class="gorsel"'+(u.foto?' style="background-image:url(\''+esc(u.foto)+'\')"':'')+'>'+(u.foto?"":u.ikon)+'</div>'+
    '<div class="ad"><b>'+esc(u.ad)+(u.kapali?' <span class="rz kotu">Tükendi</span>':'')+'</b>'+
-   '<span>'+esc(u.aciklama)+' · '+ISTASYON[u.istasyon].ad+' · ~'+u.sure+' dk</span></div>'+
+   '<span>'+esc(u.aciklama)+' · '+ISTASYON[u.istasyon].ad+' · ~'+u.sure+' dk</span>'+
+   (set?'<div class="sec-not">'+set.slice(0,3).map(function(g){return g.ad.toLocaleLowerCase("tr");}).join(", ")+
+    (set.length>3?" ve diğer":"")+' seçenekleri</div>':'')+'</div>'+
    '<div class="fyt">'+para(u.fiyat)+'</div>';
-  if(!u.kapali)h+='<div class="sayac">'+(adet>0?'<button onclick="sepetEkle(\''+u.id+'\',-1)" aria-label="azalt">−</button><b>'+adet+'</b>':'')+
-   '<button onclick="sepetEkle(\''+u.id+'\',1)" aria-label="ekle">+</button></div>';
+  if(!u.kapali)h+='<div class="sayac">'+(adet>0?'<button onclick="urunAzalt(\''+u.id+'\')" aria-label="azalt">−</button><b>'+adet+'</b>':'')+
+   '<button onclick="secenekAc(\''+u.id+'\',\'sepet\')" aria-label="ekle">+</button></div>';
   h+='</div>';}
  h+='</div></div>'+sepetPanel()+'</div>';
  return h;}
@@ -991,7 +1527,10 @@ function sepetPanel(){
  if(!k.length)h+='<div class="bos">Sepetiniz boş.<br>Menüden ürün ekleyin.</div>';
  else{
   for(var i=0;i<k.length;i++)
-   h+='<div class="sat"><span>'+k[i].adet+' × '+esc(k[i].ad)+'</span><b class="tnum">'+para(k[i].fiyat*k[i].adet)+'</b></div>';
+   h+='<div class="sat"><span>'+k[i].adet+' × '+esc(k[i].ad)+
+    (k[i].secim?'<br><span class="soluk" style="font-size:11.5px">'+esc(k[i].secim)+'</span>':'')+
+    (k[i].not?'<br><span class="soluk" style="font-size:11.5px">📝 '+esc(k[i].not)+'</span>':'')+
+    '</span><b class="tnum">'+para(k[i].fiyat*k[i].adet)+'</b></div>';
   h+='<div class="top" style="margin-top:12px"><span>Tahmini hazırlık</span><span class="tnum">~'+sozSure(k,"gelal")+' dk</span></div>'+
    '<div class="top ana"><span>Toplam</span><span class="tnum">'+para(t)+'</span></div>'+
    '<button class="dg" style="width:100%;margin-top:14px" onclick="git(\'sepet\')">Siparişi Tamamla</button>'+
@@ -1006,7 +1545,11 @@ function ekSepet(){
   '<div class="kart"><div class="bos">Sepetiniz boş.<br><br><button class="dg" onclick="git(\'menu\')">Menüye Git</button></div></div>';
  var t=sepetTutar(),servis=FORM.tip==="magaza"?ISLETME.kuryeUcreti:0,tahmin=sozSure(k,FORM.tip);
  var h='<div class="bslk"><div><h1>Siparişi Tamamla</h1><p class="alt">'+ISLETME.ad+' · '+ISLETME.konum+'</p></div>'+
-  '<button class="dg-h" onclick="git(\'menu\')">← Menüye dön</button></div><div class="grid2"><div>';
+  '<button class="dg-h" onclick="git(\'menu\')">← Menüye dön</button></div>';
+ var _sa2=siparisAlinabilir();
+ if(!_sa2.olur)h+='<div class="kart" style="border-color:var(--uyari);background:var(--uyari-bg)">'+
+  '<b class="uyari-y">Sipariş alımı şu an kapalı</b><div style="margin-top:4px">'+esc(_sa2.sebep)+'</div></div>';
+ h+='<div class="grid2"><div>';
  h+='<div class="kart"><h2>Teslimat Şekli</h2><div class="grid3" style="gap:10px">';
  for(var tp in TIPLER){var o=TIPLER[tp],on=FORM.tip===tp;
   h+='<div onclick="frmSet(\'tip\',\''+tp+'\')" style="cursor:pointer;border:2px solid '+(on?"var(--bakir)":"var(--cizgi)")+
@@ -1030,7 +1573,13 @@ function ekSepet(){
  h+='<div><div class="kart sepet"><h2>Sipariş Özeti</h2>';
  for(var i=0;i<k.length;i++)
   h+='<div class="sat"><span>'+k[i].adet+' × '+esc(k[i].ad)+'<br><span class="soluk" style="font-size:11.5px">'+
-   ISTASYON[k[i].istasyon].ad+' · ~'+k[i].sure+' dk</span></span><b class="tnum">'+para(k[i].fiyat*k[i].adet)+'</b></div>';
+   (k[i].secim?esc(k[i].secim)+' · ':'')+ISTASYON[k[i].istasyon].ad+' · ~'+k[i].sure+' dk</span>'+
+   (k[i].not?'<br><span class="soluk" style="font-size:11.5px">📝 '+esc(k[i].not)+'</span>':'')+
+   '<span class="sayac" style="margin-top:4px">'+
+   '<button onclick="sepetAnahtarAdet(\''+k[i].anahtar.replace(/'/g,"\\'")+'\',-1)">−</button>'+
+   '<b>'+k[i].adet+'</b>'+
+   '<button onclick="sepetAnahtarAdet(\''+k[i].anahtar.replace(/'/g,"\\'")+'\',1)">+</button></span>'+
+   '</span><b class="tnum">'+para(k[i].fiyat*k[i].adet)+'</b></div>';
  h+='<div class="top" style="margin-top:12px"><span>Ara toplam</span><span class="tnum">'+para(t)+'</span></div>'+
   '<div class="top"><span>Kurye ücreti</span><span class="tnum">'+para(servis)+'</span></div>'+
   '<div class="top"><span>Tahmini teslim</span><span class="tnum">~'+tahmin+' dk</span></div>'+
@@ -1042,11 +1591,15 @@ function ekSepet(){
 function siparisiGonder(){
  var k=sepetKalemler();
  if(!k.length)return bildir("Sepet boş","hata");
+ var sa=siparisAlinabilir();
+ if(!sa.olur)return bildir(sa.sebep,"hata");
  if(!FORM.ad.trim())return bildir("Lütfen ad soyad girin","hata");
  if(FORM.tip==="masa"&&!FORM.masa.trim())return bildir("Masa numarası gerekli","hata");
  if(FORM.tip==="magaza"&&(!FORM.magaza.trim()||!FORM.kat.trim()))return bildir("Mağaza ve kat bilgisi gerekli","hata");
  if(BULUT.acik)return bulutSiparisVer(k);
- var s=siparisOlustur({kalemler:k,tip:FORM.tip,masa:FORM.masa,magaza:FORM.magaza,kat:FORM.kat,
+ var kal=k.map(function(x){return {id:x.id,ad:x.ad,fiyat:x.fiyat,sure:x.sure,istasyon:x.istasyon,
+  adet:x.adet,secim:x.secim||"",not:x.not||""};});
+ var s=siparisOlustur({kalemler:kal,tip:FORM.tip,masa:FORM.masa,magaza:FORM.magaza,kat:FORM.kat,
   ad:FORM.ad,tel:FORM.tel,not:FORM.not,odeme:FORM.odeme});
  SEPET={};sepetKaydet();bildir("Siparişiniz alındı: "+s.kod,"ok");git("takip/"+s.kod);}
 
@@ -1094,7 +1647,9 @@ function ekTakip(kod){
  h2+='</div><div class="grid2"><div class="kart"><h2>Süreç Zaman Çizelgesi</h2>'+zamanCizelge(s2)+'</div><div>';
  h2+='<div class="kart"><h2>Sipariş İçeriği</h2><table class="tbl"><tbody>';
  for(var i2=0;i2<s2.kalemler.length;i2++){var k2=s2.kalemler[i2];
-  h2+='<tr><td>'+k2.adet+' × '+esc(k2.ad)+' <span class="ist '+ISTASYON[k2.istasyon].sinif+'">'+ISTASYON[k2.istasyon].ad+'</span></td>'+
+  h2+='<tr><td>'+k2.adet+' × '+esc(k2.ad)+' <span class="ist '+ISTASYON[k2.istasyon].sinif+'">'+ISTASYON[k2.istasyon].ad+'</span>'+
+   (k2.secim?'<br><span class="soluk">'+esc(k2.secim)+'</span>':'')+
+   (k2.not?'<br><span class="soluk">📝 '+esc(k2.not)+'</span>':'')+'</td>'+
    '<td class="sag">'+para(k2.fiyat*k2.adet)+'</td></tr>';}
  h2+='<tr><td>Ara toplam</td><td class="sag">'+para(s2.araToplam)+'</td></tr>'+
   (s2.servis?'<tr><td>Kurye ücreti</td><td class="sag">'+para(s2.servis)+'</td></tr>':'')+
@@ -1107,7 +1662,8 @@ function ekTakip(kod){
   h2+='<button class="dg-x" onclick="misafirIptal(\''+s2.kod+'\')">Siparişi İptal Et</button> <span class="soluk">Hazırlığa başlanana kadar iptal edebilirsiniz.</span>';
  else if(s2.durum==="hazir"&&s2.tip==="gelal")
   h2+='<button class="dg-ok" onclick="'+(BULUT.acik?'bulutTeslimAldim':'misafirTeslimAldi')+'(\''+s2.kod+'\')">Siparişi Teslim Aldım</button>';
- else if(s2.durum==="teslim")h2+=puanKutu(s2);
+ else if(s2.durum==="teslim")h2+=puanKutu(s2)+sadakatKutu(s2)+
+  '<div style="margin-top:12px"><button class="dg-h" onclick="sonSiparisiTekrarla(\''+s2.kod+'\')">Bu siparişi tekrarla</button></div>';
  else if(s2.durum==="hazir"&&s2.tip==="masa")
   h2+='<div class="iyi-y">Siparişiniz hazır — servis ekibimiz masanıza getiriyor.</div>';
  else if(s2.durum==="hazir")
@@ -1121,6 +1677,19 @@ function puanKutu(s){
  var h='<div class="soluk" style="margin-bottom:8px">Siparişinizi değerlendirin:</div>';
  for(var i=1;i<=5;i++)h+='<button class="dg-h" onclick="puanVer(\''+s.kod+'\','+i+')">'+i+' ★</button> ';
  return h;}
+function sadakatKutu(s){
+ if(!s.tel)return '<div class="soluk" style="margin-top:10px">Telefon numarasıyla sipariş verirseniz Lavka Kart puanı biriktirirsiniz.</div>';
+ var m=musteri(s.tel);
+ if(!m)return "";
+ var kalan=Math.max(0,PUAN_HEDIYE-m.puan);
+ return '<div class="kart" style="margin:12px 0 0;background:var(--kart2);border-style:dashed">'+
+  '<b>Lavka Kart · '+esc(m.ad||m.tel)+'</b>'+
+  '<div style="display:flex;justify-content:space-between;gap:10px;margin-top:6px;font-size:13.5px">'+
+  '<span>Puan</span><b class="tnum">'+m.puan+'</b></div>'+
+  '<div class="cubuk" style="margin:6px 0"><i style="width:'+Math.min(100,Math.round(m.puan/PUAN_HEDIYE*100))+'%"></i></div>'+
+  '<div class="soluk" style="font-size:12px">'+
+  (kalan?(kalan+" puan sonra "+para(HEDIYE_TUTAR)+" hediye çeki"):("Hediye çekiniz hazır · "+para(HEDIYE_TUTAR)))+
+  ' · toplam '+m.siparis+' sipariş</div></div>';}
 function puanVer(kod,p){
  if(BULUT.acik)return bulutPuan(kod,p);
  var s=siparis(kod);if(!s)return;s.puan=p;kaydet();bildir("Teşekkürler, "+p+" yıldız verdiniz","ok");ciz();}
@@ -1330,6 +1899,7 @@ function ekRapor(){
   '<tr><td><b>Uçtan uca</b></td><td class="sag"><b>'+(oh.ortToplam!=null?sureK(oh.ortToplam):"—")+'</b></td>'+
   '<td>'+(oh.zamanindaYuzde!=null?'zamanında %'+oh.zamanindaYuzde:'—')+'</td></tr>'+
   '</tbody></table></div></div></div>';
+ h+=sadakatKarti();
  h+='<div class="kart"><h2>Süreçteki Siparişler<span>teslim süresine göre</span></h2><div class="sar"><table class="tbl"><thead><tr>'+
   '<th>Kod</th><th>Teslimat</th><th>Durum</th><th>Geçen</th><th>Kalan</th><th>İlerleme</th><th></th></tr></thead><tbody>';
  if(!aktif.length)h+='<tr><td colspan="7"><div class="bos">Süreçte sipariş yok.</div></td></tr>';
@@ -1342,6 +1912,24 @@ function ekRapor(){
    '<i data-tik="cubuk" data-kod="'+s.kod+'" style="width:'+yuzde(s)+'%"></i></div></td>'+
    '<td><button class="dg-h" onclick="detay(\''+s.kod+'\')">Detay</button></td></tr>';}
  return h+'</tbody></table></div></div>';}
+function sadakatKarti(){
+ var m=Object.keys(VERI.musteriler).map(function(k){return VERI.musteriler[k];})
+  .sort(function(a,b){return b.harcama-a.harcama;});
+ if(!m.length)return '';
+ var toplamPuan=m.reduce(function(t,x){return t+x.puan;},0);
+ var h='<div class="kart"><h2>Lavka Kart<span>'+m.length+' müşteri · '+toplamPuan+' aktif puan</span></h2>'+
+  '<div class="sar"><table class="tbl"><thead><tr><th>Müşteri</th><th>Telefon</th>'+
+  '<th class="sag">Sipariş</th><th class="sag">Harcama</th><th class="sag">Puan</th>'+
+  '<th class="sag">Hediye</th><th>Son sipariş</th><th></th></tr></thead><tbody>';
+ m.slice(0,10).forEach(function(x){
+  h+='<tr><td><b>'+esc(x.ad||"—")+'</b></td><td class="mono">0'+esc(x.tel)+'</td>'+
+   '<td class="sag">'+x.siparis+'</td><td class="sag">'+para(x.harcama)+'</td>'+
+   '<td class="sag"><b>'+x.puan+'</b></td><td class="sag">'+(x.hediye||0)+'</td>'+
+   '<td class="soluk">'+(x.sonSiparis?tar(x.sonSiparis)+" "+ss(x.sonSiparis):"—")+'</td>'+
+   '<td>'+(x.puan>=PUAN_HEDIYE?'<button class="dg-ok" onclick="hediyeKullan(\''+x.tel+'\')">Hediye çeki ver</button>':
+    '<span class="soluk">'+(PUAN_HEDIYE-x.puan)+' puan kaldı</span>')+'</td></tr>';});
+ return h+'</tbody></table></div><div class="soluk" style="margin-top:8px">Her '+PUAN_ORAN+
+  ' ₺ harcama 1 puan · '+PUAN_HEDIYE+' puan = '+para(HEDIYE_TUTAR)+' hediye çeki</div></div>';}
 function adisyonOlcumleri(){
  var acik=VERI.adisyonlar.filter(function(a){return a.durum==="acik";});
  var kapali=VERI.adisyonlar.filter(function(a){return a.durum==="kapali"&&a.odeme&&a.odeme!=="iptal"&&bugunMu(a.kapanis);});
@@ -1452,7 +2040,9 @@ function indir(adi,icerik,tur){
 function ekMenuYonetim(){
  var bugun=bugunkuler();
  var h='<div class="bslk"><div><h1>Menü &amp; Stok</h1>'+
-  '<p class="alt">Fiyat ve hazırlık sürelerini düzenleyin, tükenen ürünü satışa kapatın. Değişiklikler anında misafir menüsüne yansır.</p></div>'+
+  '<p class="alt">Fiyat, süre ve fotoğrafları düzenleyin, tükenen ürünü satışa kapatın. '+
+  'Fotoğraflar bilgisayardan yüklenebilir (otomatik küçültülür) ya da adres olarak verilebilir. '+
+  'Değişiklikler anında misafir menüsüne yansır.</p></div>'+
   '<div class="araclar"><button class="dg-h" onclick="menuDisaAktar()">Menüyü JSON indir</button>'+
   '<button class="dg-h" onclick="menuSifirla()">Düzenlemeleri sıfırla</button></div></div>';
  var tum=tumUrunler(),kapali=tum.filter(function(u){return u.kapali;}).length;
@@ -1472,9 +2062,14 @@ function ekMenuYonetim(){
      'onchange="menuAyar(\''+u.id+'\',\'fiyat\',this.value)"></td>'+
     '<td class="sag"><input type="number" min="1" step="1" value="'+u.sure+'" style="width:78px;text-align:right" '+
      'onchange="menuAyar(\''+u.id+'\',\'sure\',this.value)"></td>'+
-    '<td><input type="url" value="'+esc(u.foto||"")+'" placeholder="https://…" style="width:170px" '+
-     'onchange="menuAyar(\''+u.id+'\',\'foto\',this.value)">'+
-     (u.foto?' <span class="rz iyi">var</span>':'')+'</td>'+
+    '<td><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'+
+     '<span class="foto-onizleme"'+(u.foto?' style="background-image:url(\''+esc(u.foto)+'\')"':'')+'>'+
+     (u.foto?"":u.ikon)+'</span>'+
+     '<label class="dg-h foto-yukle">Yükle<input type="file" accept="image/*" '+
+     'onchange="fotoSec(\''+u.id+'\',this)"></label>'+
+     '<button class="dg-h" onclick="fotoUrlSor(\''+u.id+'\')">URL</button>'+
+     (u.foto?'<button class="dg-h" onclick="fotoKaldir(\''+u.id+'\')">Kaldır</button>':'')+
+     '</div></td>'+
     '<td class="sag">'+satisAdedi(bugun,u.id)+'</td>'+
     '<td>'+(u.kapali?'<span class="rz kotu">Tükendi</span>':'<span class="rz iyi">Satışta</span>')+
      ((d.fiyat!=null||d.sure!=null)?' <span class="rz">düzenlendi</span>':'')+'</td>'+
@@ -1495,7 +2090,8 @@ function menuAyar(uid,alan,deger){
  var d=VERI.menuDuzen[uid]||{};
  if(alan==="kapali")d.kapali=(deger===true||deger==="true");
  else if(alan==="foto"){var f=String(deger||"").trim();
-  if(f&&!/^https:\/\//i.test(f))return bildir("Fotoğraf adresi https:// ile başlamalı","hata");
+  if(f&&!/^(https:\/\/|data:image\/)/i.test(f))
+   return bildir("Fotoğraf adresi https:// ile başlamalı ya da yüklenmiş bir görsel olmalı","hata");
   d.foto=f;}
  else{var v=parseFloat(deger);if(isNaN(v)||v<0)return bildir("Geçerli bir sayı girin","hata");d[alan]=v;}
  VERI.menuDuzen[uid]=d;kaydet();
@@ -1532,7 +2128,10 @@ function detay(kod){
   '</tbody></table></div>';
  h+='<div class="kart"><h2>Ürünler</h2><table class="tbl"><tbody>';
  for(var i=0;i<s.kalemler.length;i++){var k=s.kalemler[i];
-  h+='<tr><td>'+k.adet+' × '+esc(k.ad)+'</td><td><span class="ist '+ISTASYON[k.istasyon||"firin"].sinif+'">'+
+  h+='<tr><td>'+k.adet+' × '+esc(k.ad)+
+   (k.secim?'<br><span class="soluk">'+esc(k.secim)+'</span>':'')+
+   (k.not?'<br><span class="soluk">📝 '+esc(k.not)+'</span>':'')+'</td>'+
+   '<td><span class="ist '+ISTASYON[k.istasyon||"firin"].sinif+'">'+
    ISTASYON[k.istasyon||"firin"].ad+'</span></td><td class="soluk">~'+k.sure+' dk</td>'+
    '<td class="sag">'+para(k.fiyat*k.adet)+'</td></tr>';}
  h+='<tr><td colspan="3"><b>Toplam</b></td><td class="sag"><b>'+para(s.toplam)+'</b></td></tr></tbody></table></div>';
@@ -1550,6 +2149,7 @@ function detay(kod){
  p.onclick=function(e){if(e.target===p)pencereKapat();};}
 function pencereKapat(){var p=document.getElementById("pencere");p.className="";p.innerHTML="";}
 document.addEventListener("keydown",function(e){if(e.key==="Escape")pencereKapat();});
+document.addEventListener("pointerdown",function(){sesAc();},{once:true});
 
 /* ══════════════════════════════════════════════════════════════════
    MASA HARİTASI
@@ -1636,7 +2236,10 @@ function ekPos(masaId){
   h+='<div class="pos-kalem'+(UI.posSecili.indexOf(i)>=0?" secili":"")+(k.ikram?" ikram":"")+
    (k.gonderildi?"":" bekleyen")+'" onclick="adisyonSecim('+i+')">'+
    '<span class="adt">'+k.adet+'×</span>'+
-   '<span class="ad">'+esc(k.ad)+'<small>'+ISTASYON[k.istasyon].ad+
+   '<span class="ad">'+esc(k.ad)+
+   (k.secim?'<small style="color:var(--bakir-koyu)">'+esc(k.secim)+'</small>':'')+
+   (k.not?'<small>📝 '+esc(k.not)+'</small>':'')+
+   '<small>'+ISTASYON[k.istasyon].ad+
    (k.ikram?" · ikram":(k.gonderildi?" · mutfakta":" · bekliyor"))+'</small></span>'+
    '<span class="fy">'+para(k.fiyat*k.adet)+'</span>'+
    '<span class="sayac" onclick="event.stopPropagation()">'+
@@ -1687,6 +2290,56 @@ function adisyonKapatIptal(aid){
  kaydet();bildir(a.masaAd+" adisyonu iptal edildi","hata");git("masalar");}
 
 /* ══════════════════════════════════════════════════════════════════
+   KASA / VARDİYA
+   ══════════════════════════════════════════════════════════════════ */
+function ekKasa(){
+ var v=VERI.vardiya,c=calismaSaati(),sa=siparisAlinabilir();
+ var h='<div class="bslk"><div><h1>Kasa &amp; Vardiya</h1>'+
+  '<p class="alt">Gün açılış-kapanış, sipariş kabulü ve Z raporu</p></div>'+
+  '<div class="araclar">'+
+  '<button class="dg-h" onclick="siparisDurdur()">'+(VERI.ayar.siparisDurdu?"Sipariş alımını aç":"Sipariş alımını duraklat")+'</button>'+
+  '<button class="dg-h" onclick="sesTogg()">Sesli uyarı: '+(VERI.ayar.ses?"AÇIK":"KAPALI")+'</button></div></div>';
+ h+='<div class="olcumler">'+
+  olcum("Sipariş kabulü",sa.olur?"AÇIK":"KAPALI",sa.olur?"misafir sipariş verebilir":sa.sebep.slice(0,40),sa.olur?"iyi":"kotu")+
+  olcum("Çalışma saati",ISLETME.saat,c.acik?"şu an açık":"şu an kapalı",c.acik?"":"uyari")+
+  olcum("Vardiya",v?"AÇIK":"KAPALI",v?("açılış "+ss(v.baslangic)):"gün başlatılmadı",v?"iyi":"uyari")+
+  (v?olcum("Kasa açılışı",para(v.acilisNakit),esc(v.acanKisi)):"")+'</div>';
+ if(!v){
+  h+='<div class="kart"><h2>Günü Başlat</h2>'+
+   '<p class="soluk" style="margin-top:0">Vardiya açılmadan da sipariş alınır; ancak Z raporu ve kasa sayımı '+
+   'için günü başlatmanız gerekir.</p>'+
+   '<button class="dg" onclick="vardiyaAc()">Günü Başlat · kasa açılış nakdini gir</button></div>';
+ }else{
+  var o=vardiyaOzet(v);
+  h+='<div class="kart"><h2>Açık Vardiya<span>'+sureK(simdi()-v.baslangic)+' önce açıldı</span></h2>'+
+   '<div class="olcumler" style="margin-bottom:0">'+
+   olcum("Sipariş",o.sipSay,o.urunAdet+" ürün")+
+   olcum("Ciro",para(o.ciro),"iptaller hariç")+
+   olcum("Nakit",para(o.odeme.nakit),"kasada beklenen "+para(o.beklenenNakit))+
+   olcum("Kart",para(o.odeme.kart),"pos tahsilatı")+
+   olcum("İkram + iskonto",para(o.ikram+o.iskonto),"toplam indirim",(o.ikram+o.iskonto)>o.ciro*.1?"uyari":"")+
+   olcum("Kapanan masa",o.masaSay,para(o.masaCiro))+
+   '</div><div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">'+
+   '<button class="dg" onclick="vardiyaKapat()">Z Raporu Al ve Günü Kapat</button>'+
+   '<button class="dg-h" onclick="git(\'rapor\')">Gün raporu</button></div></div>';
+ }
+ h+='<div class="kart"><h2>Geçmiş Z Raporları<span>'+VERI.vardiyaGecmis.length+' kayıt</span></h2><div class="sar"><table class="tbl"><thead><tr>'+
+  '<th>Tarih</th><th>Süre</th><th class="sag">Sipariş</th><th class="sag">Ciro</th><th class="sag">Nakit</th>'+
+  '<th class="sag">Kart</th><th class="sag">Kasa farkı</th><th></th></tr></thead><tbody>';
+ if(!VERI.vardiyaGecmis.length)h+='<tr><td colspan="8"><div class="bos">Henüz kapatılmış gün yok.</div></td></tr>';
+ for(var i=VERI.vardiyaGecmis.length-1;i>=0;i--){var g=VERI.vardiyaGecmis[i],go=g.ozet||vardiyaOzet(g);
+  h+='<tr><td>'+tar(g.baslangic)+'<br><span class="soluk">'+ss(g.baslangic)+' – '+ss(g.kapanis)+'</span></td>'+
+   '<td class="sag">'+sureK(g.kapanis-g.baslangic)+'</td><td class="sag">'+go.sipSay+'</td>'+
+   '<td class="sag">'+para(go.ciro)+'</td><td class="sag">'+para(go.odeme.nakit)+'</td>'+
+   '<td class="sag">'+para(go.odeme.kart)+'</td>'+
+   '<td class="sag '+(Math.abs(g.fark||0)<1?"":(g.fark<0?"kotu-y":"uyari-y"))+'">'+(g.fark>=0?"+":"")+para(g.fark||0)+'</td>'+
+   '<td><button class="dg-h" onclick="zRaporu('+i+')">Z Raporu</button></td></tr>';}
+ return h+'</tbody></table></div></div>';}
+function sesTogg(){VERI.ayar.ses=!VERI.ayar.ses;kaydet();
+ if(VERI.ayar.ses)sesCal(1);
+ bildir("Sesli uyarı "+(VERI.ayar.ses?"açıldı":"kapatıldı"));ciz();}
+
+/* ══════════════════════════════════════════════════════════════════
    QR MENÜ — misafir telefonu / tablet görünümü
    ══════════════════════════════════════════════════════════════════ */
 function ekQr(masaId){
@@ -1708,7 +2361,8 @@ function ekQr(masaId){
    '<b class="tnum" style="font-size:19px">'+para(u.fiyat)+'</b></div>'+
    '<p class="soluk" style="margin:8px 0 14px">'+esc(u.aciklama)+' · '+ISTASYON[u.istasyon].ad+' · ~'+u.sure+' dk</p>';
   h+=u.kapali?'<div class="rz kotu">Bugün tükendi</div>'
-   :'<button class="dg" style="width:100%" onclick="qrSepeteEkle(\''+u.id+'\')">Sepete Ekle · '+para(u.fiyat)+'</button>';
+   :'<button class="dg" style="width:100%" onclick="qrSepeteEkle(\''+u.id+'\')">'+
+    (secenekSeti(u)?"Seçenekleri Aç":"Sepete Ekle")+' · '+para(u.fiyat)+'</button>';
   h+='</div>';
  }else if(UI.qrKat){
   var kat=MENU.filter(function(x){return x.kat===UI.qrKat;})[0];
@@ -1737,9 +2391,8 @@ function ekQr(masaId){
   esc(location.href.split("#")[0])+'#/qr/'+esc(UI.qrMasa||"S8")+'</code></div>';
  return h;}
 function qrSepeteEkle(uid){
- sepetEkle(uid,1);
  if(UI.qrMasa){var m=masaBul(UI.qrMasa);if(m){FORM.tip="masa";FORM.masa=m.masa.ad;}}
- bildir(urun(uid).ad+" sepete eklendi","ok");}
+ secenekAc(uid,"sepet");}
 
 /* ══════════════════════════════════════════════════════════════════
    BULUT KATMANI — Supabase (gerçek zamanlı, çok cihazlı çalışma)
@@ -1913,7 +2566,8 @@ function bulutMenuAyar(uid,alan,deger){
  var y={};
  if(alan==="kapali")y.satista=!(deger===true||deger==="true");
  else if(alan==="foto"){var f=String(deger||"").trim();
-  if(f&&!/^https:\/\//i.test(f))return bildir("Fotoğraf adresi https:// ile başlamalı","hata");
+  if(f&&!/^(https:\/\/|data:image\/)/i.test(f))
+   return bildir("Fotoğraf adresi https:// ile başlamalı ya da yüklenmiş bir görsel olmalı","hata");
   y.foto=f;}
  else y[alan]=parseFloat(deger);
  return BULUT.sb.from("lavka_menu").update(y).eq("id",uid).then(function(r){
@@ -1922,7 +2576,7 @@ function bulutMenuAyar(uid,alan,deger){
  .catch(function(e){bulutHata(e);});}
 
 /* ---- ekip girişi ekranı ---- */
-var EKIP_SAYFALARI=["ekran","servis","rapor","siparisler","menuyonetim","masalar","pos"];
+var EKIP_SAYFALARI=["ekran","servis","rapor","siparisler","menuyonetim","masalar","pos","kasa"];
 function ekGiris(){
  if(!BULUT.acik)
   return '<div class="bslk"><div><h1>Ekip Girişi</h1>'+
@@ -1966,7 +2620,7 @@ function ciz(){
  if(BULUT.acik&&!BULUT.hazir){
   document.getElementById("ekran").innerHTML=
    '<div class="kart"><div class="bos"><span class="canli"></span>Sunucuya bağlanılıyor…</div></div>';
-  return;}
+  cevir(document.getElementById("ekran"));return;}
  if(BULUT.acik&&EKIP_SAYFALARI.indexOf(SAYFA.ad)>=0&&!BULUT.personel){
   document.getElementById("ekran").innerHTML=ekGiris();return;}
  if(SAYFA.ad==="giris"){document.getElementById("ekran").innerHTML=ekGiris();return;}
@@ -1983,9 +2637,12 @@ function ciz(){
   case "rapor":       h=ekRapor(); break;
   case "siparisler":  h=ekSiparisler(); break;
   case "menuyonetim": h=ekMenuYonetim(); break;
+  case "kasa":        h=ekKasa(); break;
   default:            h=ekMenu();
  }
- document.getElementById("ekran").innerHTML=h;}
+ document.getElementById("ekran").innerHTML=h;
+ cevir(document.getElementById("ekran"));
+ cevir(document.getElementById("nav"));}
 function tikGuncelle(){
  var els=document.querySelectorAll("[data-tik]");
  for(var i=0;i<els.length;i++){
@@ -2033,7 +2690,8 @@ function bulutYoklama(){
  if(BULUT.personel&&t-_yoklama.tazele>60000){_yoklama.tazele=t;
   siparisleriCek().then(function(){if(!formAcikMi())ciz();});}}
 function dongu(){
- if(BULUT.acik){bulutYoklama();tikGuncelle();return;}
+ if(BULUT.acik){bulutYoklama();yeniSiparisKontrol();tikGuncelle();return;}
+ yeniSiparisKontrol();
  var degisti=otomatik();
  if(degisti&&!formAcikMi()){
   var acik=document.getElementById("pencere").className==="ac";
@@ -2071,6 +2729,10 @@ if(_c.supabaseUrl&&_c.supabaseKey&&!(window.supabase&&window.supabase.createClie
   kaydet();}
  route();
 }
+/* Çevrimdışı çalışma ve ana ekrana ekleme (yalnızca https ya da localhost) */
+if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){
+ window.addEventListener("load",function(){
+  navigator.serviceWorker.register("sw.js").catch(function(){});});}
 setInterval(dongu,1000);
 tikGuncelle();
 </script>

@@ -30,6 +30,14 @@ Tek işletme için sadeleştirilmiş, Lavka kimliğine göre tasarlanmış sür�
 * **Masa haritası ve adisyon:** salon/teras/tezgâh katları, boş-dolu-rezerve masa kartları, masa başına açık hesap tutarı ve süresi
 * **Dokunmatik POS ekranı:** adisyon fişi, büyük ürün kartları, ikram, iade, iskonto, adisyon bölme/taşıma, fiş yazdırma, nakit/kart tahsilat
 * **QR menü:** masadaki karekoddan açılan fotoğraflı misafir menüsü (kategori kapakları, ürün detayı, sepete ekleme)
+* **Ürün seçenekleri:** boy, süt tipi, şeker, ekstra shot, çıkarılacaklar gibi seçimler; fiyat ve hazırlık süresi seçime göre hesaplanır, mutfak fişine yazılır
+* **Ürün fotoğrafları:** bilgisayardan yüklenir (tarayıcıda otomatik küçültülür) ya da adres verilir; menü, QR menü ve POS kartlarında görünür
+* **Kasa & vardiya:** gün açılış-kapanış, kasa sayımı ve farkı, yazdırılabilir Z raporu, geçmiş vardiyalar
+* **Sipariş kabulü:** yoğunlukta duraklatma ve çalışma saati dışında otomatik kapanma
+* **Lavka Kart:** telefonla puan biriktirme (10 ₺ = 1 puan, 200 puan = 50 ₺ çek), "bu siparişi tekrarla"
+* **Sesli uyarı:** bar/fırın ekranında yeni sipariş sesi
+* **Çevrimdışı çalışma (PWA):** ana ekrana eklenebilir, ağ yokken uygulama dosyaları önbellekten açılır
+* **Türkçe / İngilizce:** misafir arayüzü tek tuşla dil değiştirir
 * **Açık / koyu görünüm:** sistem temasına uyar, sol alttan da değiştirilebilir (gece vardiyasında bar ekranı için)
 
 ### Gerçek menüyü yükleme

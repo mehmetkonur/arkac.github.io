@@ -1,0 +1,22 @@
+{
+  "name": "Lavka Sipariş Merkezi",
+  "short_name": "Lavka",
+  "description": "Lavka kafe & fırın — sipariş, masa/adisyon ve mutfak ekranı",
+  "lang": "tr",
+  "start_url": "./lavka.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FAF7F1",
+  "theme_color": "#23302B",
+  "icons": [
+    { "src": "ikon/lavka-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "ikon/lavka-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "ikon/lavka-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Masalar", "url": "./lavka.html#/masalar" },
+    { "name": "Bar & Fırın", "url": "./lavka.html#/ekran" },
+    { "name": "Hazır Panosu", "url": "./lavka.html#/pano" }
+  ]
+}

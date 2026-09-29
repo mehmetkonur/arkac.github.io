@@ -91,6 +91,28 @@ işlemleri Supabase'e bağlanmalıdır (proje açıldıktan sonra yapılacak son
 Masa düzenini değiştirmek için `lavka.html` başındaki **KATLAR** bloğunu düzenleyin; aynı
 tanımdan `0003_lavka_adisyon.sql` içindeki masa listesi üretilir.
 
+## Yeni özelliklerin notları
+
+**Ürün seçenekleri** `lavka.html` başındaki `SECENEK_SETLERI` bloğunda tanımlıdır; her ürünün `set`
+alanı hangi seti kullanacağını söyler. Fiyat farkı (`fark`) ve süre etkisi (`sure`) sunucuya taşındığında
+`lavka_menu` tablosuna bir `secenekler jsonb` kolonu eklenmelidir.
+
+**Fotoğraflar** bilgisayardan yüklendiğinde tarayıcıda 560 piksele küçültülüp sayfanın kendi deposunda
+saklanır (yaklaşık 30-50 KB). Tarayıcı deposu ~5 MB'tır; çok sayıda fotoğraf için adres (URL) kullanın
+ya da bulut moduna geçip `lavka_menu.foto` alanına Supabase Storage bağlantısı yazın.
+
+**Sadakat puanı** şu an yerel modda çalışır (veriler tarayıcıda). Bulut modunda müşteri ve puan
+tablolarının eklenmesi gerekir; sipariş teslim edilince puan yazan bir veritabanı tetikleyicisi doğru
+yaklaşımdır.
+
+**PWA (çevrimdışı çalışma)** yalnızca https üzerinden çalışır — Netlify yayınında etkindir,
+dosyayı çift tıklayıp açtığınızda değildir. Ana ekrana eklemek için tarayıcı menüsünden
+"Uygulamayı yükle" / "Ana ekrana ekle" seçilir.
+
+**Dil** misafir arayüzü için çalışır; ekip ekranları Türkçedir. Çeviriler sayfa çizildikten sonra
+sözlükten uygulanır (`EN` bloğu). Kalıcı çok dilli yapı için metinlerin doğrudan sözlükten okunması
+daha sağlıklıdır.
+
 ## Güvenlik notları
 
 * Misafir tarayıcısı tablolara doğrudan erişemez; yalnızca sunucu fonksiyonlarını çağırır.
